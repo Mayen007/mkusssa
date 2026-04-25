@@ -151,8 +151,13 @@ document.addEventListener('DOMContentLoaded', function () {
   // Hero background carousel: preserves the existing hero layout and only rotates the background image.
   if (heroSection) {
     const heroSlides = [
+      '../assets/images/banner6.jpeg',
       '../assets/images/banner1.jpg',
+      '../assets/images/banner2.jpg',
       '../assets/images/banner.jpg',
+      '../assets/images/banner3.jpg',
+      '../assets/images/banner5.jpeg',
+      '../assets/images/banner4.jpg',
     ];
     const preloadImages = heroSlides.map(function (src) {
       const image = new Image();
@@ -164,6 +169,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function setHeroBackground(src) {
       heroSection.style.setProperty('--hero-bg-image', 'url("' + src + '")');
+      heroSection.style.setProperty('--hero-bg-image-fade', 'url("' + src + '")');
+      heroSection.style.backgroundImage = 'var(--hero-bg-image)';
+      heroSection.style.backgroundSize = 'cover';
+      heroSection.style.backgroundPosition = 'center';
+      heroSection.style.backgroundRepeat = 'no-repeat';
     }
 
     function showHeroSlide(nextIndex) {
