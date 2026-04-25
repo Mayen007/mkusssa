@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="./assets/images/logo.jpg"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>
+      Mount Kenya University South Sudanese Students' Association - Nairobi
+      Campus
+    </title>
+  </head>
+  <body id="top">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+      <div class="container">
+        <a href="index.html" class="logo">
+          <img
+            src="./assets/images/logo.jpg"
+            alt="MKU Logo"
+            class="logo-image"
+          />
+          <div class="logo-text">
+            <div class="logo-text-line">Mount Kenya University</div>
+            <div class="logo-text-line">South Sudanese</div>
+            <div class="logo-text-line">Students' Association</div>
+          </div>
+          <span class="logo-text-short">MKUSSSA - Nairobi Campus</span>
+        </a>
+
+        <!-- Mobile menu button -->
+        <button
+          class="mobile-menu-btn"
+          aria-label="Toggle navigation"
+          aria-expanded="false"
+          aria-controls="primary-navigation"
+        >
+          <i class="fas fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <ul id="primary-navigation" class="nav-links" role="menu">
+          <li class="active nav-item">
+            <a href="#top" class="nav-link">Home</a>
+          </li>
+          <li class="nav-item">
+            <a href="#about" class="nav-link">About Us</a>
+          </li>
+          <li class="nav-item">
+            <a href="#services" class="nav-link">Services</a>
+          </li>
+          <li class="nav-item">
+            <a href="#events" class="nav-link">Events</a>
+          </li>
+          <li class="nav-item">
+            <a href="#contact" class="nav-link">Membership</a>
+          </li>
+          <li class="nav-item">
+            <a href="#contact" class="nav-link">Contact Us</a>
+          </li>
+        </ul>
+      </div>
+      <!-- Overlay for mobile navigation; toggled via JS -->
+      <div class="mobile-nav-overlay" aria-hidden="true"></div>
+    </nav>
+    <main>
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="container">
+          <div class="hero-content">
+            <div class="hero-text">
+              <h1 class="hero-title">Unite. Support. Empower.</h1>
+              <p class="hero-tagline">Accountability & Transparency</p>
+              <p class="hero-subtitle">
+                Your home for South Sudanese community at MKU Nairobi
+                Campus—united through academic excellence, cultural celebration,
+                and support.
+              </p>
+              <div class="hero-buttons">
+                <a href="#contact" class="btn btn-primary">Join Us Today</a>
+                <a href="#about" class="btn btn-secondary">Learn More</a>
+              </div>
+            </div>
+            <div class="hero-image">
+              <img
+                src="./assets/images/logo.jpg"
+                alt="MKUSSSA Logo"
+                class="hero-logo"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- Decorative SVG divider placed inside hero to separate it from the next section -->
+        <div class="custom-shape-divider-bottom">
+          <svg
+            data-name="Layer 1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1200 120"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <defs>
+              <linearGradient
+                id="gradDivider"
+                x1="0%"
+                x2="100%"
+                y1="0%"
+                y2="0%"
+              >
+                <stop offset="0%" stop-color="rgba(255,255,255,0.95)" />
+                <stop offset="100%" stop-color="rgba(255,255,255,0.95)" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M0,0 C150,80 350,80 600,40 C850,0 1050,20 1200,60 L1200,120 L0,120 Z"
+              fill="url(#gradDivider)"
+              class="shape-fill"
+            ></path>
+            <path
+              d="M0,20 C200,100 400,100 600,60 C800,20 1000,40 1200,80 L1200,120 L0,120 Z"
+              fill="rgba(255,255,255,0.6)"
+              class="shape-fill layer-2"
+            ></path>
+          </svg>
+        </div>
+        <!-- Scroll indicator (moved inside hero): bottom center -->
+        <div class="scroll-indicator" aria-hidden="false">
+          <a
+            href="#about"
+            class="scroll-indicator-link"
+            aria-label="Scroll to About section"
+          >
+            <span class="arrows" aria-hidden="true">
+              <span class="arrow"></span>
+              <span class="arrow"></span>
+              <span class="arrow"></span>
+            </span>
+          </a>
+        </div>
+      </section>
+
+      <!-- About Section -->
+      <section id="about" class="about">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">About MKUSSSA</h2>
+            <p class="section-subtitle">
+              Building bridges and creating opportunities for South Sudanese
+              students
+            </p>
+          </div>
+          <div class="about-content">
+            <div class="about-text">
+              <h3>Our Story</h3>
+              <p>
+                MKUSSSA - Nairobi Campus was established in 2021 with a simple
+                yet powerful vision: to foster South Sudanese unity on campus.
+                Recognizing the need for a dedicated space where students could
+                connect, share culture, and support one another, a group of
+                passionate South Sudanese students established this campus
+                chapter. In 2023, MKUSSSA was officially registered as a
+                recognized student organization by Mount Kenya University,
+                solidifying our commitment to serving the South Sudanese student
+                community here at the Nairobi Campus.
+              </p>
+              <p>
+                Everything we do is guided by our core values: unity,
+                inclusivity, academic excellence, good governance, integrity,
+                and transparency. We believe in creating a space where every
+                member is heard, valued, and empowered to succeed.
+              </p>
+              <h3>Our Mission</h3>
+              <p>
+                To strive for social cohesion, cultural diversity, good
+                governance, and academic excellence for the betterment of our
+                members and society.
+              </p>
+              <h3>Our Vision</h3>
+              <p>
+                To empower our members and promote peace, good leadership,
+                skills, unity, and social development across the university
+                community.
+              </p>
+              <p class="constitution-inline" id="constitution">
+                Need the constitution?
+                <a
+                  href="./assets/docs/Amended%20Constitution%20of%20MKUSSSA.pdf"
+                  download="MKUSSSA-Amended-Constitution.pdf"
+                  >Download the Constitution (PDF)</a
+                >.
+              </p>
+              <div class="stats">
+                <div class="stat-item">
+                  <span class="stat-number">2021</span>
+                  <span class="stat-label">Founded</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number">200+</span>
+                  <span class="stat-label">Active Members</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number">2023</span>
+                  <span class="stat-label">Officially Registered</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Values Section -->
+      <section id="values" class="values">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Our Core Values</h2>
+            <p class="section-subtitle">
+              Principles that guide everything we do
+            </p>
+          </div>
+          <div class="values-grid">
+            <div class="value-card">
+              <div class="value-icon">
+                <i class="fas fa-handshake" aria-hidden="true"></i>
+              </div>
+              <h3>Unity & Inclusivity</h3>
+              <p>
+                We celebrate diversity and create an inclusive space where every
+                student feels valued and welcomed regardless of background.
+              </p>
+            </div>
+            <div class="value-card">
+              <div class="value-icon">
+                <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+              </div>
+              <h3>Academic Excellence</h3>
+              <p>
+                We're committed to supporting student achievement and fostering
+                a culture of learning and intellectual growth.
+              </p>
+            </div>
+            <div class="value-card">
+              <div class="value-icon">
+                <i class="fas fa-balance-scale" aria-hidden="true"></i>
+              </div>
+              <h3>Good Governance</h3>
+              <p>
+                We operate with integrity, transparency, and accountability in
+                all our decisions and actions.
+              </p>
+            </div>
+            <div class="value-card">
+              <div class="value-icon">
+                <i class="fas fa-venus-mars" aria-hidden="true"></i>
+              </div>
+              <h3>Gender Equity</h3>
+              <p>
+                We ensure equal participation and opportunities for all members,
+                regardless of gender.
+              </p>
+            </div>
+            <div class="value-card">
+              <div class="value-icon">
+                <i class="fas fa-users" aria-hidden="true"></i>
+              </div>
+              <h3>Democratic Participation</h3>
+              <p>
+                We listen to diverse perspectives and make decisions together,
+                valuing every member's voice and contribution.
+              </p>
+            </div>
+            <div class="value-card">
+              <div class="value-icon">
+                <i class="fas fa-globe" aria-hidden="true"></i>
+              </div>
+              <h3>Cultural & Social Development</h3>
+              <p>
+                We celebrate South Sudanese culture while fostering
+                understanding and connection across diverse communities.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Services Section -->
+      <section id="services" class="services">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Our Services</h2>
+            <p class="section-subtitle">
+              Comprehensive support for your academic and personal journey
+            </p>
+          </div>
+          <div class="services-grid">
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+              </div>
+              <h3>Academic Support</h3>
+              <p>
+                Career development workshops, study groups, and academic
+                mentorship programs to help you excel in your studies.
+              </p>
+            </div>
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="fa-solid fa-earth-africa" aria-hidden="true"></i>
+              </div>
+              <h3>Cultural Programs</h3>
+              <p>
+                Annual South Sudanese Cultural Day, traditional celebrations,
+                and cultural exchange activities.
+              </p>
+            </div>
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="fa-regular fa-handshake" aria-hidden="true"></i>
+              </div>
+              <h3>Orientation & Support</h3>
+              <p>
+                Comprehensive orientation for new students and ongoing support
+                throughout your university journey.
+              </p>
+            </div>
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="fas fa-globe" aria-hidden="true"></i>
+              </div>
+              <h3>Networking</h3>
+              <p>
+                Connect with fellow students, alumni, and professionals in
+                various fields across different faculties.
+              </p>
+            </div>
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="fas fa-university" aria-hidden="true"></i>
+              </div>
+              <h3>Embassy Relations</h3>
+              <p>
+                Bridge between students, university administration, and South
+                Sudanese embassy representatives.
+              </p>
+            </div>
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="fas fa-chalkboard-teacher" aria-hidden="true"></i>
+              </div>
+              <h3>Mentorship</h3>
+              <p>
+                Peer-to-peer mentorship and guidance from senior students and
+                alumni in your field of study.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Leadership Section -->
+      <section id="leadership" class="leadership">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Our Leadership</h2>
+            <p class="section-subtitle">
+              Meet the dedicated team leading our association
+            </p>
+          </div>
+          <div class="leadership-grid">
+            <div class="leader-card">
+              <div class="leader-image">
+                <div class="placeholder-image">
+                  <!-- <i class="fas fa-user-tie" aria-hidden="true"></i> -->
+                  <img
+                    src="./assets/images/deng-isaac-dhiel.jpeg"
+                    alt="Deng Isaac Dhiel"
+                    class="leader-img"
+                  />
+                </div>
+              </div>
+              <h3>President</h3>
+              <p class="leader-name">Deng Isaac Dhiel</p>
+              <p class="leader-role">Overall leadership and strategy</p>
+            </div>
+            <div class="leader-card">
+              <div class="leader-image">
+                <div class="placeholder-image">
+                  <i class="fas fa-user" aria-hidden="true"></i>
+                </div>
+              </div>
+              <h3>Deputy President</h3>
+              <p class="leader-name">Amani Juma Thomas</p>
+              <p class="leader-role">Operations and coordination</p>
+            </div>
+            <div class="leader-card">
+              <div class="leader-image">
+                <div class="placeholder-image">
+                  <i class="fas fa-user-tie" aria-hidden="true"></i>
+                </div>
+              </div>
+              <h3>Secretary General</h3>
+              <p class="leader-name">Gatwang Wuor Guech</p>
+              <p class="leader-role">Documentation and communication</p>
+            </div>
+            <div class="leader-card">
+              <div class="leader-image">
+                <div class="placeholder-image">
+                  <i class="fas fa-user-tie" aria-hidden="true"></i>
+                </div>
+              </div>
+              <h3>Minister of Finance</h3>
+              <p class="leader-name">Emmanuel Agou Akeen</p>
+              <p class="leader-role">Financial management</p>
+            </div>
+            <div class="leader-card">
+              <div class="leader-image">
+                <div class="placeholder-image">
+                  <i class="fas fa-user" aria-hidden="true"></i>
+                </div>
+              </div>
+              <h3>Minister of Information and Communication</h3>
+              <p class="leader-name">Sunday Kuol</p>
+              <p class="leader-role">
+                Media, updates, and official communication
+              </p>
+            </div>
+            <div class="leader-card">
+              <div class="leader-image">
+                <div class="placeholder-image">
+                  <i class="fas fa-user" aria-hidden="true"></i>
+                </div>
+              </div>
+              <h3>Minister of Academic Affairs</h3>
+              <p class="leader-name">Nyadhiel Moses Ruai</p>
+              <p class="leader-role">
+                Academic support and student performance programs
+              </p>
+            </div>
+            <div class="leader-card">
+              <div class="leader-image">
+                <div class="placeholder-image">
+                  <i class="fas fa-user-tie" aria-hidden="true"></i>
+                </div>
+              </div>
+              <h3>Minister of Culture, Sports and Social Welfare</h3>
+              <p class="leader-name">Kur James Garang</p>
+              <p class="leader-role">
+                Culture, wellness, and student engagement activities
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Leadership Legacy Section -->
+      <section id="hall-of-fame" class="hall-of-fame">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Leadership Legacy</h2>
+            <p class="section-subtitle">
+              Honoring past MKUSSSA leaders who served with dedication and
+              vision
+            </p>
+          </div>
+          <div class="hall-of-fame-grid">
+            <article class="hall-card">
+              <div class="hall-card-year">2026 - 2027</div>
+              <h3>Together We Stand</h3>
+              <figure class="hall-photo">
+                <img
+                  src="./assets/images/mkusssa26-27.jpeg"
+                  alt="Official group photo of the MKUSSSA Executive Board 2026 - 2027"
+                  class="hall-photo-img"
+                />
+                <figcaption class="hall-photo-caption">
+                  Official Executive Board Group Photo (2026 - 2027)
+                </figcaption>
+              </figure>
+              <ul class="hall-list">
+                <li>
+                  <span class="hall-role">President:</span> Deng Isaac Dhiel
+                </li>
+                <li>
+                  <span class="hall-role">Deputy President:</span> Amani Juma
+                  Thomas
+                </li>
+                <li>
+                  <span class="hall-role">Secretary General:</span> Gatwang Wuor
+                  Guech
+                </li>
+                <li>
+                  <span class="hall-role">Minister of Finance:</span> Emmanuel
+                  Agou Akeen
+                </li>
+                <li>
+                  <span class="hall-role"
+                    >Minister of Information and Communication:</span
+                  >
+                  Sunday Kuol
+                </li>
+                <li>
+                  <span class="hall-role">Minister of Academic Affairs:</span>
+                  Nyadhiel Moses Ruai
+                </li>
+                <li>
+                  <span class="hall-role"
+                    >Minister of Culture, Sports and Social Welfare:</span
+                  >
+                  Kur James Garang
+                </li>
+              </ul>
+            </article>
+            <article class="hall-card">
+              <div class="hall-card-year">2025 - 2026</div>
+              <h3>Team Momentum Alliance</h3>
+              <figure class="hall-photo">
+                <img
+                  src="./assets/images/mkusssa25-26.jpeg"
+                  alt="Official group photo of the MKUSSSA Executive Board 2025 - 2026"
+                  class="hall-photo-img"
+                />
+                <figcaption class="hall-photo-caption">
+                  Official Executive Board Group Photo (2025 - 2026)
+                </figcaption>
+              </figure>
+              <ul class="hall-list">
+                <li>
+                  <span class="hall-role">President:</span> Jok Kacuol Malek
+                </li>
+                <li>
+                  <span class="hall-role">Deputy President:</span> Nyaguandong
+                  Chuol Lam
+                </li>
+                <li>
+                  <span class="hall-role">Secretary General:</span> Adut Mabior
+                </li>
+                <li>
+                  <span class="hall-role">Minister of Finance:</span> Nyagoah
+                  Kueth
+                </li>
+                <li>
+                  <span class="hall-role"
+                    >Minister of Information and Communication:</span
+                  >
+                  Matur Andrew Magok
+                </li>
+                <li>
+                  <span class="hall-role">Minister of Academic Affairs:</span>
+                  Mayen Akech
+                </li>
+                <li>
+                  <span class="hall-role"
+                    >Minister of Culture, Sports and Social Welfare:</span
+                  >
+                  Juliana Peter
+                </li>
+              </ul>
+            </article>
+            <article class="hall-card">
+              <div class="hall-card-year">2024 - 2025</div>
+              <h3>Team Virtuous Vanguard</h3>
+              <figure class="hall-photo">
+                <img
+                  src="./assets/images/mkusssa24-25.jpeg"
+                  alt="Official group photo of the MKUSSSA Executive Board 2024 - 2025"
+                  class="hall-photo-img hall-cropped"
+                />
+                <figcaption class="hall-photo-caption">
+                  Official Executive Board Group Photo (2024 - 2025)
+                </figcaption>
+              </figure>
+              <ul class="hall-list">
+                <li>
+                  <span class="hall-role">President:</span> Manchin Gatwech Pur
+                </li>
+                <li>
+                  <span class="hall-role">Deputy President:</span> Awur Kuir
+                  Ajang
+                </li>
+                <li>
+                  <span class="hall-role">Secretary General:</span> Makoy Agot
+                  Akuany
+                </li>
+                <li>
+                  <span class="hall-role">Minister of Finance:</span> Apanang
+                  Abuoch Ayuel
+                </li>
+                <li>
+                  <span class="hall-role"
+                    >Minister of Information and Communication:</span
+                  >
+                  Nuer Nyang Deng
+                </li>
+                <li>
+                  <span class="hall-role">Minister of Academic Affairs:</span>
+                  Simon Khan Puot
+                </li>
+                <li>
+                  <span class="hall-role"
+                    >Minister of Culture, Sports and Social Welfare:</span
+                  >
+                  Francis Pal
+                </li>
+              </ul>
+            </article>
+            <article class="hall-card hall-legacy">
+              <div class="hall-card-year">2022 - 2023</div>
+              <h3>First Executive Board</h3>
+              <div class="hall-legacy-content">
+                <p>
+                  This was the first elected executive board for Nairobi Campus
+                  in 2022 - 2023. They were not the founders, but the first team
+                  that formally led student affairs at this stage.
+                </p>
+                <ul class="hall-list">
+                  <li>
+                    <span class="hall-role">Chairman:</span> Kuony Gatluak Thou
+                  </li>
+                  <li>
+                    <span class="hall-role">Deputy Chairperson:</span> Ajoh
+                    Majak
+                  </li>
+                  <li>
+                    <span class="hall-role">Secretary General:</span>
+                    Agok Mel
+                  </li>
+                  <li>
+                    <span class="hall-role">Finance Secretary:</span> Atong Deng
+                    Nyibek
+                  </li>
+                  <li>
+                    <span class="hall-role">Information Secretary:</span>
+                    Aquila Nyok
+                  </li>
+                </ul>
+                <p>
+                  <strong>Photo Record:</strong> We do not have a group photo of
+                  this executive team at the moment. If you have one, please
+                  share it with us at
+                  <a
+                    href="mailto:mkusssa2022@gmail.com"
+                    class="hall-legacy-link"
+                    >mkusssa2022@gmail.com</a
+                  >
+                  or via our
+                  <a href="#contact" class="hall-legacy-link">contact form</a>.
+                </p>
+              </div>
+            </article>
+            <article class="hall-card hall-legacy">
+              <div class="hall-card-year">2021 - 2024</div>
+              <h3>Founding Period</h3>
+              <div class="hall-legacy-content">
+                <p>
+                  MKUSSSA Nairobi was founded in 2021. In the early years,
+                  Nairobi Campus was under MKUSSSA Thika structures before
+                  student leaders pushed to claim autonomy for MKUSSSA Nairobi.
+                </p>
+                <p>
+                  During this founding period, the groundwork was laid for
+                  independent leadership, programs, and identity at Nairobi
+                  Campus.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Events Section -->
+      <section id="events" class="events">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Upcoming Events</h2>
+            <p class="section-subtitle">
+              Join us for exciting programs and activities
+            </p>
+          </div>
+          <div class="events-grid">
+            <div class="event-card">
+              <div class="event-date">
+                <span class="event-month">OCT</span>
+                <span class="event-day">15</span>
+              </div>
+              <div class="event-content">
+                <h3>South Sudanese Cultural Day</h3>
+                <p>
+                  Annual celebration of South Sudanese culture, food, music, and
+                  traditions at MKU main campus.
+                </p>
+                <a href="#" class="btn btn-small">Register Now</a>
+              </div>
+            </div>
+            <div class="event-card">
+              <div class="event-date">
+                <span class="event-month">NOV</span>
+                <span class="event-day">20</span>
+              </div>
+              <div class="event-content">
+                <h3>Career Development Workshop</h3>
+                <p>
+                  Resume writing, interview skills, and career guidance session
+                  with industry professionals.
+                </p>
+                <a href="#" class="btn btn-small">Register Now</a>
+              </div>
+            </div>
+            <div class="event-card">
+              <div class="event-date">
+                <span class="event-month">DEC</span>
+                <span class="event-day">05</span>
+              </div>
+              <div class="event-content">
+                <h3>Academic Forum</h3>
+                <p>
+                  Academic excellence discussion, study strategies, and peer
+                  mentorship program launch.
+                </p>
+                <a href="#" class="btn btn-small">Register Now</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Section -->
+      <section id="contact" class="contact">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Join Our Community</h2>
+            <p class="section-subtitle">
+              Connect with us and become part of the MKUSSSA family
+            </p>
+          </div>
+          <div class="contact-content">
+            <div class="contact-info">
+              <h3>Get in Touch</h3>
+              <div class="contact-item">
+                <span class="contact-icon"
+                  ><i class="fas fa-envelope" aria-hidden="true"></i
+                ></span>
+                <a href="mailto:mkusssa2022@gmail.com" class="contact-link"
+                  >mkusssa2022@gmail.com</a
+                >
+              </div>
+              <div class="contact-item">
+                <span class="contact-icon"
+                  ><i class="fas fa-phone" aria-hidden="true"></i
+                ></span>
+                <a href="tel:0112761316" class="contact-link">0112761316</a>
+              </div>
+              <div class="contact-item">
+                <span class="contact-icon"
+                  ><i class="fas fa-map-marker-alt" aria-hidden="true"></i
+                ></span>
+                <span>Mount Kenya University, Nairobi Campus</span>
+              </div>
+              <div class="social-links">
+                <a
+                  href="https://www.tiktok.com/@mkusssa"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="social-link"
+                  aria-label="TikTok"
+                  title="TikTok"
+                >
+                  <i class="fab fa-tiktok"></i>
+                </a>
+                <a
+                  href="https://www.instagram.com/mkusssa/"
+                  class="social-link"
+                  target="_blank"
+                  aria-label="Instagram"
+                  rel="noopener noreferrer"
+                  title="Instagram"
+                >
+                  <i class="fab fa-instagram"></i>
+                </a>
+                <a
+                  href="https://www.facebook.com/people/MKU-South-Sudanese-Students-Association-Nairobi-Campus/61560526555617/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="social-link"
+                  aria-label="Facebook"
+                  title="Facebook"
+                >
+                  <i class="fab fa-facebook"></i>
+                </a>
+                <a
+                  href="https://wa.me/254115987349?text=Hi%2C%20I%20would%20like%20to%20join%20MKUSSSA%20-%20Nairobi%20Campus%20and%20learn%20more%20about%20the%20association."
+                  class="social-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="WhatsApp"
+                  title="WhatsApp"
+                >
+                  <i class="fab fa-whatsapp"></i
+                ></a>
+              </div>
+            </div>
+            <div class="join-form">
+              <h3>Ready to Join?</h3>
+              <p>
+                Click the button below to join our WhatsApp group and stay
+                updated with all our activities.
+              </p>
+              <a
+                href="https://wa.me/254115987349?text=Hi%2C%20I%20would%20like%20to%20join%20MKUSSSA%20-%20Nairobi%20Campus%20and%20learn%20more%20about%20the%20association."
+                class="btn btn-primary btn-large"
+                >Join WhatsApp Group</a
+              >
+              <a href="#" class="btn btn-secondary btn-large"
+                >Fill Membership Form</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <div class="footer-logo">
+              <img
+                src="./assets/images/logo.jpg"
+                alt="MKUSSSA Logo"
+                class="footer-logo-img"
+              />
+              <span class="footer-logo-text">MKUSSSA - Nairobi Campus</span>
+            </div>
+            <p>
+              Supporting South Sudanese students at MKU Nairobi Campus since
+              2021.
+            </p>
+          </div>
+          <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul class="footer-links">
+              <li><a href="#about">About Us</a></li>
+              <li><a href="#services">Services</a></li>
+              <li><a href="#hall-of-fame">Leadership Legacy</a></li>
+              <li><a href="#events">Events</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4>Connect With Us</h4>
+            <div class="footer-social">
+              <a
+                href="https://www.tiktok.com/@mkusssa"
+                class="footer-social-link"
+                aria-label="TikTok"
+                target="_blank"
+                title="TikTok"
+                rel="noopener noreferrer"
+                ><i class="fab fa-tiktok"></i
+              ></a>
+              <a
+                href="https://www.instagram.com/mkusssa/"
+                class="footer-social-link"
+                aria-label="Instagram"
+                target="_blank"
+                title="Instagram"
+                rel="noopener noreferrer"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a
+                href="https://www.facebook.com/people/MKU-South-Sudanese-Students-Association-Nairobi-Campus/61560526555617/"
+                class="footer-social-link"
+                aria-label="Facebook"
+                target="_blank"
+                title="Facebook"
+                rel="noopener noreferrer"
+                ><i class="fab fa-facebook"></i
+              ></a>
+              <a
+                href="https://wa.me/254115987349?text=Hi%2C%20I%20would%20like%20to%20join%20MKUSSSA%20-%20Nairobi%20Campus%20and%20learn%20more%20about%20the%20association."
+                class="footer-social-link"
+                aria-label="WhatsApp"
+                title="WhatsApp"
+                target="_blank"
+                rel="noopener noreferrer"
+                ><i class="fab fa-whatsapp"></i
+              ></a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>
+            &copy;
+            <script>
+              document.write(new Date().getFullYear());
+            </script>
+            MKUSSSA &#45; Nairobi Campus. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="./js/script.js" defer></script>
+
+    <header></header>
+  </body>
+</html>

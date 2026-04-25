@@ -1,0 +1,203 @@
+// Accessible mobile menu behavior
+// - Toggles mobile menu and overlay
+// - Manages aria-expanded and aria-hidden
+// - Locks body scroll when open
+// - Closes on overlay click, Escape, or link click
+
+document.addEventListener('DOMContentLoaded', function () {
+  const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+  const navLinks = document.querySelector('.nav-links');
+  const navbar = document.querySelector('.navbar');
+  const overlay = document.querySelector('.mobile-nav-overlay');
+  const navLinkItems = document.querySelectorAll('.nav-link');
+  const heroSection = document.querySelector('.hero');
+  const navItemElements = document.querySelectorAll('.nav-item');
+  const anchorNavLinks = Array.from(navLinkItems).filter(function (link) {
+    const href = link.getAttribute('href') || '';
+    return href.startsWith('#');
+  });
+
+  if (!mobileMenuBtn || !navLinks) return;
+
+  function openMenu() {
+    navLinks.classList.add('nav-links-active');
+    mobileMenuBtn.classList.add('mobile-menu-active');
+    navbar.classList.add('navbar-mobile-active');
+    mobileMenuBtn.setAttribute('aria-expanded', 'true');
+    navLinks.setAttribute('aria-hidden', 'false');
+    if (overlay) overlay.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('no-scroll');
+    // swap icon to X
+    const icon = mobileMenuBtn.querySelector('i');
+    if (icon) {
+      icon.classList.remove('fa-bars');
+      icon.classList.add('fa-times');
+    }
+  }
+
+  function closeMenu() {
+    navLinks.classList.remove('nav-links-active');
+    mobileMenuBtn.classList.remove('mobile-menu-active');
+    navbar.classList.remove('navbar-mobile-active');
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    navLinks.setAttribute('aria-hidden', 'true');
+    if (overlay) overlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('no-scroll');
+    const icon = mobileMenuBtn.querySelector('i');
+    if (icon) {
+      icon.classList.remove('fa-times');
+      icon.classList.add('fa-bars');
+    }
+  }
+
+  function setNavbarScrolled() {
+    if (!navbar) return;
+    if (window.scrollY > 16) navbar.classList.add('scrolled');
+    else navbar.classList.remove('scrolled');
+  }
+
+  function setActiveNav(linkToActivate) {
+    navItemElements.forEach(function (item) {
+      item.classList.remove('active');
+    });
+    if (!linkToActivate) return;
+    const parentItem = linkToActivate.closest('.nav-item');
+    if (parentItem) parentItem.classList.add('active');
+  }
+
+  function getActiveLinkFromScroll() {
+    const homeLink = anchorNavLinks.find(function (link) {
+      return link.getAttribute('href') === '#top';
+    });
+    const scrollOffset = (navbar ? navbar.offsetHeight : 0) + 12;
+    const currentScroll = window.scrollY + scrollOffset;
+
+    if (window.scrollY < 24) return homeLink || anchorNavLinks[0] || null;
+
+    let currentLink = homeLink || anchorNavLinks[0] || null;
+    anchorNavLinks.forEach(function (link) {
+      const targetSelector = link.getAttribute('href');
+      if (!targetSelector || targetSelector === '#top') return;
+      const section = document.querySelector(targetSelector);
+      if (!section) return;
+      if (section.offsetTop <= currentScroll) {
+        currentLink = link;
+      }
+    });
+
+    return currentLink;
+  }
+
+  // Initialize accessibility state and scroll state on load.
+  navLinks.setAttribute('aria-hidden', 'true');
+  setNavbarScrolled();
+  setActiveNav(getActiveLinkFromScroll());
+
+  mobileMenuBtn.addEventListener('click', function (e) {
+    const expanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+    if (expanded) closeMenu();
+    else openMenu();
+  });
+
+  // Close when clicking a nav link
+  navLinkItems.forEach((link) => {
+    link.addEventListener('click', function () {
+      if ((link.getAttribute('href') || '').startsWith('#')) {
+        setActiveNav(link);
+      }
+      closeMenu();
+    });
+  });
+
+  // Close on overlay click
+  if (overlay) {
+    overlay.addEventListener('click', function () {
+      closeMenu();
+    });
+  }
+
+  // Close on Escape
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      if (navLinks.classList.contains('nav-links-active')) {
+        closeMenu();
+      }
+    }
+  });
+
+  // Keep navbar visual and active-link state in sync while scrolling.
+  window.addEventListener('scroll', function () {
+    setNavbarScrolled();
+    setActiveNav(getActiveLinkFromScroll());
+  }, { passive: true });
+
+  // Ensure state resets when switching from mobile to desktop width.
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 768 && navLinks.classList.contains('nav-links-active')) {
+      closeMenu();
+    }
+  });
+
+  // Click outside to close (only when open)
+  document.addEventListener('click', function (event) {
+    if (!navLinks.classList.contains('nav-links-active')) return;
+    const isClickInsideNav = navbar.contains(event.target);
+    const isMenuBtn = mobileMenuBtn.contains(event.target);
+    if (!isClickInsideNav && !isMenuBtn) {
+      closeMenu();
+    }
+  });
+
+  // Hero background carousel: preserves the existing hero layout and only rotates the background image.
+  if (heroSection) {
+    const heroSlides = [
+      '../assets/images/banner1.jpg',
+      '../assets/images/banner.jpg',
+    ];
+    const preloadImages = heroSlides.map(function (src) {
+      const image = new Image();
+      image.src = src;
+      return image;
+    });
+    let activeHeroIndex = 0;
+    let heroTimerId = null;
+
+    function setHeroBackground(src) {
+      heroSection.style.setProperty('--hero-bg-image', 'url("' + src + '")');
+    }
+
+    function showHeroSlide(nextIndex) {
+      heroSection.classList.add('hero-bg-fade');
+
+      window.setTimeout(function () {
+        const nextSlide = heroSlides[nextIndex % heroSlides.length];
+        setHeroBackground(nextSlide);
+        heroSection.classList.remove('hero-bg-fade');
+      }, 260);
+    }
+
+    function startHeroCarousel() {
+      if (heroSlides.length < 2 || heroTimerId) return;
+      heroTimerId = window.setInterval(function () {
+        activeHeroIndex = (activeHeroIndex + 1) % heroSlides.length;
+        showHeroSlide(activeHeroIndex);
+      }, 5000);
+    }
+
+    function stopHeroCarousel() {
+      if (!heroTimerId) return;
+      window.clearInterval(heroTimerId);
+      heroTimerId = null;
+    }
+
+    setHeroBackground(heroSlides[0]);
+    heroSection.addEventListener('mouseenter', stopHeroCarousel);
+    heroSection.addEventListener('mouseleave', startHeroCarousel);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) stopHeroCarousel();
+      else startHeroCarousel();
+    });
+
+    startHeroCarousel();
+  }
+});
