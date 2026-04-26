@@ -878,12 +878,15 @@ main {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background-color: var(--primary-color);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
   font-size: 3rem;
+}
+
+.icon-bg {
+  background-color: var(--primary-color);
 }
 
 .placeholder-image i {
@@ -892,10 +895,11 @@ main {
 }
 
 .placeholder-image img {
-  width: 120px;
+  width: 100%;
   height: auto;
   border-radius: 50%;
   object-fit: cover;
+  aspect-ratio: 1/1;
 }
 
 .leader-card h3 {
