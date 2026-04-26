@@ -56,6 +56,11 @@ document.addEventListener('DOMContentLoaded', function () {
     else navbar.classList.remove('scrolled');
   }
 
+  function updateNavbarHeight() {
+    if (!navbar) return;
+    document.documentElement.style.setProperty('--navbar-height', navbar.offsetHeight + 'px');
+  }
+
   function setActiveNav(linkToActivate) {
     navItemElements.forEach(function (item) {
       item.classList.remove('active');
@@ -91,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Initialize accessibility state and scroll state on load.
   navLinks.setAttribute('aria-hidden', 'true');
   setNavbarScrolled();
+  updateNavbarHeight();
   setActiveNav(getActiveLinkFromScroll());
 
   mobileMenuBtn.addEventListener('click', function (e) {
@@ -128,11 +134,13 @@ document.addEventListener('DOMContentLoaded', function () {
   // Keep navbar visual and active-link state in sync while scrolling.
   window.addEventListener('scroll', function () {
     setNavbarScrolled();
+    updateNavbarHeight();
     setActiveNav(getActiveLinkFromScroll());
   }, { passive: true });
 
   // Ensure state resets when switching from mobile to desktop width.
   window.addEventListener('resize', function () {
+    updateNavbarHeight();
     if (window.innerWidth > 768 && navLinks.classList.contains('nav-links-active')) {
       closeMenu();
     }
@@ -151,39 +159,52 @@ document.addEventListener('DOMContentLoaded', function () {
   // Hero background carousel: preserves the existing hero layout and only rotates the background image.
   if (heroSection) {
     const heroSlides = [
-      '../assets/images/banner6.jpeg',
       '../assets/images/banner1.jpg',
+      '../assets/images/banner6.jpeg',
       '../assets/images/banner2.jpg',
       '../assets/images/banner.jpg',
       '../assets/images/banner3.jpg',
       '../assets/images/banner5.jpeg',
       '../assets/images/banner4.jpg',
     ];
-    const preloadImages = heroSlides.map(function (src) {
-      const image = new Image();
-      image.src = src;
-      return image;
-    });
+    const preloadImages = new Map();
     let activeHeroIndex = 0;
     let heroTimerId = null;
+    let activeHeroToken = 0;
+
+    function ensureSlideLoaded(src) {
+      if (!preloadImages.has(src)) {
+        const image = new Image();
+        image.src = src;
+
+        const loadPromise = image.decode
+          ? image.decode().catch(function () {
+            return new Promise(function (resolve) {
+              image.onload = resolve;
+              image.onerror = resolve;
+            });
+          })
+          : new Promise(function (resolve) {
+            image.onload = resolve;
+            image.onerror = resolve;
+          });
+
+        preloadImages.set(src, loadPromise);
+      }
+
+      return preloadImages.get(src);
+    }
 
     function setHeroBackground(src) {
       heroSection.style.setProperty('--hero-bg-image', 'url("' + src + '")');
-      heroSection.style.setProperty('--hero-bg-image-fade', 'url("' + src + '")');
-      heroSection.style.backgroundImage = 'var(--hero-bg-image)';
-      heroSection.style.backgroundSize = 'cover';
-      heroSection.style.backgroundPosition = 'center';
-      heroSection.style.backgroundRepeat = 'no-repeat';
     }
 
-    function showHeroSlide(nextIndex) {
-      heroSection.classList.add('hero-bg-fade');
-
-      window.setTimeout(function () {
-        const nextSlide = heroSlides[nextIndex % heroSlides.length];
-        setHeroBackground(nextSlide);
-        heroSection.classList.remove('hero-bg-fade');
-      }, 260);
+    async function showHeroSlide(nextIndex) {
+      const slideToken = ++activeHeroToken;
+      const nextSlide = heroSlides[nextIndex % heroSlides.length];
+      await ensureSlideLoaded(nextSlide);
+      if (slideToken !== activeHeroToken) return;
+      setHeroBackground(nextSlide);
     }
 
     function startHeroCarousel() {
@@ -200,7 +221,9 @@ document.addEventListener('DOMContentLoaded', function () {
       heroTimerId = null;
     }
 
-    setHeroBackground(heroSlides[0]);
+    ensureSlideLoaded(heroSlides[0]).then(function () {
+      setHeroBackground(heroSlides[0]);
+    });
     heroSection.addEventListener('mouseenter', stopHeroCarousel);
     heroSection.addEventListener('mouseleave', startHeroCarousel);
     document.addEventListener('visibilitychange', function () {
