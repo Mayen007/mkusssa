@@ -418,6 +418,7 @@ main {
 .hero-buttons {
   display: flex;
   gap: var(--large-spacing);
+  align-items: center;
 }
 
 /* Improve button contrast inside hero */
@@ -449,57 +450,6 @@ main {
   background: rgba(255, 255, 255, 0.18);
   color: white;
   transform: translateY(-2px);
-}
-
-@media (max-width: 768px) {
-  .hero {
-    min-height: auto;
-    padding: calc(var(--large-spacing) * 1.5) 0 calc(var(--extra-large-spacing) * 1.25);
-  }
-
-  .scroll-indicator {
-    bottom: 2px;
-  }
-
-  .hero::after {
-    background: linear-gradient(180deg,
-        rgba(0, 0, 0, 0.56) 0%,
-        rgba(0, 0, 0, 0.42) 55%,
-        rgba(0, 0, 0, 0.56) 100%);
-  }
-
-  .hero-buttons {
-    justify-content: center;
-    flex-direction: column;
-    gap: var(--medium-spacing);
-  }
-
-  .hero .btn-primary,
-  .hero .btn-secondary {
-    width: 100%;
-    max-width: 320px;
-  }
-
-  .hero-content {
-    gap: var(--large-spacing);
-  }
-
-  .hero-text {
-    max-width: 680px;
-    margin: 0 auto;
-  }
-
-  .hero-title {
-    margin-bottom: var(--medium-spacing);
-  }
-
-  .hero-tagline {
-    margin-bottom: var(--small-spacing);
-  }
-
-  .hero-subtitle {
-    margin-bottom: var(--large-spacing);
-  }
 }
 
 .hero-image {
@@ -593,20 +543,6 @@ main {
   .arrow {
     animation: none;
     opacity: 0.9;
-  }
-}
-
-@media (max-width: 480px) {
-  .arrow {
-    width: 12px;
-    height: 12px;
-    border-right-width: 1.6px;
-
-    .scroll-indicator {
-      bottom: 0;
-    }
-
-    border-bottom-width: 1.6px;
   }
 }
 
@@ -1171,13 +1107,6 @@ main {
   color: var(--primary-color);
 }
 
-@media (max-width: 480px) {
-  .contact-item {
-    font-size: var(--font-sm);
-    gap: var(--small-spacing);
-  }
-}
-
 .contact-icon i {
   color: var(--primary-color);
   display: inline-block;
@@ -1239,16 +1168,6 @@ main {
 .join-form .btn-secondary:hover,
 .join-form .btn-secondary:focus {
   background-color: rgba(46, 49, 146, 0.06);
-}
-
-@media (max-width: 480px) {
-
-  .join-form .btn-primary,
-  .join-form .btn-secondary {
-    width: 100%;
-    display: block;
-    margin-bottom: var(--small-spacing);
-  }
 }
 
 /* Footer */
@@ -1339,18 +1258,6 @@ main {
   background-color: rgba(255, 255, 255, 0.08);
   color: white;
   transform: translateY(-2px);
-}
-
-@media (max-width: 480px) {
-  .footer-social-link {
-    width: 42px;
-    height: 42px;
-    font-size: 1.25rem;
-  }
-
-  .footer-social-link i {
-    font-size: 1.25rem;
-  }
 }
 
 .footer-bottom {
@@ -1506,32 +1413,17 @@ main {
     font-size: var(--font-lg);
   }
 
-  .hero-buttons {
-    flex-direction: column;
-    align-items: center;
-    gap: var(--medium-spacing);
-  }
-
   .hero-logo {
     width: 200px;
     height: 200px;
   }
 
   /* Stats */
-  .stats {
-    grid-template-columns: 1fr;
+  .stats,
+  .hero-buttons {
     gap: var(--medium-spacing);
   }
 
-  /* Values */
-  .values-grid {
-    grid-template-columns: 1fr;
-  }
-
-  /* Services */
-  .services-grid {
-    grid-template-columns: 1fr;
-  }
 
   /* Leadership */
   .leadership-grid {
@@ -1539,18 +1431,17 @@ main {
   }
 
   /* Events */
-  .events-grid {
+  .events-grid,
+  .hall-of-fame-grid,
+  .services-grid,
+  .values-grid,
+  .stats {
     grid-template-columns: 1fr;
   }
 
   .event-card {
     flex-direction: column;
     text-align: center;
-  }
-
-  /* Hall of Fame */
-  .hall-of-fame-grid {
-    grid-template-columns: 1fr;
   }
 
   .event-date {
@@ -1570,7 +1461,6 @@ main {
   }
 
   .footer-logo {
-    justify-content: center;
     flex-wrap: wrap;
     gap: var(--small-spacing);
   }
@@ -1582,8 +1472,52 @@ main {
     text-wrap: balance;
   }
 
-  .footer-social {
+  .footer-social,
+  .footer-logo {
     justify-content: center;
+  }
+
+  .hero {
+    min-height: auto;
+    padding: calc(var(--large-spacing) * 1.5) 0 calc(var(--extra-large-spacing) * 1.25);
+  }
+
+  .scroll-indicator {
+    bottom: 2px;
+  }
+
+  .hero::after {
+    background: linear-gradient(180deg,
+        rgba(0, 0, 0, 0.56) 0%,
+        rgba(0, 0, 0, 0.42) 55%,
+        rgba(0, 0, 0, 0.56) 100%);
+  }
+
+  .hero .btn-primary,
+  .hero .btn-secondary {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .hero-content {
+    gap: var(--large-spacing);
+  }
+
+  .hero-text {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .hero-title {
+    margin-bottom: var(--medium-spacing);
+  }
+
+  .hero-tagline {
+    margin-bottom: var(--small-spacing);
+  }
+
+  .hero-subtitle {
+    margin-bottom: var(--large-spacing);
   }
 }
 
@@ -1651,10 +1585,7 @@ main {
 
   /* Card padding */
   .service-card,
-  .leader-card {
-    padding: var(--large-spacing);
-  }
-
+  .leader-card,
   .hall-card {
     padding: var(--large-spacing);
   }
@@ -1681,6 +1612,39 @@ main {
 
   .footer-logo-text {
     font-size: var(--font-sm);
+  }
+
+  .arrow {
+    width: 12px;
+    height: 12px;
+    border-right-width: 1.6px;
+    border-bottom-width: 1.6px;
+  }
+
+  .scroll-indicator {
+    bottom: 0;
+  }
+
+  .footer-social-link {
+    width: 42px;
+    height: 42px;
+    font-size: 1.25rem;
+  }
+
+  .footer-social-link i {
+    font-size: 1.25rem;
+  }
+
+  .contact-item {
+    font-size: var(--font-sm);
+    gap: var(--small-spacing);
+  }
+
+  .join-form .btn-primary,
+  .join-form .btn-secondary {
+    width: 100%;
+    display: block;
+    margin-bottom: var(--small-spacing);
   }
 }
 
@@ -1720,19 +1684,6 @@ section[id] {
 .event-card,
 .hall-card {
   animation: fadeInUp 0.6s ease-out;
-}
-
-/* Utility classes */
-.text-center {
-  text-align: center;
-}
-
-.mb-large {
-  margin-bottom: var(--large-spacing);
-}
-
-.mt-large {
-  margin-top: var(--large-spacing);
 }
 
 @media (prefers-reduced-motion: reduce) {

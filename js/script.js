@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Hero background carousel: preserves the existing hero layout and only rotates the background image.
+  // Hero background carousel:
   if (heroSection) {
     const heroSlides = [
       '../assets/images/banner1.jpg',
