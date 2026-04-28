@@ -143,9 +143,10 @@ body {
 
 .logo-image {
   width: 60px;
-  height: auto;
+  height: 60px;
   border-radius: 50%;
   object-fit: cover;
+  aspect-ratio: 1/1;
 }
 
 .logo-image .logo-text .logo-text-line {
@@ -278,11 +279,6 @@ body {
   text-align: center;
 }
 
-.btn-primary {
-  background-color: var(--primary-color);
-  color: white;
-}
-
 .btn-primary:hover {
   background-color: var(--secondary-color);
   transform: translateY(-2px);
@@ -313,7 +309,7 @@ body {
 
 /* Main Content */
 main {
-  margin-top: calc(var(--navbar-height) - 1px);
+  margin-top: var(--navbar-height);
 }
 
 /* Section Headers */
@@ -339,13 +335,12 @@ main {
 
 /* Hero Section */
 .hero {
-  /* background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%); */
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
   background-color: var(--text-color);
   color: white;
-  padding: var(--section-spacing) 0 calc(var(--section-spacing) * 1.5);
+  padding: var(--section-spacing) 0 calc(var(--section-spacing) * 2);
   min-height: 90vh;
   display: flex;
   align-items: center;
@@ -419,6 +414,7 @@ main {
   display: flex;
   gap: var(--large-spacing);
   align-items: center;
+  margin-bottom: var(--extra-large-spacing);
 }
 
 /* Improve button contrast inside hero */
@@ -452,16 +448,12 @@ main {
   transform: translateY(-2px);
 }
 
-.hero-image {
-  text-align: center;
-}
-
 /* Scroll indicator placed between hero and next section */
 .scroll-indicator {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 6px;
+  bottom: 15px;
   /* sit above the divider */
   display: flex;
   justify-content: center;
@@ -546,15 +538,6 @@ main {
   }
 }
 
-.hero-logo {
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 5px solid rgba(255, 255, 255, 0.2);
-  box-shadow: var(--box-shadow-hover);
-}
-
 .hero.hero-bg-fade::before {
   opacity: 0;
 }
@@ -590,6 +573,27 @@ main {
   opacity: 0.7;
 }
 
+/* Tablet/Medium screens - responsive navbar for 820px-1024px */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .logo-image {
+    width: 50px;
+    height: 50px;
+  }
+
+  .logo-text-line {
+    font-size: 13px;
+  }
+
+  .nav-link {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  .nav-links {
+    gap: 2px;
+  }
+}
+
 @media (max-width: 600px) {
   .hero {
     min-height: auto;
@@ -602,11 +606,6 @@ main {
 
   .custom-shape-divider-bottom {
     height: clamp(32px, 10vw, 80px);
-  }
-
-  .hero-logo {
-    width: 180px;
-    height: 180px;
   }
 }
 
@@ -819,15 +818,6 @@ main {
   justify-content: center;
   margin: 0 auto;
   font-size: 3rem;
-}
-
-.icon-bg {
-  background-color: var(--primary-color);
-}
-
-.placeholder-image i {
-  color: white;
-  /* ensure icon contrasts on primary-color background */
 }
 
 .placeholder-image img {
@@ -1389,7 +1379,7 @@ main {
 
   /* Adjust main content for mobile navbar */
   main {
-    margin-top: calc(var(--navbar-height) - 1px);
+    margin-top: var(--navbar-height);
   }
 
   /* Hero */
@@ -1411,11 +1401,6 @@ main {
 
   .hero-subtitle {
     font-size: var(--font-lg);
-  }
-
-  .hero-logo {
-    width: 200px;
-    height: 200px;
   }
 
   /* Stats */
@@ -1483,7 +1468,7 @@ main {
   }
 
   .scroll-indicator {
-    bottom: 2px;
+    bottom: -16px;
   }
 
   .hero::after {
@@ -1499,12 +1484,14 @@ main {
     max-width: 320px;
   }
 
-  .hero-content {
+  .hero-content,
+  .hero-subtitle {
     gap: var(--large-spacing);
   }
 
   .hero-text {
     max-width: 680px;
+    width: 100%;
     margin: 0 auto;
   }
 
@@ -1514,10 +1501,6 @@ main {
 
   .hero-tagline {
     margin-bottom: var(--small-spacing);
-  }
-
-  .hero-subtitle {
-    margin-bottom: var(--large-spacing);
   }
 }
 
@@ -1622,7 +1605,7 @@ main {
   }
 
   .scroll-indicator {
-    bottom: 0;
+    bottom: -16px;
   }
 
   .footer-social-link {

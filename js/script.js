@@ -134,7 +134,6 @@ document.addEventListener('DOMContentLoaded', function () {
   // Keep navbar visual and active-link state in sync while scrolling.
   window.addEventListener('scroll', function () {
     setNavbarScrolled();
-    updateNavbarHeight();
     setActiveNav(getActiveLinkFromScroll());
   }, { passive: true });
 
