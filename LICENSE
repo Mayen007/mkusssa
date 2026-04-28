@@ -1,0 +1,42 @@
+# Proprietary License
+
+Design and development by [Mayen Akech](https://makech.netlify.app/)
+
+**Copyright © 2024-2026 Mount Kenya University South Sudanese Students' Association (MKUSSSA) - Nairobi Campus**
+
+All rights reserved.
+
+## Grant of Rights
+
+You may use this software and its contents **only if**:
+
+1. You are an invited collaborator with explicit permission from MKUSSSA
+2. You use it solely for maintaining and developing the MKUSSSA Nairobi Campus website
+3. You retain all copyright notices and license text
+
+## Restrictions
+
+You **may not**:
+
+- Distribute, share, or publish this code or design to the public
+- Sublicense, sell, or commercially exploit this software
+- Modify and use the code for your own projects or organizations
+- Claim ownership or authorship of this work
+- Remove or alter copyright notices
+
+## Third-Party Licenses
+
+The following bundled components retain their own licenses:
+
+- **Fonts (Poppins, Inter):** SIL Open Font License (OFL 1.1) — see `assets/fonts/*/OFL.txt`
+- **Font Awesome:** CC BY 4.0 (loaded from CDN)
+
+These third-party licenses apply only to those components, not to this site's design or original code.
+
+## Disclaimer
+
+This software is provided "as is" without warranty of any kind. MKUSSSA is not liable for any damages or issues arising from its use.
+
+---
+
+For inquiries regarding use, collaboration, or licensing exceptions, contact MKUSSSA via the website contact details.
