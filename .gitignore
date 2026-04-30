@@ -2,3 +2,20 @@
 .idea/
 .vscode/
 *.log
+
+# Ignore node_modules
+**/node_modules/
+
+# Ignore build outputs
+**/dist/
+
+# Ignore local environment files
+**/.env
+**/build/
+**/out/
+
+# Ignore environment variable files
+**/.env
+
+# Docs
+**/docs/mkusssa-dynamic-rollout-plan.md
