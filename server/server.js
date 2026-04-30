@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');
+const cors = require('cors');
 const { connectToDatabase } = require('./config/db');
 const healthRoutes = require('./routes/health.routes');
 const eventRoutes = require('./routes/event.routes');
@@ -13,18 +14,9 @@ const app = express();
 const port = Number(process.env.PORT) || 5000;
 
 app.use(express.json());
-
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', process.env.CORS_ORIGIN || '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(204);
-  }
-
-  next();
-});
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || '*',
+}));
 
 app.get('/', (req, res) => {
   res.json({
