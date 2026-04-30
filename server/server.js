@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 const cors = require('cors');
 const { connectToDatabase } = require('./config/db');
+const authRoutes = require('./routes/auth.routes');
 const healthRoutes = require('./routes/health.routes');
 const eventRoutes = require('./routes/event.routes');
 const leaderRoutes = require('./routes/leader.routes');
@@ -26,6 +27,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/health', healthRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/leaders', leaderRoutes);
 
