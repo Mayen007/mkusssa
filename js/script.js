@@ -11,11 +11,14 @@ document.addEventListener('DOMContentLoaded', function () {
   const overlay = document.querySelector('.mobile-nav-overlay');
   const navLinkItems = document.querySelectorAll('.nav-link');
   const heroSection = document.querySelector('.hero');
+  const eventsGrid = document.querySelector('.events-grid');
   const navItemElements = document.querySelectorAll('.nav-item');
   const anchorNavLinks = Array.from(navLinkItems).filter(function (link) {
     const href = link.getAttribute('href') || '';
     return href.startsWith('#');
   });
+  const isLocalStaticServer = window.location.port === '3000' || window.location.port === '5500';
+  const apiBaseUrl = window.MKUSSSA_API_BASE_URL || (isLocalStaticServer ? 'http://localhost:5000/api' : '/api');
 
   if (!mobileMenuBtn || !navLinks) return;
 
@@ -232,4 +235,89 @@ document.addEventListener('DOMContentLoaded', function () {
 
     startHeroCarousel();
   }
+
+  function formatEventDate(eventDate) {
+    if (!eventDate) {
+      return { month: 'TBA', day: 'Soon' };
+    }
+
+    const date = new Date(eventDate);
+
+    if (Number.isNaN(date.getTime())) {
+      return { month: 'TBA', day: 'Soon' };
+    }
+
+    return {
+      month: new Intl.DateTimeFormat('en-US', { month: 'short' }).format(date).toUpperCase(),
+      day: new Intl.DateTimeFormat('en-US', { day: '2-digit' }).format(date),
+    };
+  }
+
+  function buildEventCard(event) {
+    const card = document.createElement('article');
+    card.className = 'event-card';
+    card.id = event.id ? 'event-' + event.id : '';
+
+    const date = formatEventDate(event.eventDate);
+
+    const eventDate = document.createElement('div');
+    eventDate.className = 'event-date';
+
+    const eventMonth = document.createElement('span');
+    eventMonth.className = 'event-month';
+    eventMonth.textContent = date.month;
+
+    const eventDay = document.createElement('span');
+    eventDay.className = 'event-day';
+    eventDay.textContent = date.day;
+
+    eventDate.append(eventMonth, eventDay);
+
+    const eventContent = document.createElement('div');
+    eventContent.className = 'event-content';
+
+    const title = document.createElement('h3');
+    title.textContent = String(event.title ?? 'Untitled Event');
+
+    const description = document.createElement('p');
+    description.textContent = String(event.description ?? '');
+
+    const action = document.createElement('a');
+    action.className = 'btn btn-small';
+    action.textContent = 'Register Now';
+    action.href = event.registrationUrl || (event.id ? '#event-' + event.id : '#events');
+
+    eventContent.append(title, description, action);
+    card.append(eventDate, eventContent);
+
+    return card;
+  }
+
+  async function loadEventsSection() {
+    if (!eventsGrid) return;
+
+    try {
+      const response = await fetch(apiBaseUrl + '/events');
+
+      if (!response.ok) {
+        throw new Error('Unable to load events');
+      }
+
+      const payload = await response.json();
+      const events = Array.isArray(payload.data) ? payload.data : [];
+
+      if (events.length === 0) {
+        return;
+      }
+
+      eventsGrid.innerHTML = '';
+      events.forEach(function (event) {
+        eventsGrid.appendChild(buildEventCard(event));
+      });
+    } catch (error) {
+      console.warn('Events section could not be refreshed from the API.', error);
+    }
+  }
+
+  loadEventsSection();
 });
