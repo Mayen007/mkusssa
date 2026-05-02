@@ -8,6 +8,7 @@
     "dev": "nodemon server.js",
     "seed:admin": "node scripts/seed-admin.js",
     "seed:events": "node scripts/seed-events.js",
+    "seed:leaders": "node scripts/seed-leaders.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

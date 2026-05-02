@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const navLinkItems = document.querySelectorAll('.nav-link');
   const heroSection = document.querySelector('.hero');
   const eventsGrid = document.querySelector('.events-grid');
+  const leadershipGrid = document.querySelector('.leadership-grid');
   const navItemElements = document.querySelectorAll('.nav-item');
   const anchorNavLinks = Array.from(navLinkItems).filter(function (link) {
     const href = link.getAttribute('href') || '';
@@ -293,6 +294,41 @@ document.addEventListener('DOMContentLoaded', function () {
     return card;
   }
 
+  function buildLeaderCard(leader) {
+    const card = document.createElement('article');
+    card.className = 'leader-card';
+
+    const imageWrap = document.createElement('div');
+    imageWrap.className = 'leader-image';
+
+    const placeholder = document.createElement('div');
+    placeholder.className = 'placeholder-image';
+
+    if (leader.imageUrl) {
+      const image = document.createElement('img');
+      image.className = 'leader-img';
+      image.src = leader.imageUrl;
+      image.alt = leader.fullName || leader.position || 'Leader portrait';
+      placeholder.appendChild(image);
+    }
+
+    imageWrap.appendChild(placeholder);
+
+    const position = document.createElement('h3');
+    position.textContent = String(leader.position ?? 'Leader');
+
+    const name = document.createElement('p');
+    name.className = 'leader-name';
+    name.textContent = String(leader.fullName ?? 'Unnamed Leader');
+
+    const role = document.createElement('p');
+    role.className = 'leader-role';
+    role.textContent = String(leader.bio ?? '');
+
+    card.append(imageWrap, position, name, role);
+    return card;
+  }
+
   async function loadEventsSection() {
     if (!eventsGrid) return;
 
@@ -319,5 +355,32 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  async function loadLeadershipSection() {
+    if (!leadershipGrid) return;
+
+    try {
+      const response = await fetch(apiBaseUrl + '/leaders/current');
+
+      if (!response.ok) {
+        throw new Error('Unable to load current leaders');
+      }
+
+      const payload = await response.json();
+      const leaders = Array.isArray(payload.data) ? payload.data : [];
+
+      if (leaders.length === 0) {
+        return;
+      }
+
+      leadershipGrid.innerHTML = '';
+      leaders.forEach(function (leader) {
+        leadershipGrid.appendChild(buildLeaderCard(leader));
+      });
+    } catch (error) {
+      console.warn('Leadership section could not be refreshed from the API.', error);
+    }
+  }
+
   loadEventsSection();
+  loadLeadershipSection();
 });
