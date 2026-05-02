@@ -46,6 +46,8 @@ The backend in `server/` uses:
 - CORS for browser access
 - bcryptjs and jsonwebtoken for admin auth
 
+The Express app also serves the public site from the repository root, so a single deployed host can serve both the frontend and the API under the same origin.
+
 ### Server Scripts
 
 Run these from `server/`:

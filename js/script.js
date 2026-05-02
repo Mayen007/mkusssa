@@ -19,7 +19,19 @@ document.addEventListener('DOMContentLoaded', function () {
     return href.startsWith('#');
   });
   const isLocalStaticServer = window.location.port === '3000' || window.location.port === '5500';
-  const apiBaseUrl = window.MKUSSSA_API_BASE_URL || (isLocalStaticServer ? 'http://localhost:5000/api' : '/api');
+  const apiBaseUrl = (() => {
+    const explicitBaseUrl = window.MKUSSSA_API_BASE_URL || document.querySelector('meta[name="mkusssa-api-base-url"]')?.content || '';
+
+    if (explicitBaseUrl.trim()) {
+      return explicitBaseUrl.trim().replace(/\/$/, '');
+    }
+
+    if (isLocalStaticServer) {
+      return 'http://localhost:5000/api';
+    }
+
+    return '/api';
+  })();
 
   if (!mobileMenuBtn || !navLinks) return;
 
@@ -330,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function loadEventsSection() {
-    if (!eventsGrid) return;
+    if (!eventsGrid || !apiBaseUrl) return;
 
     try {
       const response = await fetch(apiBaseUrl + '/events');
@@ -356,7 +368,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function loadLeadershipSection() {
-    if (!leadershipGrid) return;
+    if (!leadershipGrid || !apiBaseUrl) return;
 
     try {
       const response = await fetch(apiBaseUrl + '/leaders/current');
