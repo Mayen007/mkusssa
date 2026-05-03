@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return 'http://localhost:5000/api';
     }
 
-    return '/api';
+    return '';
   })();
 
   if (!mobileMenuBtn || !navLinks) return;
