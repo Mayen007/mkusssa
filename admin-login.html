@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="mkusssa-api-base-url"
+      content="https://mkusssa-server.onrender.com/api"
+    />
+    <title>MKUSSSA Admin Login</title>
+    <link
+      rel="shortcut icon"
+      href="./assets/images/logo.jpg"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body class="admin-page admin-login-page">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+      <div class="container">
+        <a href="./index.html" class="logo">
+          <img
+            src="./assets/images/logo.jpg"
+            alt="MKU Logo"
+            class="logo-image"
+          />
+          <div class="logo-text">
+            <div class="logo-text-line">MKUSSSA</div>
+            <div class="logo-text-line">Admin Login</div>
+          </div>
+          <span class="logo-text-short">MKUSSSA Admin</span>
+        </a>
+
+        <ul class="nav-links admin-nav-links" aria-label="Admin navigation">
+          <li class="nav-item">
+            <a href="./index.html" class="nav-link">Public Site</a>
+          </li>
+          <li class="nav-item">
+            <a href="./admin.html" class="nav-link">Dashboard</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="admin-app">
+      <section class="admin-intro">
+        <div class="container admin-intro-inner">
+          <div class="section-header admin-section-header admin-intro-copy">
+            <h1 class="section-title">Welcome back</h1>
+            <p class="section-subtitle">
+              Sign in to publish updates, manage board records, and keep the
+              public site current.
+            </p>
+          </div>
+          <div class="admin-intro-actions">
+            <a href="./index.html" class="btn btn-secondary">Back to site</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="container admin-auth-shell">
+        <div class="admin-auth-grid">
+          <article class="admin-auth-copy">
+            <p class="admin-panel-kicker">Secure access</p>
+            <h2>Manage MKUSSSA content from one clean workspace</h2>
+            <p>
+              Use your admin credentials to reach the dashboard for events and
+              leadership.
+            </p>
+            <div class="admin-auth-notes">
+              <div class="admin-auth-note">
+                <i class="fas fa-shield-halved" aria-hidden="true"></i>
+                <span>Protected by JWT login and role-based API guards.</span>
+              </div>
+              <div class="admin-auth-note">
+                <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
+                <span
+                  >Styled to match the public site using the same design
+                  tokens.</span
+                >
+              </div>
+            </div>
+          </article>
+
+          <article class="admin-login-panel admin-panel">
+            <div class="section-header admin-section-header">
+              <h2 class="section-title">Login</h2>
+              <p class="section-subtitle">
+                Authenticate with your admin account to unlock the dashboard.
+              </p>
+            </div>
+            <form class="admin-form auth-form" id="admin-login-form">
+              <label>
+                <span>Email</span>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="admin@mkusssa.local"
+                  required
+                />
+              </label>
+              <label>
+                <span>Password</span>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Your password"
+                  required
+                />
+              </label>
+              <button type="submit" class="btn btn-primary">Sign in</button>
+              <p
+                class="admin-message"
+                id="admin-login-message"
+                aria-live="polite"
+              ></p>
+            </form>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer admin-footer">
+      <div class="container">
+        <div class="footer-bottom">
+          <p>
+            &copy;
+            <script>
+              document.write(new Date().getFullYear());
+            </script>
+            MKUSSSA &#45; Nairobi Campus Admin.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="./js/admin.js" defer></script>
+  </body>
+</html>

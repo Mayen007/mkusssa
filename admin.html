@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="mkusssa-api-base-url"
+      content="https://mkusssa-server.onrender.com/api"
+    />
+    <title>MKUSSSA Admin</title>
+    <link
+      rel="shortcut icon"
+      href="./assets/images/logo.jpg"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body class="admin-page admin-dashboard-page">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+      <div class="container">
+        <a href="./index.html" class="logo">
+          <img
+            src="./assets/images/logo.jpg"
+            alt="MKU Logo"
+            class="logo-image"
+          />
+          <div class="logo-text">
+            <div class="logo-text-line">MKUSSSA</div>
+            <div class="logo-text-line">Admin Portal</div>
+          </div>
+          <span class="logo-text-short">MKUSSSA Admin</span>
+        </a>
+
+        <ul class="nav-links admin-nav-links" aria-label="Admin navigation">
+          <li class="nav-item">
+            <a href="./index.html" class="nav-link">Public Site</a>
+          </li>
+          <li class="nav-item">
+            <a href="./admin-login.html" class="nav-link" id="admin-logout-btn"
+              >Logout</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="admin-app">
+      <section class="admin-intro">
+        <div class="container admin-intro-inner">
+          <div class="section-header admin-section-header admin-intro-copy">
+            <h1 class="section-title">
+              Content control for events and leadership
+            </h1>
+            <p class="section-subtitle">
+              A clean workspace for publishing updates, managing board records,
+              and keeping the public site current.
+            </p>
+          </div>
+          <div class="admin-intro-actions">
+            <a href="./index.html" class="btn btn-secondary">Back to site</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-shell container">
+        <section class="admin-dashboard" id="admin-dashboard">
+          <div
+            class="section-header admin-section-header admin-dashboard-header"
+          >
+            <h2 class="section-title">Dashboard</h2>
+            <p class="section-subtitle">
+              Create new content and remove stale records.
+            </p>
+          </div>
+
+          <div class="admin-dashboard-grid">
+            <article class="admin-panel admin-column">
+              <div class="admin-panel-header">
+                <div>
+                  <span class="admin-panel-kicker">Events</span>
+                  <h3>Publish and manage events</h3>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-small"
+                  id="refresh-events-btn"
+                >
+                  Refresh
+                </button>
+              </div>
+              <form class="admin-form admin-create-form" id="event-create-form">
+                <label>
+                  <span>Title</span>
+                  <input type="text" name="title" required />
+                </label>
+                <label>
+                  <span>Event date</span>
+                  <input type="date" name="eventDate" required />
+                </label>
+                <label class="admin-full-width">
+                  <span>Description</span>
+                  <textarea name="description" rows="4" required></textarea>
+                </label>
+                <label>
+                  <span>Location</span>
+                  <input type="text" name="location" required />
+                </label>
+                <label>
+                  <span>Status</span>
+                  <select name="status">
+                    <option value="draft">Draft</option>
+                    <option value="published" selected>Published</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                </label>
+                <label class="admin-check admin-full-width">
+                  <input type="checkbox" name="featured" />
+                  <span>Featured on homepage</span>
+                </label>
+                <button type="submit" class="btn btn-primary">
+                  Create event
+                </button>
+              </form>
+              <p
+                class="admin-message"
+                id="event-form-message"
+                aria-live="polite"
+              ></p>
+              <div class="admin-list" id="events-list"></div>
+            </article>
+
+            <article class="admin-panel admin-column">
+              <div class="admin-panel-header">
+                <div>
+                  <span class="admin-panel-kicker">Leadership</span>
+                  <h3>Maintain current board records</h3>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-small"
+                  id="refresh-leaders-btn"
+                >
+                  Refresh
+                </button>
+              </div>
+              <form
+                class="admin-form admin-create-form"
+                id="leader-create-form"
+              >
+                <label>
+                  <span>Full name</span>
+                  <input type="text" name="fullName" required />
+                </label>
+                <label>
+                  <span>Position</span>
+                  <input type="text" name="position" required />
+                </label>
+                <label>
+                  <span>Term label</span>
+                  <input
+                    type="text"
+                    name="termLabel"
+                    placeholder="2026/2027"
+                    required
+                  />
+                </label>
+                <label>
+                  <span>Sort order</span>
+                  <input type="number" name="sortOrder" value="0" />
+                </label>
+                <label class="admin-full-width">
+                  <span>Bio</span>
+                  <textarea name="bio" rows="4"></textarea>
+                </label>
+                <label>
+                  <span>Status</span>
+                  <select name="status">
+                    <option value="draft">Draft</option>
+                    <option value="published" selected>Published</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                </label>
+                <label class="admin-check admin-full-width">
+                  <input type="checkbox" name="isCurrent" checked />
+                  <span>Current leadership</span>
+                </label>
+                <button type="submit" class="btn btn-primary">
+                  Create leader
+                </button>
+              </form>
+              <p
+                class="admin-message"
+                id="leader-form-message"
+                aria-live="polite"
+              ></p>
+              <div class="admin-list" id="leaders-list"></div>
+            </article>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="footer admin-footer">
+      <div class="container">
+        <div class="footer-bottom">
+          <p>
+            &copy;
+            <script>
+              document.write(new Date().getFullYear());
+            </script>
+            MKUSSSA &#45; Nairobi Campus Admin.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="./js/admin.js" defer></script>
+  </body>
+</html>

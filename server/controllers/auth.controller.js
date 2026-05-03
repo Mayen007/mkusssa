@@ -3,6 +3,20 @@ const jwt = require('jsonwebtoken');
 const { getDatabase, hasDatabaseConnection } = require('../config/db');
 const { findUserByEmail, findUserById, toUserResponse, updateLastLoginAt } = require('../models/user.repository');
 
+function getJwtExpiresIn() {
+  const rawValue = String(process.env.JWT_EXPIRES_IN || '').trim();
+
+  if (!rawValue) {
+    return '7d';
+  }
+
+  if (['0', '0s', '0m', '0h', '0d'].includes(rawValue.toLowerCase())) {
+    return '7d';
+  }
+
+  return rawValue;
+}
+
 function createToken(user) {
   return jwt.sign(
     {
@@ -11,7 +25,7 @@ function createToken(user) {
       role: user.role,
     },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' },
+    { expiresIn: getJwtExpiresIn() },
   );
 }
 
