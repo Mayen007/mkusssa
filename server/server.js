@@ -20,6 +20,7 @@ const allowedOrigins = [
   'http://127.0.0.1:3000',
   'http://localhost:5500',
   'http://127.0.0.1:5500',
+  'https://mkusssa-nairobi.netlify.app',
 ];
 
 if (process.env.CORS_ORIGIN) {
@@ -29,6 +30,27 @@ if (process.env.CORS_ORIGIN) {
     .forEach((origin) => allowedOrigins.push(origin));
 }
 
+function isAllowedOrigin(requestOrigin) {
+  return allowedOrigins.some((allowedOrigin) => {
+    if (allowedOrigin === '*') {
+      return true;
+    }
+
+    if (allowedOrigin.startsWith('*.')) {
+      return requestOrigin.endsWith(allowedOrigin.slice(1));
+    }
+
+    if (allowedOrigin.includes('*')) {
+      const escapedPattern = allowedOrigin
+        .replace(/[.+?^${}()|[\]\\]/g, '\\$&')
+        .replace(/\\\*/g, '.*');
+      return new RegExp(`^${escapedPattern}$`).test(requestOrigin);
+    }
+
+    return allowedOrigin === requestOrigin;
+  });
+}
+
 app.use(express.json());
 app.use(cors({
   origin(origin, callback) {
@@ -36,7 +58,7 @@ app.use(cors({
       return callback(null, true);
     }
 
-    if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+    if (isAllowedOrigin(origin)) {
       return callback(null, true);
     }
 
