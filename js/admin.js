@@ -27,8 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const leaderMessage = document.getElementById('leader-form-message');
   const eventsList = document.getElementById('events-list');
   const leadersList = document.getElementById('leaders-list');
-  const refreshEventsBtn = document.getElementById('refresh-events-btn');
-  const refreshLeadersBtn = document.getElementById('refresh-leaders-btn');
+  const refreshAllBtn = document.getElementById('refresh-all-btn');
 
   function readStoredToken() {
     return sessionStorage.getItem(tokenKey) || localStorage.getItem(tokenKey) || '';
@@ -144,12 +143,15 @@ document.addEventListener('DOMContentLoaded', function () {
     return data;
   }
 
-  function renderListItem(title, metaLines, actionsHtml) {
+  function renderListItem(title, metaLines, badgeClass, badgeText, actionsHtml) {
     return `
       <article class="admin-item-card">
-        <div class="admin-item-copy">
-          <h4>${escapeHtml(title)}</h4>
-          ${metaLines.map((line) => `<p>${line}</p>`).join('')}
+        <div class="admin-item-header">
+          <div class="admin-item-title">${escapeHtml(title)}</div>
+          ${badgeText ? `<span class="admin-item-badge ${badgeClass}">${escapeHtml(badgeText)}</span>` : ''}
+        </div>
+        <div class="admin-item-meta">
+          ${metaLines.map((line) => `<span>${line}</span>`).join('')}
         </div>
         <div class="admin-item-actions">${actionsHtml}</div>
       </article>
@@ -164,15 +166,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     eventsList.innerHTML = events.map((event) => renderListItem(
-      event.title,
+      event.title || 'Untitled Event',
       [
-        `<span><strong>Status:</strong> ${escapeHtml(event.status || 'draft')}</span>`,
-        `<span><strong>Date:</strong> ${escapeHtml(formatDate(event.eventDate))}</span>`,
-        `<span><strong>Location:</strong> ${escapeHtml(event.location || 'N/A')}</span>`,
-        `<span><strong>Featured:</strong> ${event.featured ? 'Yes' : 'No'}</span>`,
-      ],
+        `<strong>Date:</strong> ${formatDate(event.eventDate)}`,
+        `<strong>Location:</strong> ${escapeHtml(event.location || 'TBD')}`,
+        event.description ? `<strong>Description:</strong> ${escapeHtml(event.description)}` : '',
+        event.featured ? '<strong><i class="fas fa-star" aria-hidden="true"></i> Featured</strong>' : '',
+      ].filter(Boolean),
+      event.status || 'draft',
+      (event.status || 'draft').toUpperCase(),
       `
-        <button type="button" class="btn btn-secondary btn-small admin-delete-btn" data-delete-type="event" data-delete-id="${escapeHtml(event.id)}">Delete</button>
+        <button type="button" class="admin-item-btn-delete" data-delete-type="event" data-delete-id="${escapeHtml(event.id)}">Delete</button>
       `,
     )).join('');
   }
@@ -185,15 +189,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     leadersList.innerHTML = leaders.map((leader) => renderListItem(
-      `${leader.position || 'Leader'} - ${leader.fullName || ''}`,
+      leader.fullName || 'Unnamed Leader',
       [
-        `<span><strong>Term:</strong> ${escapeHtml(leader.termLabel || 'N/A')}</span>`,
-        `<span><strong>Status:</strong> ${escapeHtml(leader.status || 'draft')}</span>`,
-        `<span><strong>Current:</strong> ${leader.isCurrent ? 'Yes' : 'No'}</span>`,
-        `<span><strong>Order:</strong> ${escapeHtml(String(leader.sortOrder ?? 0))}</span>`,
-      ],
+        `<strong>Position:</strong> ${escapeHtml(leader.position || 'N/A')}`,
+        `<strong>Term:</strong> ${escapeHtml(leader.termLabel || 'N/A')}`,
+        leader.isCurrent ? '<strong><i class="fas fa-crown" aria-hidden="true"></i> Current</strong>' : '',
+      ].filter(Boolean),
+      leader.status || 'draft',
+      (leader.status || 'draft').toUpperCase(),
       `
-        <button type="button" class="btn btn-secondary btn-small admin-delete-btn" data-delete-type="leader" data-delete-id="${escapeHtml(leader.id)}">Delete</button>
+        <button type="button" class="admin-item-btn-delete" data-delete-type="leader" data-delete-id="${escapeHtml(leader.id)}">Delete</button>
       `,
     )).join('');
   }
@@ -357,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function handleDeleteClick(event) {
-    const button = event.target.closest('.admin-delete-btn');
+    const button = event.target.closest('.admin-item-btn-delete');
     if (!button) return;
 
     const itemType = button.dataset.deleteType;
@@ -409,8 +414,7 @@ document.addEventListener('DOMContentLoaded', function () {
   eventForm?.addEventListener('submit', handleEventCreate);
   leaderForm?.addEventListener('submit', handleLeaderCreate);
   logoutBtn?.addEventListener('click', handleSignOut);
-  refreshEventsBtn?.addEventListener('click', loadAdminData);
-  refreshLeadersBtn?.addEventListener('click', loadAdminData);
+  refreshAllBtn?.addEventListener('click', loadAdminData);
   document.addEventListener('click', handleDeleteClick);
 
   verifySession();

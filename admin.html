@@ -52,158 +52,290 @@
     </nav>
 
     <main class="admin-app">
-      <section class="admin-intro">
-        <div class="container admin-intro-inner">
-          <div class="section-header admin-section-header admin-intro-copy">
-            <h1 class="section-title">
-              Content control for events and leadership
-            </h1>
-            <p class="section-subtitle">
-              A clean workspace for publishing updates, managing board records,
-              and keeping the public site current.
-            </p>
+      <section class="admin-content">
+        <div class="admin-content-header">
+          <div class="admin-content-title">
+            <h2>Dashboard</h2>
+            <p>Manage events and leadership records in one place</p>
           </div>
-          <div class="admin-intro-actions">
-            <a href="./index.html" class="btn btn-secondary">Back to site</a>
+          <div class="admin-content-controls">
+            <button
+              class="admin-quick-action"
+              id="refresh-all-btn"
+              title="Refresh all data"
+            >
+              <i class="fas fa-rotate-right" aria-hidden="true"></i>
+              <span>Refresh</span>
+            </button>
           </div>
         </div>
-      </section>
 
-      <section class="admin-shell container">
-        <section class="admin-dashboard" id="admin-dashboard">
-          <div
-            class="section-header admin-section-header admin-dashboard-header"
-          >
-            <h2 class="section-title">Dashboard</h2>
-            <p class="section-subtitle">
-              Create new content and remove stale records.
-            </p>
-          </div>
-
-          <div class="admin-dashboard-grid">
-            <article class="admin-panel admin-column">
-              <div class="admin-panel-header">
+        <div class="admin-sections-grid">
+          <!-- EVENTS SECTION -->
+          <section class="admin-section admin-section-events">
+            <div class="admin-section-header">
+              <div class="admin-section-title-group">
+                <span class="admin-section-icon">
+                  <i class="fas fa-calendar-days" aria-hidden="true"></i>
+                </span>
                 <div>
-                  <span class="admin-panel-kicker">Events</span>
-                  <h3>Publish and manage events</h3>
+                  <h3 class="admin-section-title">Events</h3>
+                  <p class="admin-section-subtitle">
+                    Publish upcoming and past events
+                  </p>
                 </div>
-                <button
-                  type="button"
-                  class="btn btn-secondary btn-small"
-                  id="refresh-events-btn"
-                >
-                  Refresh
-                </button>
               </div>
-              <form class="admin-form admin-create-form" id="event-create-form">
-                <label>
-                  <span>Title</span>
-                  <input type="text" name="title" required />
-                </label>
-                <label>
-                  <span>Event date</span>
-                  <input type="date" name="eventDate" required />
-                </label>
-                <label class="admin-full-width">
-                  <span>Description</span>
-                  <textarea name="description" rows="4" required></textarea>
-                </label>
-                <label>
-                  <span>Location</span>
-                  <input type="text" name="location" required />
-                </label>
-                <label>
-                  <span>Status</span>
-                  <select name="status">
-                    <option value="draft">Draft</option>
-                    <option value="published" selected>Published</option>
-                    <option value="archived">Archived</option>
-                  </select>
-                </label>
-                <label class="admin-check admin-full-width">
-                  <input type="checkbox" name="featured" />
-                  <span>Featured on homepage</span>
-                </label>
-                <button type="submit" class="btn btn-primary">
-                  Create event
-                </button>
-              </form>
-              <p
-                class="admin-message"
-                id="event-form-message"
-                aria-live="polite"
-              ></p>
-              <div class="admin-list" id="events-list"></div>
-            </article>
+            </div>
 
-            <article class="admin-panel admin-column">
-              <div class="admin-panel-header">
-                <div>
-                  <span class="admin-panel-kicker">Leadership</span>
-                  <h3>Maintain current board records</h3>
+            <div class="admin-section-body">
+              <div class="admin-form-container">
+                <div class="admin-form-header-inline">
+                  <h4>
+                    <i class="fas fa-plus-circle" aria-hidden="true"></i> New
+                    Event
+                  </h4>
                 </div>
-                <button
-                  type="button"
-                  class="btn btn-secondary btn-small"
-                  id="refresh-leaders-btn"
-                >
-                  Refresh
-                </button>
+                <form class="admin-section-form" id="event-create-form">
+                  <div class="admin-form-row">
+                    <div class="admin-form-col">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline"
+                          >Event Title *</span
+                        >
+                        <input
+                          type="text"
+                          name="title"
+                          class="admin-input-inline"
+                          placeholder="Enter event name"
+                          required
+                        />
+                      </label>
+                    </div>
+                    <div class="admin-form-col">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline">Date *</span>
+                        <input
+                          type="date"
+                          name="eventDate"
+                          class="admin-input-inline"
+                          required
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  <div class="admin-form-row">
+                    <div class="admin-form-col">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline">Location *</span>
+                        <input
+                          type="text"
+                          name="location"
+                          class="admin-input-inline"
+                          placeholder="Venue or meeting point"
+                          required
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  <div class="admin-form-row">
+                    <div class="admin-form-col admin-form-col-full">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline"
+                          >Description *</span
+                        >
+                        <textarea
+                          name="description"
+                          class="admin-input-inline"
+                          rows="3"
+                          placeholder="Event details and what to expect"
+                          required
+                        ></textarea>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="admin-form-row admin-form-row-inline">
+                    <div class="admin-form-col-inline">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline">Status</span>
+                        <select name="status" class="admin-input-inline">
+                          <option value="draft">Draft</option>
+                          <option value="published" selected>Published</option>
+                          <option value="archived">Archived</option>
+                        </select>
+                      </label>
+                    </div>
+                    <div class="admin-form-col-inline">
+                      <label class="admin-checkbox-field">
+                        <input
+                          type="checkbox"
+                          name="featured"
+                          class="admin-checkbox-input"
+                        />
+                        <span class="admin-checkbox-label">Featured Event</span>
+                      </label>
+                    </div>
+                  </div>
+                  <button type="submit" class="admin-btn-submit">
+                    <i class="fas fa-plus" aria-hidden="true"></i> Create Event
+                  </button>
+                </form>
+                <p
+                  class="admin-form-message"
+                  id="event-form-message"
+                  aria-live="polite"
+                ></p>
               </div>
-              <form
-                class="admin-form admin-create-form"
-                id="leader-create-form"
-              >
-                <label>
-                  <span>Full name</span>
-                  <input type="text" name="fullName" required />
-                </label>
-                <label>
-                  <span>Position</span>
-                  <input type="text" name="position" required />
-                </label>
-                <label>
-                  <span>Term label</span>
-                  <input
-                    type="text"
-                    name="termLabel"
-                    placeholder="2026/2027"
-                    required
-                  />
-                </label>
-                <label>
-                  <span>Sort order</span>
-                  <input type="number" name="sortOrder" value="0" />
-                </label>
-                <label class="admin-full-width">
-                  <span>Bio</span>
-                  <textarea name="bio" rows="4"></textarea>
-                </label>
-                <label>
-                  <span>Status</span>
-                  <select name="status">
-                    <option value="draft">Draft</option>
-                    <option value="published" selected>Published</option>
-                    <option value="archived">Archived</option>
-                  </select>
-                </label>
-                <label class="admin-check admin-full-width">
-                  <input type="checkbox" name="isCurrent" checked />
-                  <span>Current leadership</span>
-                </label>
-                <button type="submit" class="btn btn-primary">
-                  Create leader
-                </button>
-              </form>
-              <p
-                class="admin-message"
-                id="leader-form-message"
-                aria-live="polite"
-              ></p>
-              <div class="admin-list" id="leaders-list"></div>
-            </article>
-          </div>
-        </section>
+
+              <div class="admin-list-container">
+                <div class="admin-list-header">
+                  <h4>
+                    <i class="fas fa-list-ul" aria-hidden="true"></i> All Events
+                  </h4>
+                </div>
+                <div class="admin-items-list" id="events-list"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- LEADERSHIP SECTION -->
+          <section class="admin-section admin-section-leaders">
+            <div class="admin-section-header">
+              <div class="admin-section-title-group">
+                <span class="admin-section-icon">
+                  <i class="fas fa-users" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <h3 class="admin-section-title">Leadership</h3>
+                  <p class="admin-section-subtitle">
+                    Manage board members and roles
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-section-body">
+              <div class="admin-form-container">
+                <div class="admin-form-header-inline">
+                  <h4>
+                    <i class="fas fa-plus-circle" aria-hidden="true"></i> Add
+                    Board Member
+                  </h4>
+                </div>
+                <form class="admin-section-form" id="leader-create-form">
+                  <div class="admin-form-row">
+                    <div class="admin-form-col">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline"
+                          >Full Name *</span
+                        >
+                        <input
+                          type="text"
+                          name="fullName"
+                          class="admin-input-inline"
+                          placeholder="Member's name"
+                          required
+                        />
+                      </label>
+                    </div>
+                    <div class="admin-form-col">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline">Position *</span>
+                        <input
+                          type="text"
+                          name="position"
+                          class="admin-input-inline"
+                          placeholder="Title or role"
+                          required
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  <div class="admin-form-row">
+                    <div class="admin-form-col">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline"
+                          >Term Label *</span
+                        >
+                        <input
+                          type="text"
+                          name="termLabel"
+                          class="admin-input-inline"
+                          placeholder="2026/2027"
+                          required
+                        />
+                      </label>
+                    </div>
+                    <div class="admin-form-col">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline">Sort Order</span>
+                        <input
+                          type="number"
+                          name="sortOrder"
+                          class="admin-input-inline"
+                          value="0"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  <div class="admin-form-row">
+                    <div class="admin-form-col admin-form-col-full">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline">Bio</span>
+                        <textarea
+                          name="bio"
+                          class="admin-input-inline"
+                          rows="3"
+                          placeholder="Brief biography (optional)"
+                        ></textarea>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="admin-form-row admin-form-row-inline">
+                    <div class="admin-form-col-inline">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline">Status</span>
+                        <select name="status" class="admin-input-inline">
+                          <option value="draft">Draft</option>
+                          <option value="published" selected>Published</option>
+                          <option value="archived">Archived</option>
+                        </select>
+                      </label>
+                    </div>
+                    <div class="admin-form-col-inline">
+                      <label class="admin-checkbox-field">
+                        <input
+                          type="checkbox"
+                          name="isCurrent"
+                          class="admin-checkbox-input"
+                          checked
+                        />
+                        <span class="admin-checkbox-label">Current Leader</span>
+                      </label>
+                    </div>
+                  </div>
+                  <button type="submit" class="admin-btn-submit">
+                    <i class="fas fa-plus" aria-hidden="true"></i> Add Member
+                  </button>
+                </form>
+                <p
+                  class="admin-form-message"
+                  id="leader-form-message"
+                  aria-live="polite"
+                ></p>
+              </div>
+
+              <div class="admin-list-container">
+                <div class="admin-list-header">
+                  <h4>
+                    <i class="fas fa-list-ul" aria-hidden="true"></i> Board
+                    Members
+                  </h4>
+                </div>
+                <div class="admin-items-list" id="leaders-list"></div>
+              </div>
+            </div>
+          </section>
+        </div>
       </section>
     </main>
 
