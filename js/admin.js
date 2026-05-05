@@ -28,6 +28,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const eventsList = document.getElementById('events-list');
   const leadersList = document.getElementById('leaders-list');
   const refreshAllBtn = document.getElementById('refresh-all-btn');
+  const eventSubmitButton = eventForm?.querySelector('button[type="submit"]');
+  const eventCancelButton = document.getElementById('event-edit-cancel-btn');
 
   function readStoredToken() {
     return sessionStorage.getItem(tokenKey) || localStorage.getItem(tokenKey) || '';
@@ -35,6 +37,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   let authToken = readStoredToken();
   let currentUser = null;
+  let editingEventId = '';
+  let cachedEvents = [];
+  let cachedLeaders = [];
 
   function setStatus(element, text) {
     if (element) element.textContent = text;
@@ -44,6 +49,44 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!element) return;
     element.textContent = text || '';
     element.dataset.tone = tone || '';
+  }
+
+  function setEventEditMode(eventData) {
+    editingEventId = eventData?.id || '';
+
+    if (eventSubmitButton) {
+      eventSubmitButton.innerHTML = editingEventId
+        ? '<i class="fas fa-save" aria-hidden="true"></i> Update Event'
+        : '<i class="fas fa-plus" aria-hidden="true"></i> Create Event';
+    }
+
+    if (editingEventId) {
+      setMessage(eventMessage, `Editing event: ${eventData.title || 'Untitled Event'}`, 'info');
+    } else {
+      setMessage(eventMessage, '', '');
+    }
+  }
+
+  function clearEventEditMode() {
+    editingEventId = '';
+
+    if (eventSubmitButton) {
+      eventSubmitButton.innerHTML = '<i class="fas fa-plus" aria-hidden="true"></i> Create Event';
+    }
+
+    if (eventCancelButton) {
+      eventCancelButton.hidden = true;
+    }
+
+    if (eventForm) {
+      eventForm.reset();
+      const statusField = eventForm.querySelector('[name="status"]');
+      if (statusField) statusField.value = 'published';
+      const featuredField = eventForm.querySelector('[name="featured"]');
+      if (featuredField) featuredField.checked = false;
+    }
+
+    setMessage(eventMessage, '', '');
   }
 
   function escapeHtml(value) {
@@ -176,6 +219,7 @@ document.addEventListener('DOMContentLoaded', function () {
       event.status || 'draft',
       (event.status || 'draft').toUpperCase(),
       `
+        <button type="button" class="btn btn-secondary btn-small admin-item-btn-edit" data-edit-type="event" data-edit-id="${escapeHtml(event.id)}">Edit</button>
         <button type="button" class="admin-item-btn-delete" data-delete-type="event" data-delete-id="${escapeHtml(event.id)}">Delete</button>
       `,
     )).join('');
@@ -212,8 +256,11 @@ document.addEventListener('DOMContentLoaded', function () {
         apiRequest('/leaders/all'),
       ]);
 
-      renderEvents(Array.isArray(eventsResponse?.data) ? eventsResponse.data : []);
-      renderLeaders(Array.isArray(leadersResponse?.data) ? leadersResponse.data : []);
+      cachedEvents = Array.isArray(eventsResponse?.data) ? eventsResponse.data : [];
+      cachedLeaders = Array.isArray(leadersResponse?.data) ? leadersResponse.data : [];
+
+      renderEvents(cachedEvents);
+      renderLeaders(cachedLeaders);
       setStatus(apiState, 'Connected');
       setStatus(apiMeta, 'Admin endpoints are reachable.');
     } catch (error) {
@@ -318,20 +365,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
   async function handleEventCreate(event) {
     event.preventDefault();
-    setMessage(eventMessage, 'Saving event...', 'info');
+    const isEditing = Boolean(editingEventId);
+    setMessage(eventMessage, editingEventId ? 'Updating event...' : 'Saving event...', 'info');
 
     const formData = new FormData(eventForm);
     const payload = buildEventPayload(formData);
 
     try {
-      await apiRequest('/events', {
-        method: 'POST',
+      const requestPath = editingEventId ? `/events/${editingEventId}` : '/events';
+      const requestMethod = editingEventId ? 'PATCH' : 'POST';
+
+      await apiRequest(requestPath, {
+        method: requestMethod,
         body: JSON.stringify(payload),
       });
 
-      eventForm.reset();
-      eventForm.querySelector('[name="status"]').value = 'published';
-      setMessage(eventMessage, 'Event created successfully.', 'success');
+      clearEventEditMode();
+      setMessage(eventMessage, isEditing ? 'Event updated successfully.' : 'Event created successfully.', 'success');
       await loadAdminData();
     } catch (error) {
       setMessage(eventMessage, error.message, 'error');
@@ -362,6 +412,27 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function handleDeleteClick(event) {
+    const editButton = event.target.closest('.admin-item-btn-edit');
+    if (editButton) {
+      const eventId = editButton.dataset.editId;
+      const eventData = cachedEvents.find((item) => item.id === eventId);
+
+      if (!eventData || !eventForm) return;
+
+      eventForm.querySelector('[name="title"]').value = eventData.title || '';
+      eventForm.querySelector('[name="eventDate"]').value = eventData.eventDate ? String(eventData.eventDate).slice(0, 10) : '';
+      eventForm.querySelector('[name="location"]').value = eventData.location || '';
+      eventForm.querySelector('[name="description"]').value = eventData.description || '';
+      eventForm.querySelector('[name="status"]').value = eventData.status || 'published';
+      eventForm.querySelector('[name="featured"]').checked = Boolean(eventData.featured);
+      setEventEditMode(eventData);
+      if (eventCancelButton) {
+        eventCancelButton.hidden = false;
+      }
+      eventForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
     const button = event.target.closest('.admin-item-btn-delete');
     if (!button) return;
 
@@ -391,6 +462,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     setAuthToken('');
     currentUser = null;
+    clearEventEditMode();
     updateAuthUi(false);
     if (isDashboardPage) {
       renderEvents([]);
@@ -415,6 +487,7 @@ document.addEventListener('DOMContentLoaded', function () {
   leaderForm?.addEventListener('submit', handleLeaderCreate);
   logoutBtn?.addEventListener('click', handleSignOut);
   refreshAllBtn?.addEventListener('click', loadAdminData);
+  eventCancelButton?.addEventListener('click', clearEventEditMode);
   document.addEventListener('click', handleDeleteClick);
 
   verifySession();
