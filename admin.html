@@ -178,14 +178,6 @@
                   <button type="submit" class="admin-btn-submit">
                     <i class="fas fa-plus" aria-hidden="true"></i> Create Event
                   </button>
-                  <button
-                    type="button"
-                    class="btn btn-secondary btn-small"
-                    id="event-edit-cancel-btn"
-                    hidden
-                  >
-                    Cancel Edit
-                  </button>
                 </form>
                 <p
                   class="admin-form-message"
@@ -346,6 +338,248 @@
         </div>
       </section>
     </main>
+
+    <div class="admin-modal" id="event-edit-modal" aria-hidden="true" hidden>
+      <div class="admin-modal-backdrop" data-modal-close="event"></div>
+      <div
+        class="admin-modal-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="event-edit-modal-title"
+      >
+        <div class="admin-modal-header">
+          <div>
+            <p class="admin-modal-kicker">Edit Event</p>
+            <h3 id="event-edit-modal-title">Update event details</h3>
+          </div>
+          <button
+            type="button"
+            class="admin-modal-close"
+            data-modal-close="event"
+            aria-label="Close event edit modal"
+          >
+            <i class="fas fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <form class="admin-section-form admin-modal-form" id="event-edit-form">
+          <div class="admin-form-row">
+            <div class="admin-form-col">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Event Title *</span>
+                <input
+                  type="text"
+                  name="title"
+                  class="admin-input-inline"
+                  required
+                />
+              </label>
+            </div>
+            <div class="admin-form-col">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Date *</span>
+                <input
+                  type="date"
+                  name="eventDate"
+                  class="admin-input-inline"
+                  required
+                />
+              </label>
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="admin-form-col">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Location *</span>
+                <input
+                  type="text"
+                  name="location"
+                  class="admin-input-inline"
+                  required
+                />
+              </label>
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="admin-form-col admin-form-col-full">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Description *</span>
+                <textarea
+                  name="description"
+                  class="admin-input-inline"
+                  rows="3"
+                  required
+                ></textarea>
+              </label>
+            </div>
+          </div>
+          <div class="admin-form-row admin-form-row-inline">
+            <div class="admin-form-col-inline">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Status</span>
+                <select name="status" class="admin-input-inline">
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </label>
+            </div>
+            <div class="admin-form-col-inline">
+              <label class="admin-checkbox-field">
+                <input
+                  type="checkbox"
+                  name="featured"
+                  class="admin-checkbox-input"
+                />
+                <span class="admin-checkbox-label">Featured Event</span>
+              </label>
+            </div>
+          </div>
+          <div class="admin-modal-actions">
+            <button type="submit" class="admin-btn-submit">
+              <i class="fas fa-save" aria-hidden="true"></i> Save Changes
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary btn-small"
+              data-modal-close="event"
+            >
+              Cancel
+            </button>
+          </div>
+          <p
+            class="admin-form-message"
+            id="event-edit-message"
+            aria-live="polite"
+          ></p>
+        </form>
+      </div>
+    </div>
+
+    <div class="admin-modal" id="leader-edit-modal" aria-hidden="true" hidden>
+      <div class="admin-modal-backdrop" data-modal-close="leader"></div>
+      <div
+        class="admin-modal-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="leader-edit-modal-title"
+      >
+        <div class="admin-modal-header">
+          <div>
+            <p class="admin-modal-kicker">Edit Leader</p>
+            <h3 id="leader-edit-modal-title">Update leadership record</h3>
+          </div>
+          <button
+            type="button"
+            class="admin-modal-close"
+            data-modal-close="leader"
+            aria-label="Close leader edit modal"
+          >
+            <i class="fas fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <form class="admin-section-form admin-modal-form" id="leader-edit-form">
+          <div class="admin-form-row">
+            <div class="admin-form-col">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Full Name *</span>
+                <input
+                  type="text"
+                  name="fullName"
+                  class="admin-input-inline"
+                  required
+                />
+              </label>
+            </div>
+            <div class="admin-form-col">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Position *</span>
+                <input
+                  type="text"
+                  name="position"
+                  class="admin-input-inline"
+                  required
+                />
+              </label>
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="admin-form-col">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Term Label *</span>
+                <input
+                  type="text"
+                  name="termLabel"
+                  class="admin-input-inline"
+                  required
+                />
+              </label>
+            </div>
+            <div class="admin-form-col">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Sort Order</span>
+                <input
+                  type="number"
+                  name="sortOrder"
+                  class="admin-input-inline"
+                  value="0"
+                />
+              </label>
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="admin-form-col admin-form-col-full">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Bio</span>
+                <textarea
+                  name="bio"
+                  class="admin-input-inline"
+                  rows="3"
+                ></textarea>
+              </label>
+            </div>
+          </div>
+          <div class="admin-form-row admin-form-row-inline">
+            <div class="admin-form-col-inline">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Status</span>
+                <select name="status" class="admin-input-inline">
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </label>
+            </div>
+            <div class="admin-form-col-inline">
+              <label class="admin-checkbox-field">
+                <input
+                  type="checkbox"
+                  name="isCurrent"
+                  class="admin-checkbox-input"
+                />
+                <span class="admin-checkbox-label">Current Leader</span>
+              </label>
+            </div>
+          </div>
+          <div class="admin-modal-actions">
+            <button
+              type="button"
+              class="btn btn-secondary btn-small"
+              data-modal-close="leader"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="admin-btn-submit">
+              <i class="fas fa-save" aria-hidden="true"></i> Save Changes
+            </button>
+          </div>
+          <p
+            class="admin-form-message"
+            id="leader-edit-message"
+            aria-live="polite"
+          ></p>
+        </form>
+      </div>
+    </div>
 
     <footer class="footer admin-footer">
       <div class="container">

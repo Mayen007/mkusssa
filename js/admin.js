@@ -28,8 +28,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const eventsList = document.getElementById('events-list');
   const leadersList = document.getElementById('leaders-list');
   const refreshAllBtn = document.getElementById('refresh-all-btn');
-  const eventSubmitButton = eventForm?.querySelector('button[type="submit"]');
-  const eventCancelButton = document.getElementById('event-edit-cancel-btn');
+  const eventEditModal = document.getElementById('event-edit-modal');
+  const eventEditForm = document.getElementById('event-edit-form');
+  const eventEditMessage = document.getElementById('event-edit-message');
+  const leaderEditModal = document.getElementById('leader-edit-modal');
+  const leaderEditForm = document.getElementById('leader-edit-form');
+  const leaderEditMessage = document.getElementById('leader-edit-message');
 
   function readStoredToken() {
     return sessionStorage.getItem(tokenKey) || localStorage.getItem(tokenKey) || '';
@@ -38,6 +42,9 @@ document.addEventListener('DOMContentLoaded', function () {
   let authToken = readStoredToken();
   let currentUser = null;
   let editingEventId = '';
+  let editingLeaderId = '';
+  let eventEditTrigger = null;
+  let leaderEditTrigger = null;
   let cachedEvents = [];
   let cachedLeaders = [];
 
@@ -51,42 +58,107 @@ document.addEventListener('DOMContentLoaded', function () {
     element.dataset.tone = tone || '';
   }
 
-  function setEventEditMode(eventData) {
-    editingEventId = eventData?.id || '';
+  function setModalVisible(modalElement, visible) {
+    if (!modalElement) return;
+    modalElement.setAttribute('aria-hidden', visible ? 'false' : 'true');
 
-    if (eventSubmitButton) {
-      eventSubmitButton.innerHTML = editingEventId
-        ? '<i class="fas fa-save" aria-hidden="true"></i> Update Event'
-        : '<i class="fas fa-plus" aria-hidden="true"></i> Create Event';
+    if (visible) {
+      modalElement.hidden = false;
+      modalElement.classList.remove('is-closing');
+      requestAnimationFrame(() => {
+        modalElement.classList.add('is-visible');
+      });
+      return;
     }
 
-    if (editingEventId) {
-      setMessage(eventMessage, `Editing event: ${eventData.title || 'Untitled Event'}`, 'info');
-    } else {
-      setMessage(eventMessage, '', '');
+    modalElement.classList.remove('is-visible');
+    modalElement.classList.add('is-closing');
+
+    window.setTimeout(() => {
+      modalElement.hidden = true;
+      modalElement.classList.remove('is-closing');
+    }, 220);
+  }
+
+  function resetEventEditForm() {
+    if (eventEditForm) {
+      eventEditForm.reset();
+      const statusField = eventEditForm.querySelector('[name="status"]');
+      if (statusField) statusField.value = 'published';
+      const featuredField = eventEditForm.querySelector('[name="featured"]');
+      if (featuredField) featuredField.checked = false;
+    }
+    setMessage(eventEditMessage, '', '');
+  }
+
+  function resetLeaderEditForm() {
+    if (leaderEditForm) {
+      leaderEditForm.reset();
+      const statusField = leaderEditForm.querySelector('[name="status"]');
+      if (statusField) statusField.value = 'published';
+      const currentField = leaderEditForm.querySelector('[name="isCurrent"]');
+      if (currentField) currentField.checked = true;
+    }
+    setMessage(leaderEditMessage, '', '');
+  }
+
+  function returnFocusToTrigger(triggerElement) {
+    if (triggerElement && typeof triggerElement.focus === 'function' && triggerElement.isConnected) {
+      window.setTimeout(() => {
+        triggerElement.focus({ preventScroll: true });
+      }, 220);
     }
   }
 
-  function clearEventEditMode() {
+  function closeEventEditModal() {
     editingEventId = '';
-
-    if (eventSubmitButton) {
-      eventSubmitButton.innerHTML = '<i class="fas fa-plus" aria-hidden="true"></i> Create Event';
+    if (eventEditModal?.contains(document.activeElement)) {
+      document.activeElement.blur();
     }
+    resetEventEditForm();
+    setModalVisible(eventEditModal, false);
+    returnFocusToTrigger(eventEditTrigger);
+    eventEditTrigger = null;
+  }
 
-    if (eventCancelButton) {
-      eventCancelButton.hidden = true;
+  function closeLeaderEditModal() {
+    editingLeaderId = '';
+    if (leaderEditModal?.contains(document.activeElement)) {
+      document.activeElement.blur();
     }
+    resetLeaderEditForm();
+    setModalVisible(leaderEditModal, false);
+    returnFocusToTrigger(leaderEditTrigger);
+    leaderEditTrigger = null;
+  }
 
-    if (eventForm) {
-      eventForm.reset();
-      const statusField = eventForm.querySelector('[name="status"]');
-      if (statusField) statusField.value = 'published';
-      const featuredField = eventForm.querySelector('[name="featured"]');
-      if (featuredField) featuredField.checked = false;
-    }
+  function openEventEditModal(eventData, triggerElement) {
+    if (!eventEditForm || !eventEditModal) return;
+    editingEventId = eventData?.id || '';
+    eventEditTrigger = triggerElement || null;
+    eventEditForm.querySelector('[name="title"]').value = eventData.title || '';
+    eventEditForm.querySelector('[name="eventDate"]').value = eventData.eventDate ? String(eventData.eventDate).slice(0, 10) : '';
+    eventEditForm.querySelector('[name="location"]').value = eventData.location || '';
+    eventEditForm.querySelector('[name="description"]').value = eventData.description || '';
+    eventEditForm.querySelector('[name="status"]').value = eventData.status || 'published';
+    eventEditForm.querySelector('[name="featured"]').checked = Boolean(eventData.featured);
+    setMessage(eventEditMessage, `Editing event: ${eventData.title || 'Untitled Event'}`, 'info');
+    setModalVisible(eventEditModal, true);
+  }
 
-    setMessage(eventMessage, '', '');
+  function openLeaderEditModal(leaderData, triggerElement) {
+    if (!leaderEditForm || !leaderEditModal) return;
+    editingLeaderId = leaderData?.id || '';
+    leaderEditTrigger = triggerElement || null;
+    leaderEditForm.querySelector('[name="fullName"]').value = leaderData.fullName || '';
+    leaderEditForm.querySelector('[name="position"]').value = leaderData.position || '';
+    leaderEditForm.querySelector('[name="termLabel"]').value = leaderData.termLabel || '';
+    leaderEditForm.querySelector('[name="sortOrder"]').value = leaderData.sortOrder ?? 0;
+    leaderEditForm.querySelector('[name="bio"]').value = leaderData.bio || '';
+    leaderEditForm.querySelector('[name="status"]').value = leaderData.status || 'published';
+    leaderEditForm.querySelector('[name="isCurrent"]').checked = Boolean(leaderData.isCurrent);
+    setMessage(leaderEditMessage, `Editing member: ${leaderData.fullName || 'Unnamed Leader'}`, 'info');
+    setModalVisible(leaderEditModal, true);
   }
 
   function escapeHtml(value) {
@@ -242,6 +314,7 @@ document.addEventListener('DOMContentLoaded', function () {
       leader.status || 'draft',
       (leader.status || 'draft').toUpperCase(),
       `
+        <button type="button" class="btn btn-secondary btn-small admin-item-btn-edit" data-edit-type="leader" data-edit-id="${escapeHtml(leader.id)}">Edit</button>
         <button type="button" class="admin-item-btn-delete" data-delete-type="leader" data-delete-id="${escapeHtml(leader.id)}">Delete</button>
       `,
     )).join('');
@@ -365,23 +438,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
   async function handleEventCreate(event) {
     event.preventDefault();
-    const isEditing = Boolean(editingEventId);
-    setMessage(eventMessage, editingEventId ? 'Updating event...' : 'Saving event...', 'info');
+    setMessage(eventMessage, 'Saving event...', 'info');
 
     const formData = new FormData(eventForm);
     const payload = buildEventPayload(formData);
 
     try {
-      const requestPath = editingEventId ? `/events/${editingEventId}` : '/events';
-      const requestMethod = editingEventId ? 'PATCH' : 'POST';
-
-      await apiRequest(requestPath, {
-        method: requestMethod,
+      await apiRequest('/events', {
+        method: 'POST',
         body: JSON.stringify(payload),
       });
 
-      clearEventEditMode();
-      setMessage(eventMessage, isEditing ? 'Event updated successfully.' : 'Event created successfully.', 'success');
+      eventForm.reset();
+      eventForm.querySelector('[name="status"]').value = 'published';
+      setMessage(eventMessage, 'Event created successfully.', 'success');
       await loadAdminData();
     } catch (error) {
       setMessage(eventMessage, error.message, 'error');
@@ -411,25 +481,72 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  async function handleEventEditSubmit(event) {
+    event.preventDefault();
+    if (!editingEventId) return;
+
+    setMessage(eventEditMessage, 'Updating event...', 'info');
+
+    const formData = new FormData(eventEditForm);
+    const payload = buildEventPayload(formData);
+
+    try {
+      await apiRequest(`/events/${editingEventId}`, {
+        method: 'PATCH',
+        body: JSON.stringify(payload),
+      });
+
+      closeEventEditModal();
+      await loadAdminData();
+    } catch (error) {
+      setMessage(eventEditMessage, error.message, 'error');
+    }
+  }
+
+  async function handleLeaderEditSubmit(event) {
+    event.preventDefault();
+    if (!editingLeaderId) return;
+
+    setMessage(leaderEditMessage, 'Updating leadership record...', 'info');
+
+    const formData = new FormData(leaderEditForm);
+    const payload = buildLeaderPayload(formData);
+
+    try {
+      await apiRequest(`/leaders/${editingLeaderId}`, {
+        method: 'PATCH',
+        body: JSON.stringify(payload),
+      });
+
+      closeLeaderEditModal();
+      await loadAdminData();
+    } catch (error) {
+      setMessage(leaderEditMessage, error.message, 'error');
+    }
+  }
+
   async function handleDeleteClick(event) {
     const editButton = event.target.closest('.admin-item-btn-edit');
     if (editButton) {
-      const eventId = editButton.dataset.editId;
-      const eventData = cachedEvents.find((item) => item.id === eventId);
+      const itemType = editButton.dataset.editType;
+      const itemId = editButton.dataset.editId;
 
-      if (!eventData || !eventForm) return;
+      if (itemType === 'event') {
+        const eventData = cachedEvents.find((item) => item.id === itemId);
+        if (!eventData) return;
 
-      eventForm.querySelector('[name="title"]').value = eventData.title || '';
-      eventForm.querySelector('[name="eventDate"]').value = eventData.eventDate ? String(eventData.eventDate).slice(0, 10) : '';
-      eventForm.querySelector('[name="location"]').value = eventData.location || '';
-      eventForm.querySelector('[name="description"]').value = eventData.description || '';
-      eventForm.querySelector('[name="status"]').value = eventData.status || 'published';
-      eventForm.querySelector('[name="featured"]').checked = Boolean(eventData.featured);
-      setEventEditMode(eventData);
-      if (eventCancelButton) {
-        eventCancelButton.hidden = false;
+        openEventEditModal(eventData, editButton);
+        return;
       }
-      eventForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (itemType === 'leader') {
+        const leaderData = cachedLeaders.find((item) => item.id === itemId);
+        if (!leaderData) return;
+
+        openLeaderEditModal(leaderData, editButton);
+        return;
+      }
+
       return;
     }
 
@@ -462,7 +579,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     setAuthToken('');
     currentUser = null;
-    clearEventEditMode();
+    closeEventEditModal();
+    closeLeaderEditModal();
     updateAuthUi(false);
     if (isDashboardPage) {
       renderEvents([]);
@@ -485,10 +603,26 @@ document.addEventListener('DOMContentLoaded', function () {
   loginForm?.addEventListener('submit', handleLogin);
   eventForm?.addEventListener('submit', handleEventCreate);
   leaderForm?.addEventListener('submit', handleLeaderCreate);
+  eventEditForm?.addEventListener('submit', handleEventEditSubmit);
+  leaderEditForm?.addEventListener('submit', handleLeaderEditSubmit);
   logoutBtn?.addEventListener('click', handleSignOut);
   refreshAllBtn?.addEventListener('click', loadAdminData);
-  eventCancelButton?.addEventListener('click', clearEventEditMode);
   document.addEventListener('click', handleDeleteClick);
+
+  document.addEventListener('click', function (event) {
+    const closeTarget = event.target.closest('[data-modal-close]');
+    if (!closeTarget) return;
+
+    const modalType = closeTarget.dataset.modalClose;
+    if (modalType === 'event') closeEventEditModal();
+    if (modalType === 'leader') closeLeaderEditModal();
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key !== 'Escape') return;
+    if (eventEditModal && !eventEditModal.hidden) closeEventEditModal();
+    if (leaderEditModal && !leaderEditModal.hidden) closeLeaderEditModal();
+  });
 
   verifySession();
 });
