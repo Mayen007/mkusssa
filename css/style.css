@@ -1325,6 +1325,94 @@ main {
   line-height: 1.6;
 }
 
+.membership-inline-note {
+  margin-bottom: var(--medium-spacing);
+  color: var(--light-text-color);
+  font-size: var(--font-sm);
+}
+
+.membership-form {
+  display: grid;
+  gap: var(--medium-spacing);
+}
+
+.membership-form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--medium-spacing);
+}
+
+.membership-field {
+  display: grid;
+  gap: 8px;
+}
+
+.membership-field span {
+  font-family: var(--button-font-family);
+  color: var(--primary-color);
+  font-size: var(--font-sm);
+}
+
+.membership-field input,
+.membership-field textarea {
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-family: var(--body-font);
+  font-size: var(--font-md);
+  color: var(--text-color);
+  background-color: white;
+  transition: border-color var(--transition-duration) ease, box-shadow var(--transition-duration) ease, transform var(--transition-duration) ease;
+}
+
+.membership-field input::placeholder,
+.membership-field textarea::placeholder {
+  color: #9a9a9a;
+}
+
+.membership-field input:hover,
+.membership-field textarea:hover {
+  border-color: rgba(46, 49, 146, 0.28);
+}
+
+.membership-field input:focus,
+.membership-field textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(46, 49, 146, 0.1);
+}
+
+.membership-field-full {
+  grid-column: 1 / -1;
+}
+
+.membership-submit {
+  width: 100%;
+}
+
+.membership-form-message {
+  min-height: 20px;
+  color: var(--light-text-color);
+  font-size: var(--font-sm);
+}
+
+.membership-form-message[data-tone="success"] {
+  color: var(--accent-color);
+}
+
+.membership-form-message[data-tone="error"] {
+  color: #d92d20;
+}
+
+.membership-form-message[data-tone="info"] {
+  color: var(--primary-color);
+}
+
+.admin-list-container-full {
+  grid-column: 1 / -1;
+}
+
 /* Make join-form call-to-action buttons clearly visible against the contact section */
 .join-form .btn-primary {
   background-color: var(--primary-color);
@@ -1632,6 +1720,10 @@ main {
     gap: var(--large-spacing);
   }
 
+  .membership-form-row {
+    grid-template-columns: 1fr;
+  }
+
   /* Footer */
   .footer-content {
     grid-template-columns: 1fr;
@@ -1837,7 +1929,8 @@ main {
     font-size: var(--font-md);
   }
 
-  .hero-buttons {
+  .hero-buttons,
+  .admin-feature-item {
     gap: var(--small-spacing);
   }
 
@@ -1867,6 +1960,10 @@ main {
   .btn-large {
     padding: var(--medium-spacing) var(--large-spacing);
     font-size: var(--font-md);
+  }
+
+  .membership-form-row {
+    grid-template-columns: 1fr;
   }
 
   /* Leadership grid */
@@ -1928,12 +2025,6 @@ main {
   .admin-login-features {
     gap: var(--medium-spacing);
   }
-
-  .admin-feature-item {
-    gap: var(--small-spacing);
-  }
-
-
 
   .admin-item-card {
     padding: 12px;

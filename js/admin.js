@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const leaderMessage = document.getElementById('leader-form-message');
   const announcementsList = document.getElementById('announcements-list');
   const galleryList = document.getElementById('gallery-list');
+  const membershipsList = document.getElementById('memberships-list');
   const eventsList = document.getElementById('events-list');
   const leadersList = document.getElementById('leaders-list');
   const refreshAllBtn = document.getElementById('refresh-all-btn');
@@ -63,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let leaderEditTrigger = null;
   let cachedAnnouncements = [];
   let cachedGalleryItems = [];
+  let cachedMemberships = [];
   let cachedEvents = [];
   let cachedLeaders = [];
 
@@ -320,6 +322,28 @@ document.addEventListener('DOMContentLoaded', function () {
     }).join('');
   }
 
+  function renderMemberships(memberships) {
+    if (!membershipsList) return;
+    if (!memberships.length) {
+      membershipsList.innerHTML = '<p class="admin-empty">No membership submissions returned by the API yet.</p>';
+      return;
+    }
+
+    membershipsList.innerHTML = memberships.map((submission) => renderListItem(
+      submission.fullName || 'Unnamed Member',
+      [
+        `<strong>Email:</strong> ${escapeHtml(submission.email || 'N/A')}`,
+        `<strong>Phone:</strong> ${escapeHtml(submission.phone || 'N/A')}`,
+        `<strong>Message:</strong> ${escapeHtml(submission.message || 'N/A')}`,
+        `<strong>Source:</strong> ${escapeHtml(submission.source || 'homepage')}`,
+        `<strong>Submitted:</strong> ${formatDate(submission.createdAt)}`,
+      ],
+      submission.status || 'new',
+      (submission.status || 'new').toUpperCase(),
+      '',
+    )).join('');
+  }
+
   function setAuthToken(token) {
     authToken = token || '';
     if (authToken) {
@@ -463,20 +487,23 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!authToken || !isDashboardPage) return;
 
     try {
-      const [eventsResponse, leadersResponse, announcementsResponse, galleryResponse] = await Promise.all([
+      const [eventsResponse, leadersResponse, announcementsResponse, galleryResponse, membershipsResponse] = await Promise.all([
         apiRequest('/events/all'),
         apiRequest('/leaders/all'),
         apiRequest('/announcements/all'),
         apiRequest('/gallery/all'),
+        apiRequest('/memberships/all'),
       ]);
 
       cachedEvents = Array.isArray(eventsResponse?.data) ? eventsResponse.data : [];
       cachedLeaders = Array.isArray(leadersResponse?.data) ? leadersResponse.data : [];
       cachedAnnouncements = Array.isArray(announcementsResponse?.data) ? announcementsResponse.data : [];
       cachedGalleryItems = Array.isArray(galleryResponse?.data) ? galleryResponse.data : [];
+      cachedMemberships = Array.isArray(membershipsResponse?.data) ? membershipsResponse.data : [];
 
       renderAnnouncements(cachedAnnouncements);
       renderGalleryItems(cachedGalleryItems);
+      renderMemberships(cachedMemberships);
       renderEvents(cachedEvents);
       renderLeaders(cachedLeaders);
       setStatus(apiState, 'Connected');
@@ -860,6 +887,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (isDashboardPage) {
       renderAnnouncements([]);
       renderGalleryItems([]);
+      renderMemberships([]);
       renderEvents([]);
       renderLeaders([]);
       goToLogin();

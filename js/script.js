@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const announcementsGrid = document.querySelector('.announcements-grid');
   const eventsGrid = document.querySelector('.events-grid');
   const galleryGrid = document.querySelector('.gallery-grid');
+  const membershipForm = document.querySelector('#membership-form');
+  const membershipMessage = document.querySelector('#membership-form-message');
   const leadershipGrid = document.querySelector('.leadership-grid');
   const navItemElements = document.querySelectorAll('.nav-item');
   const anchorNavLinks = Array.from(navLinkItems).filter(function (link) {
@@ -445,6 +447,12 @@ document.addEventListener('DOMContentLoaded', function () {
     return card;
   }
 
+  function setMembershipMessage(text, tone) {
+    if (!membershipMessage) return;
+    membershipMessage.textContent = text || '';
+    membershipMessage.dataset.tone = tone || '';
+  }
+
   async function loadEventsSection() {
     if (!eventsGrid || !apiBaseUrl) return;
 
@@ -571,8 +579,46 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  async function handleMembershipSubmit(event) {
+    event.preventDefault();
+    if (!membershipForm || !apiBaseUrl) return;
+
+    setMembershipMessage('Sending membership request...', 'info');
+
+    const formData = new FormData(membershipForm);
+    const payload = {
+      fullName: String(formData.get('fullName') || '').trim(),
+      email: String(formData.get('email') || '').trim(),
+      phone: String(formData.get('phone') || '').trim(),
+      message: String(formData.get('message') || '').trim(),
+      source: 'homepage',
+    };
+
+    try {
+      const response = await fetch(apiBaseUrl + '/memberships', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json().catch(function () { return null; });
+
+      if (!response.ok) {
+        throw new Error((data && data.message) || 'Unable to submit membership form');
+      }
+
+      membershipForm.reset();
+      setMembershipMessage('Your membership request has been sent. We will contact you soon.', 'success');
+    } catch (error) {
+      setMembershipMessage(error.message, 'error');
+    }
+  }
+
   loadEventsSection();
   loadAnnouncementsSection();
   loadLeadershipSection();
   loadGallerySection();
+  if (membershipForm) {
+    membershipForm.addEventListener('submit', handleMembershipSubmit);
+  }
 });

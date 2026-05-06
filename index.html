@@ -888,9 +888,58 @@
                 class="btn btn-primary btn-large"
                 >Join WhatsApp Group</a
               >
-              <a href="#" class="btn btn-secondary btn-large"
-                >Fill Membership Form</a
-              >
+              <p class="membership-inline-note">
+                Prefer a direct sign-up? Send a membership request below.
+              </p>
+              <form class="membership-form" id="membership-form">
+                <div class="membership-form-row">
+                  <label class="membership-field">
+                    <span>Full Name *</span>
+                    <input
+                      type="text"
+                      name="fullName"
+                      required
+                      placeholder="Your full name"
+                    />
+                  </label>
+                  <label class="membership-field">
+                    <span>Email</span>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="you@example.com"
+                    />
+                  </label>
+                </div>
+                <div class="membership-form-row">
+                  <label class="membership-field">
+                    <span>Phone</span>
+                    <input type="tel" name="phone" placeholder="07xx xxx xxx" />
+                  </label>
+                </div>
+                <div class="membership-form-row">
+                  <label class="membership-field membership-field-full">
+                    <span>Message *</span>
+                    <textarea
+                      name="message"
+                      rows="4"
+                      required
+                      placeholder="Tell us why you want to join MKUSSSA"
+                    ></textarea>
+                  </label>
+                </div>
+                <button
+                  type="submit"
+                  class="btn btn-secondary btn-large membership-submit"
+                >
+                  Submit Membership Request
+                </button>
+                <p
+                  class="membership-form-message"
+                  id="membership-form-message"
+                  aria-live="polite"
+                ></p>
+              </form>
             </div>
           </div>
         </div>
