@@ -448,6 +448,134 @@
               </div>
             </div>
           </section>
+
+          <!-- GALLERY SECTION -->
+          <section class="admin-section admin-section-gallery">
+            <div class="admin-section-header">
+              <div class="admin-section-title-group">
+                <span class="admin-section-icon">
+                  <i class="fas fa-images" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <h3 class="admin-section-title">Gallery</h3>
+                  <p class="admin-section-subtitle">
+                    Organize featured images and albums
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-section-body">
+              <div class="admin-form-container">
+                <div class="admin-form-header-inline">
+                  <h4>
+                    <i class="fas fa-plus-circle" aria-hidden="true"></i> New
+                    Gallery Item
+                  </h4>
+                </div>
+                <form class="admin-section-form" id="gallery-create-form">
+                  <div class="admin-form-row">
+                    <div class="admin-form-col admin-form-col-full">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline">Title *</span>
+                        <input
+                          type="text"
+                          name="title"
+                          class="admin-input-inline"
+                          placeholder="Image title"
+                          required
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  <div class="admin-form-row">
+                    <div class="admin-form-col admin-form-col-full">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline"
+                          >Image URL *</span
+                        >
+                        <input
+                          type="url"
+                          name="imageUrl"
+                          class="admin-input-inline"
+                          placeholder="https://example.com/image.jpg"
+                          required
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  <div class="admin-form-row">
+                    <div class="admin-form-col admin-form-col-full">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline">Caption</span>
+                        <textarea
+                          name="caption"
+                          class="admin-input-inline"
+                          rows="3"
+                          placeholder="Short caption or description"
+                        ></textarea>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="admin-form-row admin-form-row-inline">
+                    <div class="admin-form-col-inline">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline">Album</span>
+                        <input
+                          type="text"
+                          name="album"
+                          class="admin-input-inline"
+                          placeholder="Event or collection"
+                        />
+                      </label>
+                    </div>
+                    <div class="admin-form-col-inline">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline">Tags</span>
+                        <input
+                          type="text"
+                          name="tags"
+                          class="admin-input-inline"
+                          placeholder="campus, students, event"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  <div class="admin-form-row admin-form-row-inline">
+                    <div class="admin-form-col-inline">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline">Status</span>
+                        <select name="status" class="admin-input-inline">
+                          <option value="draft">Draft</option>
+                          <option value="published" selected>Published</option>
+                          <option value="archived">Archived</option>
+                        </select>
+                      </label>
+                    </div>
+                  </div>
+                  <button type="submit" class="admin-btn-submit">
+                    <i class="fas fa-plus" aria-hidden="true"></i> Create
+                    Gallery Item
+                  </button>
+                </form>
+                <p
+                  class="admin-form-message"
+                  id="gallery-form-message"
+                  aria-live="polite"
+                ></p>
+              </div>
+
+              <div class="admin-list-container">
+                <div class="admin-list-header">
+                  <h4>
+                    <i class="fas fa-list-ul" aria-hidden="true"></i> All
+                    Gallery Items
+                  </h4>
+                </div>
+                <div class="admin-items-list" id="gallery-list"></div>
+              </div>
+            </div>
+          </section>
         </div>
       </section>
     </main>
@@ -674,15 +802,15 @@
             </div>
           </div>
           <div class="admin-modal-actions">
+            <button type="submit" class="admin-btn-submit">
+              <i class="fas fa-save" aria-hidden="true"></i> Save Changes
+            </button>
             <button
               type="button"
               class="btn btn-secondary btn-small"
               data-modal-close="leader"
             >
               Cancel
-            </button>
-            <button type="submit" class="admin-btn-submit">
-              <i class="fas fa-save" aria-hidden="true"></i> Save Changes
             </button>
           </div>
           <p
@@ -802,6 +930,117 @@
           <p
             class="admin-form-message"
             id="announcement-edit-message"
+            aria-live="polite"
+          ></p>
+        </form>
+      </div>
+    </div>
+
+    <div class="admin-modal" id="gallery-edit-modal" aria-hidden="true" hidden>
+      <div class="admin-modal-backdrop" data-modal-close="gallery"></div>
+      <div
+        class="admin-modal-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="gallery-edit-modal-title"
+      >
+        <div class="admin-modal-header">
+          <div>
+            <p class="admin-modal-kicker">Edit Gallery Item</p>
+            <h3 id="gallery-edit-modal-title">Update gallery details</h3>
+          </div>
+          <button
+            type="button"
+            class="admin-modal-close"
+            data-modal-close="gallery"
+            aria-label="Close gallery edit modal"
+          >
+            <i class="fas fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <form
+          class="admin-section-form admin-modal-form"
+          id="gallery-edit-form"
+        >
+          <div class="admin-form-row">
+            <div class="admin-form-col admin-form-col-full">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Title *</span>
+                <input
+                  type="text"
+                  name="title"
+                  class="admin-input-inline"
+                  required
+                />
+              </label>
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="admin-form-col admin-form-col-full">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Image URL *</span>
+                <input
+                  type="url"
+                  name="imageUrl"
+                  class="admin-input-inline"
+                  required
+                />
+              </label>
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="admin-form-col admin-form-col-full">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Caption</span>
+                <textarea
+                  name="caption"
+                  class="admin-input-inline"
+                  rows="3"
+                ></textarea>
+              </label>
+            </div>
+          </div>
+          <div class="admin-form-row admin-form-row-inline">
+            <div class="admin-form-col-inline">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Album</span>
+                <input type="text" name="album" class="admin-input-inline" />
+              </label>
+            </div>
+            <div class="admin-form-col-inline">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Tags</span>
+                <input type="text" name="tags" class="admin-input-inline" />
+              </label>
+            </div>
+          </div>
+          <div class="admin-form-row admin-form-row-inline">
+            <div class="admin-form-col-inline">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Status</span>
+                <select name="status" class="admin-input-inline">
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          <div class="admin-modal-actions">
+            <button
+              type="button"
+              class="btn btn-secondary btn-small"
+              data-modal-close="gallery"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="admin-btn-submit">
+              <i class="fas fa-save" aria-hidden="true"></i> Save Changes
+            </button>
+          </div>
+          <p
+            class="admin-form-message"
+            id="gallery-edit-message"
             aria-live="polite"
           ></p>
         </form>

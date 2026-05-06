@@ -22,18 +22,24 @@ document.addEventListener('DOMContentLoaded', function () {
   const roleState = document.getElementById('admin-role-state');
   const roleMeta = document.getElementById('admin-role-meta');
   const announcementForm = document.getElementById('announcement-create-form');
+  const galleryForm = document.getElementById('gallery-create-form');
   const eventForm = document.getElementById('event-create-form');
   const leaderForm = document.getElementById('leader-create-form');
   const announcementMessage = document.getElementById('announcement-form-message');
+  const galleryMessage = document.getElementById('gallery-form-message');
   const eventMessage = document.getElementById('event-form-message');
   const leaderMessage = document.getElementById('leader-form-message');
   const announcementsList = document.getElementById('announcements-list');
+  const galleryList = document.getElementById('gallery-list');
   const eventsList = document.getElementById('events-list');
   const leadersList = document.getElementById('leaders-list');
   const refreshAllBtn = document.getElementById('refresh-all-btn');
   const announcementEditModal = document.getElementById('announcement-edit-modal');
   const announcementEditForm = document.getElementById('announcement-edit-form');
   const announcementEditMessage = document.getElementById('announcement-edit-message');
+  const galleryEditModal = document.getElementById('gallery-edit-modal');
+  const galleryEditForm = document.getElementById('gallery-edit-form');
+  const galleryEditMessage = document.getElementById('gallery-edit-message');
   const eventEditModal = document.getElementById('event-edit-modal');
   const eventEditForm = document.getElementById('event-edit-form');
   const eventEditMessage = document.getElementById('event-edit-message');
@@ -48,12 +54,15 @@ document.addEventListener('DOMContentLoaded', function () {
   let authToken = readStoredToken();
   let currentUser = null;
   let editingAnnouncementId = '';
+  let editingGalleryId = '';
   let editingEventId = '';
   let editingLeaderId = '';
   let announcementEditTrigger = null;
+  let galleryEditTrigger = null;
   let eventEditTrigger = null;
   let leaderEditTrigger = null;
   let cachedAnnouncements = [];
+  let cachedGalleryItems = [];
   let cachedEvents = [];
   let cachedLeaders = [];
 
@@ -111,6 +120,15 @@ document.addEventListener('DOMContentLoaded', function () {
     setMessage(announcementEditMessage, '', '');
   }
 
+  function resetGalleryEditForm() {
+    if (galleryEditForm) {
+      galleryEditForm.reset();
+      const statusField = galleryEditForm.querySelector('[name="status"]');
+      if (statusField) statusField.value = 'published';
+    }
+    setMessage(galleryEditMessage, '', '');
+  }
+
   function resetLeaderEditForm() {
     if (leaderEditForm) {
       leaderEditForm.reset();
@@ -163,6 +181,17 @@ document.addEventListener('DOMContentLoaded', function () {
     announcementEditTrigger = null;
   }
 
+  function closeGalleryEditModal() {
+    editingGalleryId = '';
+    if (galleryEditModal?.contains(document.activeElement)) {
+      document.activeElement.blur();
+    }
+    resetGalleryEditForm();
+    setModalVisible(galleryEditModal, false);
+    returnFocusToTrigger(galleryEditTrigger);
+    galleryEditTrigger = null;
+  }
+
   function openEventEditModal(eventData, triggerElement) {
     if (!eventEditForm || !eventEditModal) return;
     editingEventId = eventData?.id || '';
@@ -188,6 +217,20 @@ document.addEventListener('DOMContentLoaded', function () {
     announcementEditForm.querySelector('[name="expiresAt"]').value = announcementData.expiresAt ? String(announcementData.expiresAt).slice(0, 10) : '';
     setMessage(announcementEditMessage, `Editing announcement: ${announcementData.title || 'Untitled Announcement'}`, 'info');
     setModalVisible(announcementEditModal, true);
+  }
+
+  function openGalleryEditModal(galleryData, triggerElement) {
+    if (!galleryEditForm || !galleryEditModal) return;
+    editingGalleryId = galleryData?.id || '';
+    galleryEditTrigger = triggerElement || null;
+    galleryEditForm.querySelector('[name="title"]').value = galleryData.title || '';
+    galleryEditForm.querySelector('[name="imageUrl"]').value = galleryData.imageUrl || '';
+    galleryEditForm.querySelector('[name="caption"]').value = galleryData.caption || '';
+    galleryEditForm.querySelector('[name="album"]').value = galleryData.album || '';
+    galleryEditForm.querySelector('[name="tags"]').value = Array.isArray(galleryData.tags) ? galleryData.tags.join(', ') : '';
+    galleryEditForm.querySelector('[name="status"]').value = galleryData.status || 'published';
+    setMessage(galleryEditMessage, `Editing gallery item: ${galleryData.title || 'Untitled Item'}`, 'info');
+    setModalVisible(galleryEditModal, true);
   }
 
   function openLeaderEditModal(leaderData, triggerElement) {
@@ -246,6 +289,35 @@ document.addEventListener('DOMContentLoaded', function () {
         <button type="button" class="admin-item-btn-delete" data-delete-type="announcement" data-delete-id="${escapeHtml(announcement.id)}">Delete</button>
       `,
     )).join('');
+  }
+
+  function renderGalleryItems(galleryItems) {
+    if (!galleryList) return;
+    if (!galleryItems.length) {
+      galleryList.innerHTML = '<p class="admin-empty">No gallery items returned by the API yet.</p>';
+      return;
+    }
+
+    galleryList.innerHTML = galleryItems.map((item) => {
+      const tagsLabel = Array.isArray(item.tags) && item.tags.length ? item.tags.map((tag) => escapeHtml(tag)).join(', ') : 'None';
+      return `
+        <article class="admin-item-card">
+          <div class="admin-item-header">
+            <div class="admin-item-title">${escapeHtml(item.title || 'Untitled Gallery Item')}</div>
+            ${item.status ? `<span class="admin-item-badge ${escapeHtml(item.status)}">${escapeHtml(String(item.status).toUpperCase())}</span>` : ''}
+          </div>
+          <div class="admin-item-meta">
+            <span><strong>Album:</strong> ${escapeHtml(item.album || 'N/A')}</span>
+            <span><strong>Tags:</strong> ${tagsLabel}</span>
+            <span><strong>Image:</strong> ${escapeHtml(item.imageUrl || 'N/A')}</span>
+          </div>
+          <div class="admin-item-actions">
+            <button type="button" class="btn btn-secondary btn-small admin-item-btn-edit" data-edit-type="gallery" data-edit-id="${escapeHtml(item.id)}">Edit</button>
+            <button type="button" class="admin-item-btn-delete" data-delete-type="gallery" data-delete-id="${escapeHtml(item.id)}">Delete</button>
+          </div>
+        </article>
+      `;
+    }).join('');
   }
 
   function setAuthToken(token) {
@@ -391,17 +463,20 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!authToken || !isDashboardPage) return;
 
     try {
-      const [eventsResponse, leadersResponse, announcementsResponse] = await Promise.all([
+      const [eventsResponse, leadersResponse, announcementsResponse, galleryResponse] = await Promise.all([
         apiRequest('/events/all'),
         apiRequest('/leaders/all'),
         apiRequest('/announcements/all'),
+        apiRequest('/gallery/all'),
       ]);
 
       cachedEvents = Array.isArray(eventsResponse?.data) ? eventsResponse.data : [];
       cachedLeaders = Array.isArray(leadersResponse?.data) ? leadersResponse.data : [];
       cachedAnnouncements = Array.isArray(announcementsResponse?.data) ? announcementsResponse.data : [];
+      cachedGalleryItems = Array.isArray(galleryResponse?.data) ? galleryResponse.data : [];
 
       renderAnnouncements(cachedAnnouncements);
+      renderGalleryItems(cachedGalleryItems);
       renderEvents(cachedEvents);
       renderLeaders(cachedLeaders);
       setStatus(apiState, 'Connected');
@@ -501,6 +576,18 @@ document.addEventListener('DOMContentLoaded', function () {
     };
   }
 
+  function buildGalleryPayload(formData) {
+    const tagsRaw = String(formData.get('tags') || '').trim();
+    return {
+      title: String(formData.get('title') || '').trim(),
+      imageUrl: String(formData.get('imageUrl') || '').trim(),
+      caption: String(formData.get('caption') || '').trim(),
+      album: String(formData.get('album') || '').trim(),
+      tags: tagsRaw ? tagsRaw.split(',').map((tag) => tag.trim()).filter(Boolean) : [],
+      status: String(formData.get('status') || 'published').trim(),
+    };
+  }
+
   async function handleAnnouncementCreate(event) {
     event.preventDefault();
     setMessage(announcementMessage, 'Saving announcement...', 'info');
@@ -543,6 +630,50 @@ document.addEventListener('DOMContentLoaded', function () {
       await loadAdminData();
     } catch (error) {
       setMessage(announcementEditMessage, error.message, 'error');
+    }
+  }
+
+  async function handleGalleryCreate(event) {
+    event.preventDefault();
+    setMessage(galleryMessage, 'Saving gallery item...', 'info');
+
+    const formData = new FormData(galleryForm);
+    const payload = buildGalleryPayload(formData);
+
+    try {
+      await apiRequest('/gallery', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+
+      galleryForm.reset();
+      galleryForm.querySelector('[name="status"]').value = 'published';
+      setMessage(galleryMessage, 'Gallery item created successfully.', 'success');
+      await loadAdminData();
+    } catch (error) {
+      setMessage(galleryMessage, error.message, 'error');
+    }
+  }
+
+  async function handleGalleryEditSubmit(event) {
+    event.preventDefault();
+    if (!editingGalleryId) return;
+
+    setMessage(galleryEditMessage, 'Updating gallery item...', 'info');
+
+    const formData = new FormData(galleryEditForm);
+    const payload = buildGalleryPayload(formData);
+
+    try {
+      await apiRequest(`/gallery/${editingGalleryId}`, {
+        method: 'PATCH',
+        body: JSON.stringify(payload),
+      });
+
+      closeGalleryEditModal();
+      await loadAdminData();
+    } catch (error) {
+      setMessage(galleryEditMessage, error.message, 'error');
     }
   }
 
@@ -664,6 +795,14 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
+      if (itemType === 'gallery') {
+        const galleryData = cachedGalleryItems.find((item) => item.id === itemId);
+        if (!galleryData) return;
+
+        openGalleryEditModal(galleryData, editButton);
+        return;
+      }
+
       if (itemType === 'event') {
         const eventData = cachedEvents.find((item) => item.id === itemId);
         if (!eventData) return;
@@ -694,14 +833,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!confirmed) return;
 
     try {
-      const endpoint = itemType === 'event' ? 'events' : itemType === 'leader' ? 'leaders' : 'announcements';
+      const endpoint = itemType === 'event' ? 'events' : itemType === 'leader' ? 'leaders' : itemType === 'gallery' ? 'gallery' : 'announcements';
       await apiRequest(`/${endpoint}/${itemId}`, {
         method: 'DELETE',
       });
 
       await loadAdminData();
     } catch (error) {
-      const targetMessage = itemType === 'event' ? eventMessage : itemType === 'leader' ? leaderMessage : announcementMessage;
+      const targetMessage = itemType === 'event' ? eventMessage : itemType === 'leader' ? leaderMessage : itemType === 'gallery' ? galleryMessage : announcementMessage;
       setMessage(targetMessage, error.message, 'error');
     }
   }
@@ -714,11 +853,13 @@ document.addEventListener('DOMContentLoaded', function () {
     setAuthToken('');
     currentUser = null;
     closeAnnouncementEditModal();
+    closeGalleryEditModal();
     closeEventEditModal();
     closeLeaderEditModal();
     updateAuthUi(false);
     if (isDashboardPage) {
       renderAnnouncements([]);
+      renderGalleryItems([]);
       renderEvents([]);
       renderLeaders([]);
       goToLogin();
@@ -738,9 +879,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   loginForm?.addEventListener('submit', handleLogin);
   announcementForm?.addEventListener('submit', handleAnnouncementCreate);
+  galleryForm?.addEventListener('submit', handleGalleryCreate);
   eventForm?.addEventListener('submit', handleEventCreate);
   leaderForm?.addEventListener('submit', handleLeaderCreate);
   announcementEditForm?.addEventListener('submit', handleAnnouncementEditSubmit);
+  galleryEditForm?.addEventListener('submit', handleGalleryEditSubmit);
   eventEditForm?.addEventListener('submit', handleEventEditSubmit);
   leaderEditForm?.addEventListener('submit', handleLeaderEditSubmit);
   logoutBtn?.addEventListener('click', handleSignOut);
@@ -753,6 +896,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const modalType = closeTarget.dataset.modalClose;
     if (modalType === 'announcement') closeAnnouncementEditModal();
+    if (modalType === 'gallery') closeGalleryEditModal();
     if (modalType === 'event') closeEventEditModal();
     if (modalType === 'leader') closeLeaderEditModal();
   });
@@ -760,6 +904,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.addEventListener('keydown', function (event) {
     if (event.key !== 'Escape') return;
     if (announcementEditModal && !announcementEditModal.hidden) closeAnnouncementEditModal();
+    if (galleryEditModal && !galleryEditModal.hidden) closeGalleryEditModal();
     if (eventEditModal && !eventEditModal.hidden) closeEventEditModal();
     if (leaderEditModal && !leaderEditModal.hidden) closeLeaderEditModal();
   });

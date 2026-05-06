@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const navLinkItems = document.querySelectorAll('.nav-link');
   const heroSection = document.querySelector('.hero');
   const eventsGrid = document.querySelector('.events-grid');
+  const galleryGrid = document.querySelector('.gallery-grid');
   const leadershipGrid = document.querySelector('.leadership-grid');
   const navItemElements = document.querySelectorAll('.nav-item');
   const anchorNavLinks = Array.from(navLinkItems).filter(function (link) {
@@ -341,6 +342,56 @@ document.addEventListener('DOMContentLoaded', function () {
     return card;
   }
 
+  function buildGalleryCard(item) {
+    const card = document.createElement('article');
+    card.className = 'gallery-card';
+
+    const media = document.createElement('div');
+    media.className = 'gallery-media';
+
+    const image = document.createElement('img');
+    image.src = item.imageUrl || '';
+    image.alt = item.title || 'Gallery image';
+    image.loading = 'lazy';
+    media.appendChild(image);
+
+    const content = document.createElement('div');
+    content.className = 'gallery-content';
+
+    const badge = document.createElement('span');
+    badge.className = 'gallery-badge';
+    badge.textContent = item.album || 'Gallery';
+
+    const title = document.createElement('h3');
+    title.textContent = String(item.title ?? 'Untitled Gallery Item');
+
+    content.append(badge, title);
+
+    if (item.caption) {
+      const caption = document.createElement('p');
+      caption.className = 'gallery-caption';
+      caption.textContent = String(item.caption);
+      content.appendChild(caption);
+    }
+
+    if (Array.isArray(item.tags) && item.tags.length > 0) {
+      const tagsWrap = document.createElement('div');
+      tagsWrap.className = 'gallery-tags';
+
+      item.tags.forEach(function (tag) {
+        const tagEl = document.createElement('span');
+        tagEl.className = 'gallery-tag';
+        tagEl.textContent = String(tag);
+        tagsWrap.appendChild(tagEl);
+      });
+
+      content.appendChild(tagsWrap);
+    }
+
+    card.append(media, content);
+    return card;
+  }
+
   async function loadEventsSection() {
     if (!eventsGrid || !apiBaseUrl) return;
 
@@ -393,6 +444,44 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  async function loadGallerySection() {
+    if (!galleryGrid || !apiBaseUrl) return;
+
+    try {
+      const response = await fetch(apiBaseUrl + '/gallery');
+
+      if (!response.ok) {
+        throw new Error('Unable to load gallery');
+      }
+
+      const payload = await response.json();
+      const items = Array.isArray(payload.data) ? payload.data : [];
+
+      galleryGrid.innerHTML = '';
+
+      if (items.length === 0) {
+        const empty = document.createElement('p');
+        empty.className = 'gallery-empty';
+        empty.textContent = 'Gallery moments will appear here soon.';
+        galleryGrid.appendChild(empty);
+        return;
+      }
+
+      items.forEach(function (item) {
+        galleryGrid.appendChild(buildGalleryCard(item));
+      });
+    } catch (error) {
+      console.warn('Gallery section could not be refreshed from the API.', error);
+      if (galleryGrid && !galleryGrid.children.length) {
+        const fallback = document.createElement('p');
+        fallback.className = 'gallery-empty';
+        fallback.textContent = 'Gallery moments could not be loaded right now.';
+        galleryGrid.appendChild(fallback);
+      }
+    }
+  }
+
   loadEventsSection();
   loadLeadershipSection();
+  loadGallerySection();
 });
