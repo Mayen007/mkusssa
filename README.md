@@ -8,7 +8,7 @@ MKUSSSA’s site is staying visually familiar on the outside while moving to a d
 
 - Public site: static HTML, CSS, and minimal JavaScript
 - Backend: Node.js, Express, MongoDB, JWT auth
-- Current dynamic modules: events CRUD, admin login, leadership reads
+- Current dynamic modules: events CRUD, admin login, leadership management, announcements, gallery, and membership submissions
 
 ## What’s in the Repo
 
@@ -46,7 +46,7 @@ The backend in `server/` uses:
 - CORS for browser access
 - bcryptjs and jsonwebtoken for admin auth
 
-The Express app also serves the public site from the repository root, so a single deployed host can serve both the frontend and the API under the same origin.
+The Express app serves the API and can also serve the public site during local development. The public pages live at the repository root, while the admin experience is split across `admin-login.html` and `admin.html`.
 
 ### Server Scripts
 
@@ -112,6 +112,9 @@ Public:
 - `GET /api/events/:slug`
 - `GET /api/leaders/current`
 - `GET /api/leaders/history`
+- `GET /api/announcements`
+- `GET /api/gallery`
+- `GET /api/memberships/all`
 
 Auth:
 
@@ -123,6 +126,16 @@ Protected writes:
 - `POST /api/events`
 - `PATCH /api/events/:id`
 - `DELETE /api/events/:id`
+- `POST /api/leaders`
+- `PATCH /api/leaders/:id`
+- `DELETE /api/leaders/:id`
+- `POST /api/announcements`
+- `PATCH /api/announcements/:id`
+- `DELETE /api/announcements/:id`
+- `POST /api/gallery`
+- `PATCH /api/gallery/:id`
+- `DELETE /api/gallery/:id`
+- `POST /api/memberships`
 
 ## Editing Notes
 
