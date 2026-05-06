@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const overlay = document.querySelector('.mobile-nav-overlay');
   const navLinkItems = document.querySelectorAll('.nav-link');
   const heroSection = document.querySelector('.hero');
+  const announcementsGrid = document.querySelector('.announcements-grid');
   const eventsGrid = document.querySelector('.events-grid');
   const galleryGrid = document.querySelector('.gallery-grid');
   const leadershipGrid = document.querySelector('.leadership-grid');
@@ -307,6 +308,58 @@ document.addEventListener('DOMContentLoaded', function () {
     return card;
   }
 
+  function formatAnnouncementDate(value) {
+    if (!value) return '';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    return new Intl.DateTimeFormat('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    }).format(date);
+  }
+
+  function buildAnnouncementCard(announcement) {
+    const card = document.createElement('article');
+    const priority = String(announcement.priority || 'normal').toLowerCase();
+    card.className = 'announcement-card is-' + priority;
+
+    const header = document.createElement('div');
+    header.className = 'announcement-header';
+
+    const titleWrap = document.createElement('div');
+
+    const priorityBadge = document.createElement('span');
+    priorityBadge.className = 'announcement-priority';
+    priorityBadge.textContent = priority;
+
+    const title = document.createElement('h3');
+    title.textContent = String(announcement.title ?? 'Untitled Announcement');
+
+    titleWrap.append(priorityBadge, title);
+
+    const date = document.createElement('span');
+    date.className = 'announcement-date';
+    date.textContent = formatAnnouncementDate(announcement.createdAt || announcement.updatedAt) || 'Posted recently';
+
+    header.append(titleWrap, date);
+
+    const body = document.createElement('p');
+    body.textContent = String(announcement.body ?? '');
+
+    const footer = document.createElement('div');
+    footer.className = 'announcement-footer';
+
+    const expiry = document.createElement('span');
+    expiry.className = 'announcement-expiry';
+    expiry.textContent = announcement.expiresAt ? 'Expires ' + formatAnnouncementDate(announcement.expiresAt) : 'No expiry set';
+
+    footer.appendChild(expiry);
+
+    card.append(header, body, footer);
+    return card;
+  }
+
   function buildLeaderCard(leader) {
     const card = document.createElement('article');
     card.className = 'leader-card';
@@ -444,6 +497,43 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  async function loadAnnouncementsSection() {
+    if (!announcementsGrid || !apiBaseUrl) return;
+
+    try {
+      const response = await fetch(apiBaseUrl + '/announcements');
+
+      if (!response.ok) {
+        throw new Error('Unable to load announcements');
+      }
+
+      const payload = await response.json();
+      const announcements = Array.isArray(payload.data) ? payload.data : [];
+
+      announcementsGrid.innerHTML = '';
+
+      if (announcements.length === 0) {
+        const empty = document.createElement('p');
+        empty.className = 'announcements-empty';
+        empty.textContent = 'Announcements will appear here when published.';
+        announcementsGrid.appendChild(empty);
+        return;
+      }
+
+      announcements.forEach(function (announcement) {
+        announcementsGrid.appendChild(buildAnnouncementCard(announcement));
+      });
+    } catch (error) {
+      console.warn('Announcements section could not be refreshed from the API.', error);
+      if (announcementsGrid && !announcementsGrid.children.length) {
+        const fallback = document.createElement('p');
+        fallback.className = 'announcements-empty';
+        fallback.textContent = 'Announcements could not be loaded right now.';
+        announcementsGrid.appendChild(fallback);
+      }
+    }
+  }
+
   async function loadGallerySection() {
     if (!galleryGrid || !apiBaseUrl) return;
 
@@ -482,6 +572,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   loadEventsSection();
+  loadAnnouncementsSection();
   loadLeadershipSection();
   loadGallerySection();
 });
