@@ -610,7 +610,7 @@
     </main>
 
     <div class="admin-modal" id="event-edit-modal" aria-hidden="true" hidden>
-      <div class="admin-modal-backdrop" data-modal-close="event"></div>
+      <div class="admin-modal-backdrop"></div>
       <div
         class="admin-modal-dialog"
         role="dialog"
@@ -726,7 +726,7 @@
     </div>
 
     <div class="admin-modal" id="leader-edit-modal" aria-hidden="true" hidden>
-      <div class="admin-modal-backdrop" data-modal-close="leader"></div>
+      <div class="admin-modal-backdrop"></div>
       <div
         class="admin-modal-dialog"
         role="dialog"
@@ -857,7 +857,7 @@
       aria-hidden="true"
       hidden
     >
-      <div class="admin-modal-backdrop" data-modal-close="announcement"></div>
+      <div class="admin-modal-backdrop"></div>
       <div
         class="admin-modal-dialog"
         role="dialog"
@@ -966,7 +966,7 @@
     </div>
 
     <div class="admin-modal" id="gallery-edit-modal" aria-hidden="true" hidden>
-      <div class="admin-modal-backdrop" data-modal-close="gallery"></div>
+      <div class="admin-modal-backdrop"></div>
       <div
         class="admin-modal-dialog"
         role="dialog"
@@ -1073,6 +1073,56 @@
             aria-live="polite"
           ></p>
         </form>
+      </div>
+    </div>
+
+    <div
+      class="admin-modal"
+      id="delete-confirm-modal"
+      aria-hidden="true"
+      hidden
+    >
+      <div class="admin-modal-backdrop"></div>
+      <div
+        class="admin-modal-dialog admin-confirm-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="delete-confirm-modal-title"
+      >
+        <div class="admin-modal-header">
+          <div>
+            <p class="admin-modal-kicker">Confirm Delete</p>
+            <h3 id="delete-confirm-modal-title">Delete item</h3>
+          </div>
+          <button
+            type="button"
+            class="admin-modal-close"
+            data-modal-close="delete-confirm"
+            aria-label="Close delete confirmation"
+          >
+            <i class="fas fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="admin-confirm-body">
+          <p class="admin-confirm-message" id="delete-confirm-message"></p>
+          <p class="admin-confirm-note">This action cannot be undone.</p>
+        </div>
+        <div class="admin-modal-actions admin-confirm-actions">
+          <button
+            type="button"
+            class="btn btn-secondary btn-small"
+            data-modal-close="delete-confirm"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="admin-btn-submit btn-small admin-delete-confirm-btn"
+            id="delete-confirm-submit"
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </div>
 

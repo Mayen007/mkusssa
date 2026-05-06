@@ -286,9 +286,12 @@ body {
 }
 
 .btn-large {
-  padding: var(--large-spacing) var(--extra-large-spacing);
-  font-size: var(--font-lg);
+  font-size: var(--font-md);
   margin: var(--small-spacing);
+}
+
+.membership-open-btn {
+  font-size: var(--font-md);
 }
 
 /* Main Content */
@@ -1326,7 +1329,7 @@ main {
 }
 
 .membership-inline-note {
-  margin-bottom: var(--medium-spacing);
+  margin-top: var(--medium-spacing);
   color: var(--light-text-color);
   font-size: var(--font-sm);
 }
@@ -1387,10 +1390,6 @@ main {
   grid-column: 1 / -1;
 }
 
-.membership-submit {
-  width: 100%;
-}
-
 .membership-form-message {
   min-height: 20px;
   color: var(--light-text-color);
@@ -1407,6 +1406,16 @@ main {
 
 .membership-form-message[data-tone="info"] {
   color: var(--primary-color);
+}
+
+.membership-modal .admin-modal-dialog {
+  width: min(650px, 100%);
+}
+
+.membership-modal-note {
+  margin: 0;
+  color: var(--light-text-color);
+  font-size: var(--font-sm);
 }
 
 .admin-list-container-full {
@@ -1826,6 +1835,10 @@ main {
     padding: var(--medium-spacing);
   }
 
+  .admin-login-features {
+    gap: var(--medium-spacing);
+  }
+
   .admin-section-title {
     font-size: var(--font-md);
     text-align: center;
@@ -1837,10 +1850,6 @@ main {
 
   .admin-login-hero {
     padding: 60px 0 30px;
-  }
-
-  .admin-login-features {
-    gap: var(--medium-spacing);
   }
 
   .admin-feature {
@@ -2949,7 +2958,7 @@ body.admin-page {
 .admin-modal-dialog {
   position: relative;
   z-index: 1;
-  width: min(920px, 100%);
+  width: min(650px, 100%);
   max-height: calc(100vh - 48px);
   overflow: auto;
   background: #ffffff;
@@ -3032,6 +3041,76 @@ body.admin-page {
   align-items: center;
   gap: var(--small-spacing);
   flex-wrap: wrap;
+}
+
+.admin-modal-actions>* {
+  flex: 0 0 auto;
+}
+
+.admin-modal-actions .btn,
+.admin-modal-actions .admin-btn-submit {
+  width: auto;
+  min-height: 40px;
+  padding: 10px 14px;
+  font-size: var(--font-sm);
+  justify-content: center;
+}
+
+.admin-modal-actions .btn-small {
+  font-size: var(--font-sm);
+}
+
+.membership-modal-actions .btn,
+.membership-modal-actions .admin-btn-submit {
+  min-width: 150px;
+}
+
+.admin-confirm-dialog {
+  width: min(520px, 100%);
+}
+
+.admin-confirm-body {
+  padding: 10px 28px 0;
+  display: grid;
+  gap: 8px;
+}
+
+.admin-confirm-message {
+  margin: 0;
+  font-size: var(--font-md);
+  color: var(--text-color);
+}
+
+.admin-confirm-note {
+  margin: 0;
+  font-size: var(--font-sm);
+  color: var(--light-text-color);
+}
+
+.admin-confirm-actions {
+  justify-content: flex-end;
+  padding: 0 28px 28px;
+}
+
+.admin-delete-confirm-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+}
+
+.admin-delete-confirm-btn:hover {
+  background: #b92a38;
+  color: white;
+}
+
+.membership-submit {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+}
+
+.membership-submit:hover {
+  background-color: var(--background-color);
+  color: var(--primary-color);
 }
 
 /* ==================== RESPONSIVE ==================== */

@@ -47,6 +47,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const leaderEditModal = document.getElementById('leader-edit-modal');
   const leaderEditForm = document.getElementById('leader-edit-form');
   const leaderEditMessage = document.getElementById('leader-edit-message');
+  const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+  const deleteConfirmTitle = document.getElementById('delete-confirm-modal-title');
+  const deleteConfirmMessage = document.getElementById('delete-confirm-message');
+  const deleteConfirmSubmit = document.getElementById('delete-confirm-submit');
 
   function readStoredToken() {
     return sessionStorage.getItem(tokenKey) || localStorage.getItem(tokenKey) || '';
@@ -62,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let galleryEditTrigger = null;
   let eventEditTrigger = null;
   let leaderEditTrigger = null;
+  let pendingDeleteAction = null;
   let cachedAnnouncements = [];
   let cachedGalleryItems = [];
   let cachedMemberships = [];
@@ -85,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (visible) {
       modalElement.hidden = false;
       modalElement.classList.remove('is-closing');
+      document.body.classList.add('no-scroll');
       requestAnimationFrame(() => {
         modalElement.classList.add('is-visible');
       });
@@ -97,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.setTimeout(() => {
       modalElement.hidden = true;
       modalElement.classList.remove('is-closing');
+      document.body.classList.remove('no-scroll');
     }, 220);
   }
 
@@ -250,6 +257,39 @@ document.addEventListener('DOMContentLoaded', function () {
     setModalVisible(leaderEditModal, true);
   }
 
+  function getDeleteConfirmLabel(itemType) {
+    if (itemType === 'event') return 'Delete Event';
+    if (itemType === 'leader') return 'Delete Leader';
+    if (itemType === 'gallery') return 'Delete Gallery Item';
+    return 'Delete Announcement';
+  }
+
+  function openDeleteConfirmModal(itemType, itemId) {
+    if (!deleteConfirmModal || !deleteConfirmSubmit) return;
+
+    pendingDeleteAction = { itemType, itemId };
+    if (deleteConfirmTitle) {
+      deleteConfirmTitle.textContent = getDeleteConfirmLabel(itemType);
+    }
+    if (deleteConfirmMessage) {
+      deleteConfirmMessage.textContent = `Delete this ${itemType}?`;
+    }
+
+    deleteConfirmSubmit.textContent = 'Delete';
+    deleteConfirmSubmit.dataset.deleteType = itemType;
+    deleteConfirmSubmit.dataset.deleteId = itemId;
+    setModalVisible(deleteConfirmModal, true);
+  }
+
+  function closeDeleteConfirmModal() {
+    if (!deleteConfirmModal || !deleteConfirmSubmit) return;
+
+    pendingDeleteAction = null;
+    deleteConfirmSubmit.removeAttribute('data-delete-type');
+    deleteConfirmSubmit.removeAttribute('data-delete-id');
+    setModalVisible(deleteConfirmModal, false);
+  }
+
   function escapeHtml(value) {
     return String(value ?? '')
       .replace(/&/g, '&amp;')
@@ -334,6 +374,8 @@ document.addEventListener('DOMContentLoaded', function () {
       [
         `<strong>Email:</strong> ${escapeHtml(submission.email || 'N/A')}`,
         `<strong>Phone:</strong> ${escapeHtml(submission.phone || 'N/A')}`,
+        `<strong>Reg. No.:</strong> ${escapeHtml(submission.registrationNumber || 'N/A')}`,
+        `<strong>Course:</strong> ${escapeHtml(submission.course || 'N/A')}`,
         `<strong>Message:</strong> ${escapeHtml(submission.message || 'N/A')}`,
         `<strong>Source:</strong> ${escapeHtml(submission.source || 'homepage')}`,
         `<strong>Submitted:</strong> ${formatDate(submission.createdAt)}`,
@@ -856,8 +898,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const itemId = button.dataset.deleteId;
     if (!itemType || !itemId) return;
 
-    const confirmed = window.confirm(`Delete this ${itemType}? This cannot be undone.`);
-    if (!confirmed) return;
+    openDeleteConfirmModal(itemType, itemId);
+  }
+
+  async function handleDeleteConfirmSubmit() {
+    if (!pendingDeleteAction) return;
+
+    const { itemType, itemId } = pendingDeleteAction;
 
     try {
       const endpoint = itemType === 'event' ? 'events' : itemType === 'leader' ? 'leaders' : itemType === 'gallery' ? 'gallery' : 'announcements';
@@ -865,8 +912,10 @@ document.addEventListener('DOMContentLoaded', function () {
         method: 'DELETE',
       });
 
+      closeDeleteConfirmModal();
       await loadAdminData();
     } catch (error) {
+      closeDeleteConfirmModal();
       const targetMessage = itemType === 'event' ? eventMessage : itemType === 'leader' ? leaderMessage : itemType === 'gallery' ? galleryMessage : announcementMessage;
       setMessage(targetMessage, error.message, 'error');
     }
@@ -914,6 +963,7 @@ document.addEventListener('DOMContentLoaded', function () {
   galleryEditForm?.addEventListener('submit', handleGalleryEditSubmit);
   eventEditForm?.addEventListener('submit', handleEventEditSubmit);
   leaderEditForm?.addEventListener('submit', handleLeaderEditSubmit);
+  deleteConfirmSubmit?.addEventListener('click', handleDeleteConfirmSubmit);
   logoutBtn?.addEventListener('click', handleSignOut);
   refreshAllBtn?.addEventListener('click', loadAdminData);
   document.addEventListener('click', handleDeleteClick);
@@ -922,11 +972,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const closeTarget = event.target.closest('[data-modal-close]');
     if (!closeTarget) return;
 
+    if (closeTarget.classList.contains('admin-modal-backdrop')) return;
+
     const modalType = closeTarget.dataset.modalClose;
     if (modalType === 'announcement') closeAnnouncementEditModal();
     if (modalType === 'gallery') closeGalleryEditModal();
     if (modalType === 'event') closeEventEditModal();
     if (modalType === 'leader') closeLeaderEditModal();
+    if (modalType === 'delete-confirm') closeDeleteConfirmModal();
   });
 
   document.addEventListener('keydown', function (event) {
@@ -935,6 +988,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (galleryEditModal && !galleryEditModal.hidden) closeGalleryEditModal();
     if (eventEditModal && !eventEditModal.hidden) closeEventEditModal();
     if (leaderEditModal && !leaderEditModal.hidden) closeLeaderEditModal();
+    if (deleteConfirmModal && !deleteConfirmModal.hidden) closeDeleteConfirmModal();
   });
 
   verifySession();

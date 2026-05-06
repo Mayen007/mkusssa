@@ -10,6 +10,8 @@ function normalizeMembershipPayload(body, { partial = false } = {}) {
     fullName: hasField('fullName') && typeof body.fullName === 'string' ? body.fullName.trim() : undefined,
     email: hasField('email') && typeof body.email === 'string' ? body.email.trim() : undefined,
     phone: hasField('phone') && typeof body.phone === 'string' ? body.phone.trim() : undefined,
+    registrationNumber: hasField('registrationNumber') && typeof body.registrationNumber === 'string' ? body.registrationNumber.trim() : undefined,
+    course: hasField('course') && typeof body.course === 'string' ? body.course.trim() : undefined,
     message: hasField('message') && typeof body.message === 'string' ? body.message.trim() : undefined,
     source: hasField('source') && typeof body.source === 'string' ? body.source.trim() : undefined,
     status: hasField('status') && typeof body.status === 'string' ? body.status.trim().toLowerCase() : undefined,
@@ -23,6 +25,14 @@ function normalizeMembershipPayload(body, { partial = false } = {}) {
 
   if (!partial || hasField('message')) {
     if (!payload.message) errors.push('message is required');
+  }
+
+  if (!partial || hasField('registrationNumber')) {
+    if (!payload.registrationNumber) errors.push('registrationNumber is required');
+  }
+
+  if (!partial || hasField('course')) {
+    if (!payload.course) errors.push('course is required');
   }
 
   if (hasField('status') && payload.status && !['new', 'reviewed', 'closed'].includes(payload.status)) {

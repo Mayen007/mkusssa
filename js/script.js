@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const announcementsGrid = document.querySelector('.announcements-grid');
   const eventsGrid = document.querySelector('.events-grid');
   const galleryGrid = document.querySelector('.gallery-grid');
+  const membershipOpenButton = document.querySelector('[data-membership-open]');
+  const membershipModal = document.querySelector('#membership-modal');
   const membershipForm = document.querySelector('#membership-form');
   const membershipMessage = document.querySelector('#membership-form-message');
   const leadershipGrid = document.querySelector('.leadership-grid');
@@ -36,6 +38,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     return '';
   })();
+
+  let membershipTriggerElement = null;
 
   if (!mobileMenuBtn || !navLinks) return;
 
@@ -453,6 +457,52 @@ document.addEventListener('DOMContentLoaded', function () {
     membershipMessage.dataset.tone = tone || '';
   }
 
+  function setMembershipModalVisible(visible) {
+    if (!membershipModal) return;
+
+    membershipModal.hidden = !visible;
+    membershipModal.classList.toggle('is-visible', visible);
+    membershipModal.setAttribute('aria-hidden', visible ? 'false' : 'true');
+    document.body.classList.toggle('no-scroll', visible);
+
+    if (visible) {
+      window.setTimeout(function () {
+        const firstField = membershipModal.querySelector('input, textarea, button');
+        if (firstField && typeof firstField.focus === 'function') {
+          firstField.focus({ preventScroll: true });
+        }
+      }, 0);
+      return;
+    }
+
+    if (membershipTriggerElement && typeof membershipTriggerElement.focus === 'function' && membershipTriggerElement.isConnected) {
+      window.setTimeout(function () {
+        membershipTriggerElement.focus({ preventScroll: true });
+      }, 0);
+    }
+
+    membershipTriggerElement = null;
+  }
+
+  function openMembershipModal(triggerElement) {
+    membershipTriggerElement = triggerElement || membershipOpenButton || null;
+    setMembershipModalVisible(true);
+  }
+
+  function closeMembershipModal() {
+    if (!membershipModal) return;
+    membershipModal.classList.remove('is-visible');
+    membershipModal.classList.add('is-closing');
+    window.setTimeout(function () {
+      membershipModal.classList.remove('is-closing');
+      setMembershipModalVisible(false);
+    }, 220);
+    setMembershipMessage('', '');
+    if (membershipForm) {
+      membershipForm.reset();
+    }
+  }
+
   async function loadEventsSection() {
     if (!eventsGrid || !apiBaseUrl) return;
 
@@ -590,6 +640,8 @@ document.addEventListener('DOMContentLoaded', function () {
       fullName: String(formData.get('fullName') || '').trim(),
       email: String(formData.get('email') || '').trim(),
       phone: String(formData.get('phone') || '').trim(),
+      registrationNumber: String(formData.get('registrationNumber') || '').trim(),
+      course: String(formData.get('course') || '').trim(),
       message: String(formData.get('message') || '').trim(),
       source: 'homepage',
     };
@@ -609,8 +661,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
       membershipForm.reset();
       setMembershipMessage('Your membership request has been sent. We will contact you soon.', 'success');
+      window.setTimeout(function () {
+        closeMembershipModal();
+      }, 900);
     } catch (error) {
       setMembershipMessage(error.message, 'error');
+    }
+  }
+
+  function handleMembershipModalClick(event) {
+    if (!membershipModal) return;
+    const closeTarget = event.target.closest('[data-membership-close]');
+    if (closeTarget) {
+      closeMembershipModal();
+      return;
+    }
+
+    const openTarget = event.target.closest('[data-membership-open]');
+    if (openTarget) {
+      openMembershipModal(openTarget);
+    }
+  }
+
+  function handleMembershipModalKeydown(event) {
+    if (event.key === 'Escape' && membershipModal && !membershipModal.hidden) {
+      closeMembershipModal();
     }
   }
 
@@ -618,6 +693,15 @@ document.addEventListener('DOMContentLoaded', function () {
   loadAnnouncementsSection();
   loadLeadershipSection();
   loadGallerySection();
+  if (membershipOpenButton) {
+    membershipOpenButton.addEventListener('click', function (event) {
+      openMembershipModal(event.currentTarget);
+    });
+  }
+  if (membershipModal) {
+    document.addEventListener('click', handleMembershipModalClick);
+    document.addEventListener('keydown', handleMembershipModalKeydown);
+  }
   if (membershipForm) {
     membershipForm.addEventListener('submit', handleMembershipSubmit);
   }

@@ -889,62 +889,130 @@
                 >Join WhatsApp Group</a
               >
               <p class="membership-inline-note">
-                Prefer a direct sign-up? Send a membership request below.
+                Prefer a direct sign-up? Open the membership request form.
               </p>
-              <form class="membership-form" id="membership-form">
-                <div class="membership-form-row">
-                  <label class="membership-field">
-                    <span>Full Name *</span>
-                    <input
-                      type="text"
-                      name="fullName"
-                      required
-                      placeholder="Your full name"
-                    />
-                  </label>
-                  <label class="membership-field">
-                    <span>Email</span>
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="you@example.com"
-                    />
-                  </label>
-                </div>
-                <div class="membership-form-row">
-                  <label class="membership-field">
-                    <span>Phone</span>
-                    <input type="tel" name="phone" placeholder="07xx xxx xxx" />
-                  </label>
-                </div>
-                <div class="membership-form-row">
-                  <label class="membership-field membership-field-full">
-                    <span>Message *</span>
-                    <textarea
-                      name="message"
-                      rows="4"
-                      required
-                      placeholder="Tell us why you want to join MKUSSSA"
-                    ></textarea>
-                  </label>
-                </div>
-                <button
-                  type="submit"
-                  class="btn btn-secondary btn-large membership-submit"
-                >
-                  Submit Membership Request
-                </button>
-                <p
-                  class="membership-form-message"
-                  id="membership-form-message"
-                  aria-live="polite"
-                ></p>
-              </form>
+              <button
+                type="button"
+                class="btn btn-secondary membership-open-btn"
+                data-membership-open
+              >
+                Open Membership Form
+              </button>
             </div>
           </div>
         </div>
       </section>
     </main>
+
+    <div
+      class="admin-modal membership-modal"
+      id="membership-modal"
+      aria-hidden="true"
+      hidden
+    >
+      <div class="admin-modal-backdrop"></div>
+      <div
+        class="admin-modal-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="membership-modal-title"
+      >
+        <div class="admin-modal-header">
+          <div>
+            <p class="admin-modal-kicker">Membership Request</p>
+            <h3 id="membership-modal-title">Join MKUSSSA</h3>
+          </div>
+          <button
+            type="button"
+            class="admin-modal-close"
+            data-membership-close
+            aria-label="Close membership form"
+          >
+            <i class="fas fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <form
+          class="admin-section-form admin-modal-form membership-form"
+          id="membership-form"
+        >
+          <p class="membership-modal-note">
+            Tell us a little about yourself and why you want to join.
+          </p>
+          <div class="membership-form-row">
+            <label class="membership-field">
+              <span>Full Name *</span>
+              <input
+                type="text"
+                name="fullName"
+                required
+                placeholder="Your full name"
+              />
+            </label>
+            <label class="membership-field">
+              <span>Email</span>
+              <input type="email" name="email" placeholder="you@example.com" />
+            </label>
+          </div>
+          <div class="membership-form-row">
+            <label class="membership-field">
+              <span>Phone</span>
+              <input type="tel" name="phone" placeholder="07xx xxx xxx" />
+            </label>
+            <label class="membership-field">
+              <span>Registration Number *</span>
+              <input
+                type="text"
+                name="registrationNumber"
+                required
+                placeholder="Your student registration number"
+              />
+            </label>
+          </div>
+          <div class="membership-form-row">
+            <label class="membership-field membership-field-full">
+              <span>Course *</span>
+              <input
+                type="text"
+                name="course"
+                required
+                placeholder="Your course of study"
+              />
+            </label>
+          </div>
+          <div class="membership-form-row">
+            <label class="membership-field membership-field-full">
+              <span>Message *</span>
+              <textarea
+                name="message"
+                rows="4"
+                required
+                placeholder="Tell us why you want to join MKUSSSA"
+              ></textarea>
+            </label>
+          </div>
+          <div class="admin-modal-actions membership-modal-actions">
+            <button
+              type="submit"
+              class="btn btn-secondary btn-small membership-submit"
+            >
+              Submit
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary btn-small"
+              data-membership-close
+            >
+              Cancel
+            </button>
+          </div>
+          <p
+            class="membership-form-message"
+            id="membership-form-message"
+            aria-live="polite"
+          ></p>
+        </form>
+      </div>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">
