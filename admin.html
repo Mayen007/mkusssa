@@ -56,7 +56,9 @@
         <div class="admin-content-header">
           <div class="admin-content-title">
             <h2>Dashboard</h2>
-            <p>Manage events and leadership records in one place</p>
+            <p>
+              Manage announcements, events, and leadership records in one place
+            </p>
           </div>
           <div class="admin-content-controls">
             <button
@@ -71,6 +73,117 @@
         </div>
 
         <div class="admin-sections-grid">
+          <!-- ANNOUNCEMENTS SECTION -->
+          <section class="admin-section admin-section-announcements">
+            <div class="admin-section-header">
+              <div class="admin-section-title-group">
+                <span class="admin-section-icon">
+                  <i class="fas fa-bullhorn" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <h3 class="admin-section-title">Announcements</h3>
+                  <p class="admin-section-subtitle">
+                    Share urgent updates and notices
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-section-body">
+              <div class="admin-form-container">
+                <div class="admin-form-header-inline">
+                  <h4>
+                    <i class="fas fa-plus-circle" aria-hidden="true"></i> New
+                    Announcement
+                  </h4>
+                </div>
+                <form class="admin-section-form" id="announcement-create-form">
+                  <div class="admin-form-row">
+                    <div class="admin-form-col admin-form-col-full">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline">Title *</span>
+                        <input
+                          type="text"
+                          name="title"
+                          class="admin-input-inline"
+                          placeholder="Announcement heading"
+                          required
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  <div class="admin-form-row">
+                    <div class="admin-form-col admin-form-col-full">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline">Body *</span>
+                        <textarea
+                          name="body"
+                          class="admin-input-inline"
+                          rows="4"
+                          placeholder="Short announcement copy"
+                          required
+                        ></textarea>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="admin-form-row admin-form-row-inline">
+                    <div class="admin-form-col-inline">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline">Priority</span>
+                        <select name="priority" class="admin-input-inline">
+                          <option value="normal">Normal</option>
+                          <option value="important">Important</option>
+                          <option value="urgent">Urgent</option>
+                        </select>
+                      </label>
+                    </div>
+                    <div class="admin-form-col-inline">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline">Expires At</span>
+                        <input
+                          type="date"
+                          name="expiresAt"
+                          class="admin-input-inline"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  <div class="admin-form-row admin-form-row-inline">
+                    <div class="admin-form-col-inline">
+                      <label class="admin-form-field-inline">
+                        <span class="admin-field-label-inline">Status</span>
+                        <select name="status" class="admin-input-inline">
+                          <option value="draft">Draft</option>
+                          <option value="published" selected>Published</option>
+                          <option value="archived">Archived</option>
+                        </select>
+                      </label>
+                    </div>
+                  </div>
+                  <button type="submit" class="admin-btn-submit">
+                    <i class="fas fa-plus" aria-hidden="true"></i> Create
+                    Announcement
+                  </button>
+                </form>
+                <p
+                  class="admin-form-message"
+                  id="announcement-form-message"
+                  aria-live="polite"
+                ></p>
+              </div>
+
+              <div class="admin-list-container">
+                <div class="admin-list-header">
+                  <h4>
+                    <i class="fas fa-list-ul" aria-hidden="true"></i> All
+                    Announcements
+                  </h4>
+                </div>
+                <div class="admin-items-list" id="announcements-list"></div>
+              </div>
+            </div>
+          </section>
+
           <!-- EVENTS SECTION -->
           <section class="admin-section admin-section-events">
             <div class="admin-section-header">
@@ -575,6 +688,120 @@
           <p
             class="admin-form-message"
             id="leader-edit-message"
+            aria-live="polite"
+          ></p>
+        </form>
+      </div>
+    </div>
+
+    <div
+      class="admin-modal"
+      id="announcement-edit-modal"
+      aria-hidden="true"
+      hidden
+    >
+      <div class="admin-modal-backdrop" data-modal-close="announcement"></div>
+      <div
+        class="admin-modal-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="announcement-edit-modal-title"
+      >
+        <div class="admin-modal-header">
+          <div>
+            <p class="admin-modal-kicker">Edit Announcement</p>
+            <h3 id="announcement-edit-modal-title">
+              Update announcement details
+            </h3>
+          </div>
+          <button
+            type="button"
+            class="admin-modal-close"
+            data-modal-close="announcement"
+            aria-label="Close announcement edit modal"
+          >
+            <i class="fas fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <form
+          class="admin-section-form admin-modal-form"
+          id="announcement-edit-form"
+        >
+          <div class="admin-form-row">
+            <div class="admin-form-col admin-form-col-full">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Title *</span>
+                <input
+                  type="text"
+                  name="title"
+                  class="admin-input-inline"
+                  required
+                />
+              </label>
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="admin-form-col admin-form-col-full">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Body *</span>
+                <textarea
+                  name="body"
+                  class="admin-input-inline"
+                  rows="4"
+                  required
+                ></textarea>
+              </label>
+            </div>
+          </div>
+          <div class="admin-form-row admin-form-row-inline">
+            <div class="admin-form-col-inline">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Priority</span>
+                <select name="priority" class="admin-input-inline">
+                  <option value="normal">Normal</option>
+                  <option value="important">Important</option>
+                  <option value="urgent">Urgent</option>
+                </select>
+              </label>
+            </div>
+            <div class="admin-form-col-inline">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Expires At</span>
+                <input
+                  type="date"
+                  name="expiresAt"
+                  class="admin-input-inline"
+                />
+              </label>
+            </div>
+          </div>
+          <div class="admin-form-row admin-form-row-inline">
+            <div class="admin-form-col-inline">
+              <label class="admin-form-field-inline">
+                <span class="admin-field-label-inline">Status</span>
+                <select name="status" class="admin-input-inline">
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          <div class="admin-modal-actions">
+            <button
+              type="button"
+              class="btn btn-secondary btn-small"
+              data-modal-close="announcement"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="admin-btn-submit">
+              <i class="fas fa-save" aria-hidden="true"></i> Save Changes
+            </button>
+          </div>
+          <p
+            class="admin-form-message"
+            id="announcement-edit-message"
             aria-live="polite"
           ></p>
         </form>

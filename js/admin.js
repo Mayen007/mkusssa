@@ -21,13 +21,19 @@ document.addEventListener('DOMContentLoaded', function () {
   const apiMeta = document.getElementById('admin-api-meta');
   const roleState = document.getElementById('admin-role-state');
   const roleMeta = document.getElementById('admin-role-meta');
+  const announcementForm = document.getElementById('announcement-create-form');
   const eventForm = document.getElementById('event-create-form');
   const leaderForm = document.getElementById('leader-create-form');
+  const announcementMessage = document.getElementById('announcement-form-message');
   const eventMessage = document.getElementById('event-form-message');
   const leaderMessage = document.getElementById('leader-form-message');
+  const announcementsList = document.getElementById('announcements-list');
   const eventsList = document.getElementById('events-list');
   const leadersList = document.getElementById('leaders-list');
   const refreshAllBtn = document.getElementById('refresh-all-btn');
+  const announcementEditModal = document.getElementById('announcement-edit-modal');
+  const announcementEditForm = document.getElementById('announcement-edit-form');
+  const announcementEditMessage = document.getElementById('announcement-edit-message');
   const eventEditModal = document.getElementById('event-edit-modal');
   const eventEditForm = document.getElementById('event-edit-form');
   const eventEditMessage = document.getElementById('event-edit-message');
@@ -41,10 +47,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
   let authToken = readStoredToken();
   let currentUser = null;
+  let editingAnnouncementId = '';
   let editingEventId = '';
   let editingLeaderId = '';
+  let announcementEditTrigger = null;
   let eventEditTrigger = null;
   let leaderEditTrigger = null;
+  let cachedAnnouncements = [];
   let cachedEvents = [];
   let cachedLeaders = [];
 
@@ -91,6 +100,17 @@ document.addEventListener('DOMContentLoaded', function () {
     setMessage(eventEditMessage, '', '');
   }
 
+  function resetAnnouncementEditForm() {
+    if (announcementEditForm) {
+      announcementEditForm.reset();
+      const statusField = announcementEditForm.querySelector('[name="status"]');
+      if (statusField) statusField.value = 'published';
+      const priorityField = announcementEditForm.querySelector('[name="priority"]');
+      if (priorityField) priorityField.value = 'normal';
+    }
+    setMessage(announcementEditMessage, '', '');
+  }
+
   function resetLeaderEditForm() {
     if (leaderEditForm) {
       leaderEditForm.reset();
@@ -132,6 +152,17 @@ document.addEventListener('DOMContentLoaded', function () {
     leaderEditTrigger = null;
   }
 
+  function closeAnnouncementEditModal() {
+    editingAnnouncementId = '';
+    if (announcementEditModal?.contains(document.activeElement)) {
+      document.activeElement.blur();
+    }
+    resetAnnouncementEditForm();
+    setModalVisible(announcementEditModal, false);
+    returnFocusToTrigger(announcementEditTrigger);
+    announcementEditTrigger = null;
+  }
+
   function openEventEditModal(eventData, triggerElement) {
     if (!eventEditForm || !eventEditModal) return;
     editingEventId = eventData?.id || '';
@@ -144,6 +175,19 @@ document.addEventListener('DOMContentLoaded', function () {
     eventEditForm.querySelector('[name="featured"]').checked = Boolean(eventData.featured);
     setMessage(eventEditMessage, `Editing event: ${eventData.title || 'Untitled Event'}`, 'info');
     setModalVisible(eventEditModal, true);
+  }
+
+  function openAnnouncementEditModal(announcementData, triggerElement) {
+    if (!announcementEditForm || !announcementEditModal) return;
+    editingAnnouncementId = announcementData?.id || '';
+    announcementEditTrigger = triggerElement || null;
+    announcementEditForm.querySelector('[name="title"]').value = announcementData.title || '';
+    announcementEditForm.querySelector('[name="body"]').value = announcementData.body || '';
+    announcementEditForm.querySelector('[name="priority"]').value = announcementData.priority || 'normal';
+    announcementEditForm.querySelector('[name="status"]').value = announcementData.status || 'published';
+    announcementEditForm.querySelector('[name="expiresAt"]').value = announcementData.expiresAt ? String(announcementData.expiresAt).slice(0, 10) : '';
+    setMessage(announcementEditMessage, `Editing announcement: ${announcementData.title || 'Untitled Announcement'}`, 'info');
+    setModalVisible(announcementEditModal, true);
   }
 
   function openLeaderEditModal(leaderData, triggerElement) {
@@ -179,6 +223,29 @@ document.addEventListener('DOMContentLoaded', function () {
       month: 'short',
       day: '2-digit',
     });
+  }
+
+  function renderAnnouncements(announcements) {
+    if (!announcementsList) return;
+    if (!announcements.length) {
+      announcementsList.innerHTML = '<p class="admin-empty">No announcements returned by the API yet.</p>';
+      return;
+    }
+
+    announcementsList.innerHTML = announcements.map((announcement) => renderListItem(
+      announcement.title || 'Untitled Announcement',
+      [
+        `<strong>Body:</strong> ${escapeHtml(announcement.body || 'N/A')}`,
+        `<strong>Priority:</strong> ${escapeHtml((announcement.priority || 'normal').toUpperCase())}`,
+        `<strong>Expires:</strong> ${formatDate(announcement.expiresAt)}`,
+      ],
+      announcement.status || 'draft',
+      (announcement.status || 'draft').toUpperCase(),
+      `
+        <button type="button" class="btn btn-secondary btn-small admin-item-btn-edit" data-edit-type="announcement" data-edit-id="${escapeHtml(announcement.id)}">Edit</button>
+        <button type="button" class="admin-item-btn-delete" data-delete-type="announcement" data-delete-id="${escapeHtml(announcement.id)}">Delete</button>
+      `,
+    )).join('');
   }
 
   function setAuthToken(token) {
@@ -324,14 +391,17 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!authToken || !isDashboardPage) return;
 
     try {
-      const [eventsResponse, leadersResponse] = await Promise.all([
+      const [eventsResponse, leadersResponse, announcementsResponse] = await Promise.all([
         apiRequest('/events/all'),
         apiRequest('/leaders/all'),
+        apiRequest('/announcements/all'),
       ]);
 
       cachedEvents = Array.isArray(eventsResponse?.data) ? eventsResponse.data : [];
       cachedLeaders = Array.isArray(leadersResponse?.data) ? leadersResponse.data : [];
+      cachedAnnouncements = Array.isArray(announcementsResponse?.data) ? announcementsResponse.data : [];
 
+      renderAnnouncements(cachedAnnouncements);
       renderEvents(cachedEvents);
       renderLeaders(cachedLeaders);
       setStatus(apiState, 'Connected');
@@ -419,6 +489,61 @@ document.addEventListener('DOMContentLoaded', function () {
       status: String(formData.get('status') || 'published').trim(),
       featured: formData.get('featured') === 'on',
     };
+  }
+
+  function buildAnnouncementPayload(formData) {
+    return {
+      title: String(formData.get('title') || '').trim(),
+      body: String(formData.get('body') || '').trim(),
+      priority: String(formData.get('priority') || 'normal').trim(),
+      status: String(formData.get('status') || 'published').trim(),
+      expiresAt: String(formData.get('expiresAt') || '').trim(),
+    };
+  }
+
+  async function handleAnnouncementCreate(event) {
+    event.preventDefault();
+    setMessage(announcementMessage, 'Saving announcement...', 'info');
+
+    const formData = new FormData(announcementForm);
+    const payload = buildAnnouncementPayload(formData);
+
+    try {
+      await apiRequest('/announcements', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+
+      announcementForm.reset();
+      announcementForm.querySelector('[name="priority"]').value = 'normal';
+      announcementForm.querySelector('[name="status"]').value = 'published';
+      setMessage(announcementMessage, 'Announcement created successfully.', 'success');
+      await loadAdminData();
+    } catch (error) {
+      setMessage(announcementMessage, error.message, 'error');
+    }
+  }
+
+  async function handleAnnouncementEditSubmit(event) {
+    event.preventDefault();
+    if (!editingAnnouncementId) return;
+
+    setMessage(announcementEditMessage, 'Updating announcement...', 'info');
+
+    const formData = new FormData(announcementEditForm);
+    const payload = buildAnnouncementPayload(formData);
+
+    try {
+      await apiRequest(`/announcements/${editingAnnouncementId}`, {
+        method: 'PATCH',
+        body: JSON.stringify(payload),
+      });
+
+      closeAnnouncementEditModal();
+      await loadAdminData();
+    } catch (error) {
+      setMessage(announcementEditMessage, error.message, 'error');
+    }
   }
 
   function buildLeaderPayload(formData) {
@@ -531,6 +656,14 @@ document.addEventListener('DOMContentLoaded', function () {
       const itemType = editButton.dataset.editType;
       const itemId = editButton.dataset.editId;
 
+      if (itemType === 'announcement') {
+        const announcementData = cachedAnnouncements.find((item) => item.id === itemId);
+        if (!announcementData) return;
+
+        openAnnouncementEditModal(announcementData, editButton);
+        return;
+      }
+
       if (itemType === 'event') {
         const eventData = cachedEvents.find((item) => item.id === itemId);
         if (!eventData) return;
@@ -561,13 +694,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!confirmed) return;
 
     try {
-      await apiRequest(`/${itemType === 'event' ? 'events' : 'leaders'}/${itemId}`, {
+      const endpoint = itemType === 'event' ? 'events' : itemType === 'leader' ? 'leaders' : 'announcements';
+      await apiRequest(`/${endpoint}/${itemId}`, {
         method: 'DELETE',
       });
 
       await loadAdminData();
     } catch (error) {
-      const targetMessage = itemType === 'event' ? eventMessage : leaderMessage;
+      const targetMessage = itemType === 'event' ? eventMessage : itemType === 'leader' ? leaderMessage : announcementMessage;
       setMessage(targetMessage, error.message, 'error');
     }
   }
@@ -579,10 +713,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     setAuthToken('');
     currentUser = null;
+    closeAnnouncementEditModal();
     closeEventEditModal();
     closeLeaderEditModal();
     updateAuthUi(false);
     if (isDashboardPage) {
+      renderAnnouncements([]);
       renderEvents([]);
       renderLeaders([]);
       goToLogin();
@@ -601,8 +737,10 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   loginForm?.addEventListener('submit', handleLogin);
+  announcementForm?.addEventListener('submit', handleAnnouncementCreate);
   eventForm?.addEventListener('submit', handleEventCreate);
   leaderForm?.addEventListener('submit', handleLeaderCreate);
+  announcementEditForm?.addEventListener('submit', handleAnnouncementEditSubmit);
   eventEditForm?.addEventListener('submit', handleEventEditSubmit);
   leaderEditForm?.addEventListener('submit', handleLeaderEditSubmit);
   logoutBtn?.addEventListener('click', handleSignOut);
@@ -614,12 +752,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!closeTarget) return;
 
     const modalType = closeTarget.dataset.modalClose;
+    if (modalType === 'announcement') closeAnnouncementEditModal();
     if (modalType === 'event') closeEventEditModal();
     if (modalType === 'leader') closeLeaderEditModal();
   });
 
   document.addEventListener('keydown', function (event) {
     if (event.key !== 'Escape') return;
+    if (announcementEditModal && !announcementEditModal.hidden) closeAnnouncementEditModal();
     if (eventEditModal && !eventEditModal.hidden) closeEventEditModal();
     if (leaderEditModal && !leaderEditModal.hidden) closeLeaderEditModal();
   });
