@@ -34,7 +34,13 @@ document.addEventListener('DOMContentLoaded', function () {
   const membershipsList = document.getElementById('memberships-list');
   const eventsList = document.getElementById('events-list');
   const leadersList = document.getElementById('leaders-list');
-  const refreshAllBtn = document.getElementById('refresh-all-btn');
+  const refreshAllBtns = document.querySelectorAll('#refresh-all-btn, [data-refresh-all-btn]');
+  const sidebarToggleBtn = document.querySelector('[data-sidebar-toggle]');
+  const dashboardSidebarLinks = document.querySelectorAll('.admin-sidebar-link[href^="#"]');
+  const adminDashboardPanel = document.getElementById('admin-dashboard-panel');
+  const adminDashboardSectionsGrid = document.querySelector('.admin-dashboard-main .admin-sections-grid');
+  const dashboardSections = Array.from(document.querySelectorAll('.admin-dashboard-main .admin-section'));
+  const dashboardEmptyState = document.getElementById('admin-dashboard-empty');
   const announcementEditModal = document.getElementById('announcement-edit-modal');
   const announcementEditForm = document.getElementById('announcement-edit-form');
   const announcementEditMessage = document.getElementById('announcement-edit-message');
@@ -66,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let galleryEditTrigger = null;
   let eventEditTrigger = null;
   let leaderEditTrigger = null;
+  let activeDashboardSection = null;
   let pendingDeleteAction = null;
   let cachedAnnouncements = [];
   let cachedGalleryItems = [];
@@ -105,6 +112,68 @@ document.addEventListener('DOMContentLoaded', function () {
       modalElement.classList.remove('is-closing');
       document.body.classList.remove('no-scroll');
     }, 220);
+  }
+
+  function setSidebarCollapsed(collapsed) {
+    document.body.classList.toggle('admin-sidebar-collapsed', collapsed);
+
+    if (sidebarToggleBtn) {
+      const label = sidebarToggleBtn.querySelector('span');
+      const icon = sidebarToggleBtn.querySelector('i');
+      sidebarToggleBtn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      sidebarToggleBtn.setAttribute('aria-label', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
+      if (label) {
+        label.textContent = collapsed ? 'Expand' : 'Collapse';
+      }
+      if (icon) {
+        icon.classList.toggle('fa-angles-left', !collapsed);
+        icon.classList.toggle('fa-angles-right', collapsed);
+      }
+    }
+
+    localStorage.setItem('mkusssa-admin-sidebar-collapsed', collapsed ? 'true' : 'false');
+  }
+
+  function setActiveSidebarLink(activeSectionId) {
+    dashboardSidebarLinks.forEach((link) => {
+      const isActive = link.getAttribute('href') === `#${activeSectionId}`;
+      link.classList.toggle('is-active', isActive);
+      if (isActive) {
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.removeAttribute('aria-current');
+      }
+    });
+  }
+
+  function showDashboardSection(sectionId) {
+    const nextSectionId = sectionId || '';
+    const hasSelection = Boolean(nextSectionId);
+    const nextSection = hasSelection ? dashboardSections.find((section) => section.id === nextSectionId) || null : null;
+
+    if (!adminDashboardPanel || !adminDashboardSectionsGrid) {
+      return;
+    }
+
+    if (activeDashboardSection && activeDashboardSection !== nextSection) {
+      adminDashboardSectionsGrid.appendChild(activeDashboardSection);
+    }
+
+    activeDashboardSection = null;
+
+    if (!hasSelection || !nextSection) {
+      adminDashboardPanel.replaceChildren(dashboardEmptyState);
+      adminDashboardSectionsGrid.hidden = true;
+      setActiveSidebarLink('');
+      return;
+    }
+
+    nextSection.hidden = false;
+    nextSection.setAttribute('aria-hidden', 'false');
+    adminDashboardPanel.replaceChildren(nextSection);
+    adminDashboardSectionsGrid.hidden = true;
+    activeDashboardSection = nextSection;
+    setActiveSidebarLink(nextSectionId);
   }
 
   function resetEventEditForm() {
@@ -148,6 +217,32 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     setMessage(leaderEditMessage, '', '');
   }
+
+  dashboardSections.forEach((section) => {
+    section.remove();
+  });
+
+  const storedSidebarState = localStorage.getItem('mkusssa-admin-sidebar-collapsed');
+  setSidebarCollapsed(storedSidebarState ? storedSidebarState === 'true' : window.innerWidth <= 960);
+
+  dashboardSidebarLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      const href = link.getAttribute('href') || '';
+
+      if (!href.startsWith('#')) {
+        return;
+      }
+
+      event.preventDefault();
+      showDashboardSection(href.slice(1));
+    });
+  });
+
+  showDashboardSection('');
+
+  sidebarToggleBtn?.addEventListener('click', function () {
+    setSidebarCollapsed(!document.body.classList.contains('admin-sidebar-collapsed'));
+  });
 
   function returnFocusToTrigger(triggerElement) {
     if (triggerElement && typeof triggerElement.focus === 'function' && triggerElement.isConnected) {
@@ -965,7 +1060,7 @@ document.addEventListener('DOMContentLoaded', function () {
   leaderEditForm?.addEventListener('submit', handleLeaderEditSubmit);
   deleteConfirmSubmit?.addEventListener('click', handleDeleteConfirmSubmit);
   logoutBtn?.addEventListener('click', handleSignOut);
-  refreshAllBtn?.addEventListener('click', loadAdminData);
+  refreshAllBtns.forEach((button) => button.addEventListener('click', loadAdminData));
   document.addEventListener('click', handleDeleteClick);
 
   document.addEventListener('click', function (event) {

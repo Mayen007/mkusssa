@@ -37,44 +37,107 @@
           </div>
           <span class="logo-text-short">MKUSSSA Admin</span>
         </a>
-
-        <ul class="nav-links admin-nav-links" aria-label="Admin navigation">
-          <li class="nav-item">
-            <a href="./index.html" class="nav-link">Public Site</a>
-          </li>
-          <li class="nav-item">
-            <a href="./admin-login.html" class="nav-link" id="admin-logout-btn"
-              >Logout</a
-            >
-          </li>
-        </ul>
       </div>
     </nav>
 
     <main class="admin-app">
-      <section class="admin-content">
+      <aside
+        class="admin-sidebar"
+        aria-label="Dashboard overview and navigation"
+      >
+        <div class="admin-sidebar-topbar">
+          <button
+            type="button"
+            class="admin-sidebar-toggle"
+            data-sidebar-toggle
+            aria-expanded="true"
+            aria-label="Collapse sidebar"
+          >
+            <i class="fas fa-angles-left" aria-hidden="true"></i>
+            <span>Collapse</span>
+          </button>
+        </div>
+
+        <nav class="admin-sidebar-nav" aria-label="Dashboard sections">
+          <a class="admin-sidebar-link" href="#announcements">
+            <i class="fas fa-bullhorn" aria-hidden="true"></i>
+            <span>Announcements</span>
+          </a>
+          <a class="admin-sidebar-link" href="#events">
+            <i class="fas fa-calendar-days" aria-hidden="true"></i>
+            <span>Events</span>
+          </a>
+          <a class="admin-sidebar-link" href="#leadership">
+            <i class="fas fa-users" aria-hidden="true"></i>
+            <span>Leadership</span>
+          </a>
+          <a class="admin-sidebar-link" href="#gallery">
+            <i class="fas fa-images" aria-hidden="true"></i>
+            <span>Gallery</span>
+          </a>
+          <a class="admin-sidebar-link" href="#memberships">
+            <i class="fas fa-address-card" aria-hidden="true"></i>
+            <span>Memberships</span>
+          </a>
+        </nav>
+
+        <div class="admin-sidebar-footer">
+          <button
+            class="admin-quick-action admin-sidebar-action"
+            type="button"
+            data-refresh-all-btn
+            title="Refresh all data"
+          >
+            <i class="fas fa-rotate-right" aria-hidden="true"></i>
+            <span>Refresh data</span>
+          </button>
+
+          <a
+            class="admin-sidebar-link admin-sidebar-link-muted"
+            href="./index.html"
+          >
+            <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+            <span>Open public site</span>
+          </a>
+          <a
+            class="admin-sidebar-link admin-sidebar-link-muted"
+            href="./admin-login.html"
+            id="admin-logout-btn"
+          >
+            <i class="fas fa-right-from-bracket" aria-hidden="true"></i>
+            <span>Logout</span>
+          </a>
+        </div>
+      </aside>
+
+      <section class="admin-content admin-dashboard-main">
         <div class="admin-content-header">
           <div class="admin-content-title">
+            <p class="admin-content-eyebrow">Operations overview</p>
             <h2>Dashboard</h2>
             <p>
-              Manage announcements, events, and leadership records in one place
+              Manage announcements, events, leadership, gallery, and membership
+              submissions in one place.
             </p>
-          </div>
-          <div class="admin-content-controls">
-            <button
-              class="admin-quick-action"
-              id="refresh-all-btn"
-              title="Refresh all data"
-            >
-              <i class="fas fa-rotate-right" aria-hidden="true"></i>
-              <span>Refresh</span>
-            </button>
           </div>
         </div>
 
-        <div class="admin-sections-grid">
+        <div class="admin-dashboard-panel" id="admin-dashboard-panel">
+          <div class="admin-dashboard-empty" id="admin-dashboard-empty">
+            <div class="admin-dashboard-empty-icon">
+              <i class="fas fa-layer-group" aria-hidden="true"></i>
+            </div>
+            <h3>Select a section</h3>
+            <p>Choose an item from the left panel to load it here.</p>
+          </div>
+        </div>
+
+        <div class="admin-sections-grid" hidden>
           <!-- ANNOUNCEMENTS SECTION -->
-          <section class="admin-section admin-section-announcements">
+          <section
+            id="announcements"
+            class="admin-section admin-section-announcements"
+          >
             <div class="admin-section-header">
               <div class="admin-section-title-group">
                 <span class="admin-section-icon">
@@ -185,7 +248,7 @@
           </section>
 
           <!-- EVENTS SECTION -->
-          <section class="admin-section admin-section-events">
+          <section id="events" class="admin-section admin-section-events">
             <div class="admin-section-header">
               <div class="admin-section-title-group">
                 <span class="admin-section-icon">
@@ -311,7 +374,7 @@
           </section>
 
           <!-- LEADERSHIP SECTION -->
-          <section class="admin-section admin-section-leaders">
+          <section id="leadership" class="admin-section admin-section-leaders">
             <div class="admin-section-header">
               <div class="admin-section-title-group">
                 <span class="admin-section-icon">
@@ -450,7 +513,7 @@
           </section>
 
           <!-- GALLERY SECTION -->
-          <section class="admin-section admin-section-gallery">
+          <section id="gallery" class="admin-section admin-section-gallery">
             <div class="admin-section-header">
               <div class="admin-section-title-group">
                 <span class="admin-section-icon">
@@ -578,7 +641,10 @@
           </section>
 
           <!-- MEMBERSHIP SECTION -->
-          <section class="admin-section admin-section-memberships">
+          <section
+            id="memberships"
+            class="admin-section admin-section-memberships"
+          >
             <div class="admin-section-header">
               <div class="admin-section-title-group">
                 <span class="admin-section-icon">
