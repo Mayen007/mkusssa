@@ -2229,15 +2229,23 @@ body.admin-page {
 }
 
 /* ==================== LOGIN PAGE ==================== */
-.admin-app {
+
+.login-main {
   display: flex;
-  flex-direction: column;
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
+  padding: 0 !important;
+  gap: 0 !important;
+  grid-template-columns: none !important;
 }
 
 .admin-login-container {
   flex: 1;
   display: flex;
   align-items: stretch;
+  width: 100%;
+  min-height: 100%;
 }
 
 .admin-login-split {
@@ -2245,13 +2253,14 @@ body.admin-page {
   grid-template-columns: 1fr 1fr;
   width: 100%;
   gap: 0;
+  min-height: 100%;
 }
 
 /* LEFT COLUMN - FEATURES */
 .admin-login-left {
   background: linear-gradient(135deg, #2E3192 0%, #1f226f 100%);
   color: white;
-  padding: 60px 48px;
+  padding: clamp(24px, 4vh, 44px) clamp(20px, 3vw, 44px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -2298,7 +2307,7 @@ body.admin-page {
   font-weight: 600;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  margin-bottom: 32px;
+  margin-bottom: clamp(18px, 3vh, 28px);
   backdrop-filter: blur(10px);
 }
 
@@ -2324,24 +2333,24 @@ body.admin-page {
 
 .admin-login-headline {
   font-family: var(--headings-font);
-  font-size: 44px;
+  font-size: clamp(32px, 4vw, 42px);
   font-weight: 700;
   line-height: 1.2;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .admin-login-subheadline {
-  font-size: 18px;
+  font-size: clamp(15px, 1.4vw, 17px);
   line-height: 1.6;
   opacity: 0.95;
-  margin-bottom: 48px;
+  margin-bottom: clamp(20px, 3vh, 34px);
   max-width: 90%;
 }
 
 .admin-features-list {
   list-style: none;
   display: grid;
-  gap: 24px;
+  gap: clamp(14px, 2vh, 22px);
 }
 
 .admin-feature-item {
@@ -2354,8 +2363,8 @@ body.admin-page {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   color: #00FF88;
@@ -2365,13 +2374,13 @@ body.admin-page {
 
 .admin-feature-item h4 {
   font-family: var(--subheadings-font);
-  font-size: 15px;
+  font-size: 14px;
   margin: 0 0 4px 0;
   font-weight: 600;
 }
 
 .admin-feature-item p {
-  font-size: 14px;
+  font-size: 13px;
   opacity: 0.85;
   margin: 0;
 }
@@ -2379,7 +2388,7 @@ body.admin-page {
 /* RIGHT COLUMN - LOGIN FORM */
 .admin-login-right {
   background: white;
-  padding: 60px 48px;
+  padding: clamp(24px, 4vh, 44px) clamp(20px, 3vw, 44px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -2388,16 +2397,16 @@ body.admin-page {
 
 .admin-login-form-card {
   width: 100%;
-  max-width: 380px;
+  max-width: 360px;
 }
 
 .admin-login-form-header {
-  margin-bottom: 40px;
+  margin-bottom: 28px;
 }
 
 .admin-login-form-header h2 {
   font-family: var(--subheadings-font);
-  font-size: 28px;
+  font-size: clamp(24px, 2.2vw, 28px);
   color: var(--primary-color);
   margin: 0 0 8px 0;
 }
@@ -2410,7 +2419,7 @@ body.admin-page {
 
 .admin-login-form {
   display: grid;
-  gap: 32px;
+  gap: 24px;
 }
 
 .admin-form-field {
@@ -2493,7 +2502,7 @@ body.admin-page {
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-duration) ease;
-  margin-top: 8px;
+  margin-top: 0;
 }
 
 .admin-login-submit:hover {
@@ -3513,6 +3522,10 @@ body.admin-page {
 body.admin-page {
   --admin-sidebar-width: 320px;
   background: linear-gradient(180deg, #edf1f9 0%, #f7f9fc 100%);
+}
+
+body.admin-page.admin-login-page {
+  overflow: hidden;
 }
 
 body.admin-page.admin-sidebar-collapsed {

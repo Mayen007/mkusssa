@@ -23,32 +23,6 @@
     />
   </head>
   <body class="admin-page admin-login-page">
-    <!-- <nav class="navbar" role="navigation" aria-label="Main navigation">
-      <div class="container">
-        <a href="./index.html" class="logo">
-          <img
-            src="./assets/images/logo.jpg"
-            alt="MKU Logo"
-            class="logo-image"
-          />
-          <div class="logo-text">
-            <div class="logo-text-line">MKUSSSA</div>
-            <div class="logo-text-line">Admin Login</div>
-          </div>
-          <span class="logo-text-short">MKUSSSA Admin</span>
-        </a>
-
-        <ul class="nav-links admin-nav-links" aria-label="Admin navigation">
-          <li class="nav-item">
-            <a href="./index.html" class="nav-link">Public Site</a>
-          </li>
-          <li class="nav-item">
-            <a href="./admin.html" class="nav-link">Dashboard</a>
-          </li>
-        </ul>
-      </div>
-    </nav> -->
-
     <main class="admin-app login-main">
       <div class="admin-login-container">
         <div class="admin-login-split">
@@ -130,7 +104,8 @@
                     type="email"
                     name="email"
                     class="admin-field-input"
-                    placeholder="admin@mkusssa.local"
+                    placeholder="Enter admin email"
+                    autocomplete="email"
                     required
                   />
                   <div class="admin-field-line"></div>
@@ -149,6 +124,7 @@
                     name="password"
                     class="admin-field-input"
                     placeholder="Enter your password"
+                    autocomplete="current-password"
                     required
                   />
                   <div class="admin-field-line"></div>
