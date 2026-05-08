@@ -259,7 +259,7 @@ body {
   background-color: var(--primary-color);
   color: white;
   border: none;
-  padding: var(--medium-spacing) var(--large-spacing);
+  padding: var(--small-spacing) var(--medium-spacing);
 }
 
 .btn-primary:hover {
@@ -272,7 +272,7 @@ body {
   background-color: white;
   color: var(--primary-color);
   border: 2px solid var(--primary-color);
-  padding: var(--medium-spacing) var(--large-spacing);
+  padding: var(--small-spacing) var(--medium-spacing);
 }
 
 .btn-secondary:hover {
