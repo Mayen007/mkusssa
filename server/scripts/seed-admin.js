@@ -6,9 +6,9 @@ const { connectToDatabase, closeDatabase } = require('../config/db');
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
 async function seedAdmin() {
-  const adminName = process.env.ADMIN_NAME || 'MKUSSSA Admin';
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@mkusssa.local';
-  const adminPassword = process.env.ADMIN_PASSWORD || 'ChangeMe123!';
+  const adminName = process.env.ADMIN_NAME || 'Mayen';
+  const adminEmail = process.env.ADMIN_EMAIL || 'mayenakech9@gmail.com';
+  const adminPassword = process.env.ADMIN_PASSWORD || 'Mayen@123';
   const adminRole = process.env.ADMIN_ROLE || 'admin';
 
   const database = await connectToDatabase();

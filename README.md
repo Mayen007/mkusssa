@@ -95,11 +95,6 @@ cd server
 npm run seed:admin
 ```
 
-Default seed values:
-
-- Email: `admin@mkusssa.local`
-- Password: `ChangeMe123!`
-
 Then test login against `POST /api/auth/login` and confirm the token works with `GET /api/auth/me`.
 
 ## API Routes

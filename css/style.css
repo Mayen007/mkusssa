@@ -800,14 +800,11 @@ main {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   margin: 0 auto;
-  font-size: 3rem;
 }
 
-.placeholder-image img {
+.leader-img {
+  display: block;
   width: 100%;
   height: auto;
   border-radius: 50%;
@@ -3013,8 +3010,8 @@ body.admin-page {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border: 1px solid rgba(46, 49, 146, 0.12);
   background: white;
   color: var(--light-text-color);

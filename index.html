@@ -501,7 +501,7 @@
               <div class="leader-image">
                 <div class="placeholder-image">
                   <img
-                    src="./assets/images/emmanuel.jpeg"
+                    src="./assets/images/emmanuel-agou.jpeg"
                     alt="Emmanuel Agou Akeen"
                     class="leader-img"
                   />
@@ -1012,17 +1012,28 @@
                 name="fullName"
                 required
                 placeholder="Your full name"
+                autocomplete="name"
               />
             </label>
             <label class="membership-field">
               <span>Email</span>
-              <input type="email" name="email" placeholder="you@example.com" />
+              <input
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+              />
             </label>
           </div>
           <div class="membership-form-row">
             <label class="membership-field">
               <span>Phone</span>
-              <input type="tel" name="phone" placeholder="07xx xxx xxx" />
+              <input
+                type="tel"
+                name="phone"
+                placeholder="07xx xxx xxx"
+                autocomplete="tel"
+              />
             </label>
             <label class="membership-field">
               <span>Registration Number *</span>
@@ -1031,6 +1042,7 @@
                 name="registrationNumber"
                 required
                 placeholder="Your student registration number"
+                autocomplete="off"
               />
             </label>
           </div>
@@ -1042,6 +1054,7 @@
                 name="course"
                 required
                 placeholder="Your course of study"
+                autocomplete="off"
               />
             </label>
           </div>
@@ -1052,6 +1065,7 @@
                 name="message"
                 rows="4"
                 required
+                autocomplete="off"
                 placeholder="Tell us why you want to join MKUSSSA"
               ></textarea>
             </label>
