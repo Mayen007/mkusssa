@@ -54,9 +54,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const eventEditModal = document.getElementById('event-edit-modal');
   const eventEditForm = document.getElementById('event-edit-form');
   const eventEditMessage = document.getElementById('event-edit-message');
+  const eventCreateImageFileInput = eventForm?.querySelector('[name="imageFile"]');
+  const eventCreateImageUrlInput = eventForm?.querySelector('[name="imageUrl"]');
+  const eventEditImageFileInput = eventEditForm?.querySelector('[name="imageFile"]');
+  const eventEditImageUrlInput = eventEditForm?.querySelector('[name="imageUrl"]');
   const leaderEditModal = document.getElementById('leader-edit-modal');
   const leaderEditForm = document.getElementById('leader-edit-form');
   const leaderEditMessage = document.getElementById('leader-edit-message');
+  const leaderCreateImageFileInput = leaderForm?.querySelector('[name="imageFile"]');
+  const leaderCreateImageUrlInput = leaderForm?.querySelector('[name="imageUrl"]');
+  const leaderEditImageFileInput = leaderEditForm?.querySelector('[name="imageFile"]');
+  const leaderEditImageUrlInput = leaderEditForm?.querySelector('[name="imageUrl"]');
   const deleteConfirmModal = document.getElementById('delete-confirm-modal');
   const deleteConfirmTitle = document.getElementById('delete-confirm-modal-title');
   const deleteConfirmMessage = document.getElementById('delete-confirm-message');
@@ -187,6 +195,8 @@ document.addEventListener('DOMContentLoaded', function () {
       if (statusField) statusField.value = 'published';
       const featuredField = eventEditForm.querySelector('[name="featured"]');
       if (featuredField) featuredField.checked = false;
+      const fileInput = eventEditForm.querySelector('[name="imageFile"]');
+      if (fileInput) fileInput.value = '';
     }
     setMessage(eventEditMessage, '', '');
   }
@@ -221,6 +231,8 @@ document.addEventListener('DOMContentLoaded', function () {
       if (statusField) statusField.value = 'published';
       const currentField = leaderEditForm.querySelector('[name="isCurrent"]');
       if (currentField) currentField.checked = true;
+      const fileInput = leaderEditForm.querySelector('[name="imageFile"]');
+      if (fileInput) fileInput.value = '';
     }
     setMessage(leaderEditMessage, '', '');
   }
@@ -254,6 +266,44 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function syncGalleryImageUrlFromFile(formElement, messageElement, uploadLabel) {
+    if (!formElement) {
+      return;
+    }
+
+    const fileInput = formElement.querySelector('[name="imageFile"]');
+    const imageUrlInput = formElement.querySelector('[name="imageUrl"]');
+
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+      return;
+    }
+
+    const uploadedUrl = await uploadImageFile(fileInput.files[0], messageElement, uploadLabel);
+
+    if (imageUrlInput) {
+      imageUrlInput.value = uploadedUrl;
+    }
+  }
+
+  async function syncEventImageUrlFromFile(formElement, messageElement, uploadLabel) {
+    if (!formElement) {
+      return;
+    }
+
+    const fileInput = formElement.querySelector('[name="imageFile"]');
+    const imageUrlInput = formElement.querySelector('[name="imageUrl"]');
+
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+      return;
+    }
+
+    const uploadedUrl = await uploadImageFile(fileInput.files[0], messageElement, uploadLabel);
+
+    if (imageUrlInput) {
+      imageUrlInput.value = uploadedUrl;
+    }
+  }
+
+  async function syncLeaderImageUrlFromFile(formElement, messageElement, uploadLabel) {
     if (!formElement) {
       return;
     }
@@ -354,10 +404,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!eventEditForm || !eventEditModal) return;
     editingEventId = eventData?.id || '';
     eventEditTrigger = triggerElement || null;
+    if (eventEditImageFileInput) {
+      eventEditImageFileInput.value = '';
+    }
     eventEditForm.querySelector('[name="title"]').value = eventData.title || '';
     eventEditForm.querySelector('[name="eventDate"]').value = eventData.eventDate ? String(eventData.eventDate).slice(0, 10) : '';
     eventEditForm.querySelector('[name="location"]').value = eventData.location || '';
     eventEditForm.querySelector('[name="description"]').value = eventData.description || '';
+    eventEditForm.querySelector('[name="imageUrl"]').value = eventData.imageUrl || '';
     eventEditForm.querySelector('[name="status"]').value = eventData.status || 'published';
     eventEditForm.querySelector('[name="featured"]').checked = Boolean(eventData.featured);
     setMessage(eventEditMessage, `Editing event: ${eventData.title || 'Untitled Event'}`, 'info');
@@ -398,11 +452,15 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!leaderEditForm || !leaderEditModal) return;
     editingLeaderId = leaderData?.id || '';
     leaderEditTrigger = triggerElement || null;
+    if (leaderEditImageFileInput) {
+      leaderEditImageFileInput.value = '';
+    }
     leaderEditForm.querySelector('[name="fullName"]').value = leaderData.fullName || '';
     leaderEditForm.querySelector('[name="position"]').value = leaderData.position || '';
     leaderEditForm.querySelector('[name="termLabel"]').value = leaderData.termLabel || '';
     leaderEditForm.querySelector('[name="sortOrder"]').value = leaderData.sortOrder ?? 0;
     leaderEditForm.querySelector('[name="bio"]').value = leaderData.bio || '';
+    leaderEditForm.querySelector('[name="imageUrl"]').value = leaderData.imageUrl || '';
     leaderEditForm.querySelector('[name="status"]').value = leaderData.status || 'published';
     leaderEditForm.querySelector('[name="isCurrent"]').checked = Boolean(leaderData.isCurrent);
     setMessage(leaderEditMessage, `Editing member: ${leaderData.fullName || 'Unnamed Leader'}`, 'info');
@@ -936,16 +994,24 @@ document.addEventListener('DOMContentLoaded', function () {
     event.preventDefault();
     setMessage(eventMessage, 'Saving event...', 'info');
 
-    const formData = new FormData(eventForm);
-    const payload = buildEventPayload(formData);
-
     try {
+      await syncEventImageUrlFromFile(eventForm, eventMessage, 'Uploading');
+
+      const formData = new FormData(eventForm);
+      const payload = buildEventPayload(formData);
+
       await apiRequest('/events', {
         method: 'POST',
         body: JSON.stringify(payload),
       });
 
       eventForm.reset();
+      if (eventCreateImageFileInput) {
+        eventCreateImageFileInput.value = '';
+      }
+      if (eventCreateImageUrlInput) {
+        eventCreateImageUrlInput.value = '';
+      }
       eventForm.querySelector('[name="status"]').value = 'published';
       setMessage(eventMessage, 'Event created successfully.', 'success');
       await loadAdminData();
@@ -958,16 +1024,24 @@ document.addEventListener('DOMContentLoaded', function () {
     event.preventDefault();
     setMessage(leaderMessage, 'Saving leadership record...', 'info');
 
-    const formData = new FormData(leaderForm);
-    const payload = buildLeaderPayload(formData);
-
     try {
+      await syncLeaderImageUrlFromFile(leaderForm, leaderMessage, 'Uploading');
+
+      const formData = new FormData(leaderForm);
+      const payload = buildLeaderPayload(formData);
+
       await apiRequest('/leaders', {
         method: 'POST',
         body: JSON.stringify(payload),
       });
 
       leaderForm.reset();
+      if (leaderCreateImageFileInput) {
+        leaderCreateImageFileInput.value = '';
+      }
+      if (leaderCreateImageUrlInput) {
+        leaderCreateImageUrlInput.value = '';
+      }
       leaderForm.querySelector('[name="status"]').value = 'published';
       leaderForm.querySelector('[name="isCurrent"]').checked = true;
       setMessage(leaderMessage, 'Leadership record created successfully.', 'success');
@@ -983,10 +1057,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     setMessage(eventEditMessage, 'Updating event...', 'info');
 
-    const formData = new FormData(eventEditForm);
-    const payload = buildEventPayload(formData);
-
     try {
+      await syncEventImageUrlFromFile(eventEditForm, eventEditMessage, 'Uploading');
+
+      const formData = new FormData(eventEditForm);
+      const payload = buildEventPayload(formData);
+
       await apiRequest(`/events/${editingEventId}`, {
         method: 'PATCH',
         body: JSON.stringify(payload),
@@ -1005,10 +1081,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     setMessage(leaderEditMessage, 'Updating leadership record...', 'info');
 
-    const formData = new FormData(leaderEditForm);
-    const payload = buildLeaderPayload(formData);
-
     try {
+      await syncLeaderImageUrlFromFile(leaderEditForm, leaderEditMessage, 'Uploading');
+
+      const formData = new FormData(leaderEditForm);
+      const payload = buildLeaderPayload(formData);
+
       await apiRequest(`/leaders/${editingLeaderId}`, {
         method: 'PATCH',
         body: JSON.stringify(payload),

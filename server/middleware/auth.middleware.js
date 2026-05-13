@@ -5,6 +5,9 @@ function authenticateToken(req, res, next) {
   const [scheme, token] = header.split(' ');
 
   if (scheme !== 'Bearer' || !token) {
+    console.log('🔑 Auth Failed: Missing or invalid bearer token');
+    console.log('   Header:', header ? '✅ PRESENT' : '❌ MISSING');
+    console.log('   Scheme:', scheme || 'NONE');
     return res.status(401).json({
       success: false,
       message: 'Missing authorization token',
@@ -15,6 +18,7 @@ function authenticateToken(req, res, next) {
     const secret = process.env.JWT_SECRET;
 
     if (!secret) {
+      console.log('🔑 Auth Failed: JWT_SECRET not configured');
       return res.status(500).json({
         success: false,
         message: 'JWT secret is not configured',
@@ -22,8 +26,10 @@ function authenticateToken(req, res, next) {
     }
 
     req.auth = jwt.verify(token, secret);
+    console.log('🔑 Auth Success:', req.auth.role);
     next();
   } catch (error) {
+    console.log('🔑 Auth Failed: Invalid or expired token -', error.message);
     return res.status(401).json({
       success: false,
       message: 'Invalid or expired token',

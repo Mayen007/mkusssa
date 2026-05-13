@@ -77,6 +77,7 @@ app.get('/api', (req, res) => {
   });
 });
 
+console.log('🚀 Mounting API routes...');
 app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
@@ -85,6 +86,7 @@ app.use('/api/announcements', announcementRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/uploads', uploadRoutes);
 app.use('/api/memberships', membershipRoutes);
+console.log('✅ All routes mounted successfully');
 
 app.use(notFoundHandler);
 app.use(errorHandler);
