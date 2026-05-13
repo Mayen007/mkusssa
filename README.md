@@ -68,9 +68,15 @@ MONGODB_URI=your-mongodb-uri
 CORS_ORIGIN=http://localhost:3000
 JWT_SECRET=your-secret-key
 JWT_EXPIRES_IN=7d
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-cloudinary-api-key
+CLOUDINARY_API_SECRET=your-cloudinary-api-secret
+CLOUDINARY_FOLDER=mkusssa/uploads
 ```
 
 The database name is read from the MongoDB URI path when present.
+
+Cloudinary handles gallery image uploads. The admin UI uploads selected files to `POST /api/uploads/image` and stores the returned secure URL in the gallery record.
 
 ### 2. Start the backend
 

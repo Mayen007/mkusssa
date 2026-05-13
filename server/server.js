@@ -6,6 +6,7 @@ const { connectToDatabase } = require('./config/db');
 const authRoutes = require('./routes/auth.routes');
 const announcementRoutes = require('./routes/announcement.routes');
 const galleryRoutes = require('./routes/gallery.routes');
+const uploadRoutes = require('./routes/upload.routes');
 const membershipRoutes = require('./routes/membership.routes');
 const healthRoutes = require('./routes/health.routes');
 const eventRoutes = require('./routes/event.routes');
@@ -82,6 +83,7 @@ app.use('/api/events', eventRoutes);
 app.use('/api/leaders', leaderRoutes);
 app.use('/api/announcements', announcementRoutes);
 app.use('/api/gallery', galleryRoutes);
+app.use('/api/uploads', uploadRoutes);
 app.use('/api/memberships', membershipRoutes);
 
 app.use(notFoundHandler);

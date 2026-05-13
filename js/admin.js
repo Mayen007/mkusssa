@@ -47,6 +47,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const galleryEditModal = document.getElementById('gallery-edit-modal');
   const galleryEditForm = document.getElementById('gallery-edit-form');
   const galleryEditMessage = document.getElementById('gallery-edit-message');
+  const galleryCreateImageFileInput = galleryForm?.querySelector('[name="imageFile"]');
+  const galleryCreateImageUrlInput = galleryForm?.querySelector('[name="imageUrl"]');
+  const galleryEditImageFileInput = galleryEditForm?.querySelector('[name="imageFile"]');
+  const galleryEditImageUrlInput = galleryEditForm?.querySelector('[name="imageUrl"]');
   const eventEditModal = document.getElementById('event-edit-modal');
   const eventEditForm = document.getElementById('event-edit-form');
   const eventEditMessage = document.getElementById('event-edit-message');
@@ -201,6 +205,9 @@ document.addEventListener('DOMContentLoaded', function () {
   function resetGalleryEditForm() {
     if (galleryEditForm) {
       galleryEditForm.reset();
+      if (galleryEditImageFileInput) {
+        galleryEditImageFileInput.value = '';
+      }
       const statusField = galleryEditForm.querySelector('[name="status"]');
       if (statusField) statusField.value = 'published';
     }
@@ -216,6 +223,53 @@ document.addEventListener('DOMContentLoaded', function () {
       if (currentField) currentField.checked = true;
     }
     setMessage(leaderEditMessage, '', '');
+  }
+
+  async function uploadImageFile(file, messageElement, uploadLabel) {
+    if (!file) {
+      return '';
+    }
+
+    if (!apiBaseUrl) {
+      throw new Error('Missing API base URL');
+    }
+
+    setMessage(messageElement, `${uploadLabel} image to Cloudinary...`, 'info');
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const response = await apiRequest('/uploads/image', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const imageUrl = response?.data?.imageUrl || response?.data?.secureUrl || response?.imageUrl || '';
+
+    if (!imageUrl) {
+      throw new Error('Image upload did not return a usable URL');
+    }
+
+    return imageUrl;
+  }
+
+  async function syncGalleryImageUrlFromFile(formElement, messageElement, uploadLabel) {
+    if (!formElement) {
+      return;
+    }
+
+    const fileInput = formElement.querySelector('[name="imageFile"]');
+    const imageUrlInput = formElement.querySelector('[name="imageUrl"]');
+
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+      return;
+    }
+
+    const uploadedUrl = await uploadImageFile(fileInput.files[0], messageElement, uploadLabel);
+
+    if (imageUrlInput) {
+      imageUrlInput.value = uploadedUrl;
+    }
   }
 
   dashboardSections.forEach((section) => {
@@ -327,6 +381,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!galleryEditForm || !galleryEditModal) return;
     editingGalleryId = galleryData?.id || '';
     galleryEditTrigger = triggerElement || null;
+    if (galleryEditImageFileInput) {
+      galleryEditImageFileInput.value = '';
+    }
     galleryEditForm.querySelector('[name="title"]').value = galleryData.title || '';
     galleryEditForm.querySelector('[name="imageUrl"]').value = galleryData.imageUrl || '';
     galleryEditForm.querySelector('[name="caption"]').value = galleryData.caption || '';
@@ -801,16 +858,29 @@ document.addEventListener('DOMContentLoaded', function () {
     event.preventDefault();
     setMessage(galleryMessage, 'Saving gallery item...', 'info');
 
-    const formData = new FormData(galleryForm);
-    const payload = buildGalleryPayload(formData);
-
     try {
+
+      await syncGalleryImageUrlFromFile(galleryForm, galleryMessage, 'Uploading');
+
+      const formData = new FormData(galleryForm);
+      const payload = buildGalleryPayload(formData);
+
+      if (!payload.imageUrl) {
+        throw new Error('Please upload an image or provide an image URL');
+      }
+
       await apiRequest('/gallery', {
         method: 'POST',
         body: JSON.stringify(payload),
       });
 
       galleryForm.reset();
+      if (galleryCreateImageFileInput) {
+        galleryCreateImageFileInput.value = '';
+      }
+      if (galleryCreateImageUrlInput) {
+        galleryCreateImageUrlInput.value = '';
+      }
       galleryForm.querySelector('[name="status"]').value = 'published';
       setMessage(galleryMessage, 'Gallery item created successfully.', 'success');
       await loadAdminData();
@@ -825,10 +895,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     setMessage(galleryEditMessage, 'Updating gallery item...', 'info');
 
-    const formData = new FormData(galleryEditForm);
-    const payload = buildGalleryPayload(formData);
-
     try {
+      await syncGalleryImageUrlFromFile(galleryEditForm, galleryEditMessage, 'Uploading');
+
+      const formData = new FormData(galleryEditForm);
+      const payload = buildGalleryPayload(formData);
+
+      if (!payload.imageUrl) {
+        throw new Error('Please upload an image or provide an image URL');
+      }
+
       await apiRequest(`/gallery/${editingGalleryId}`, {
         method: 'PATCH',
         body: JSON.stringify(payload),
