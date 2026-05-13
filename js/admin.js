@@ -48,23 +48,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const galleryEditForm = document.getElementById('gallery-edit-form');
   const galleryEditMessage = document.getElementById('gallery-edit-message');
   const galleryCreateImageFileInput = galleryForm?.querySelector('[name="imageFile"]');
-  const galleryCreateImageUrlInput = galleryForm?.querySelector('[name="imageUrl"]');
   const galleryEditImageFileInput = galleryEditForm?.querySelector('[name="imageFile"]');
-  const galleryEditImageUrlInput = galleryEditForm?.querySelector('[name="imageUrl"]');
   const eventEditModal = document.getElementById('event-edit-modal');
   const eventEditForm = document.getElementById('event-edit-form');
   const eventEditMessage = document.getElementById('event-edit-message');
   const eventCreateImageFileInput = eventForm?.querySelector('[name="imageFile"]');
-  const eventCreateImageUrlInput = eventForm?.querySelector('[name="imageUrl"]');
   const eventEditImageFileInput = eventEditForm?.querySelector('[name="imageFile"]');
-  const eventEditImageUrlInput = eventEditForm?.querySelector('[name="imageUrl"]');
   const leaderEditModal = document.getElementById('leader-edit-modal');
   const leaderEditForm = document.getElementById('leader-edit-form');
   const leaderEditMessage = document.getElementById('leader-edit-message');
   const leaderCreateImageFileInput = leaderForm?.querySelector('[name="imageFile"]');
-  const leaderCreateImageUrlInput = leaderForm?.querySelector('[name="imageUrl"]');
   const leaderEditImageFileInput = leaderEditForm?.querySelector('[name="imageFile"]');
-  const leaderEditImageUrlInput = leaderEditForm?.querySelector('[name="imageUrl"]');
   const deleteConfirmModal = document.getElementById('delete-confirm-modal');
   const deleteConfirmTitle = document.getElementById('delete-confirm-modal-title');
   const deleteConfirmMessage = document.getElementById('delete-confirm-message');
@@ -271,7 +265,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const fileInput = formElement.querySelector('[name="imageFile"]');
-    const imageUrlInput = formElement.querySelector('[name="imageUrl"]');
 
     if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
       return;
@@ -279,9 +272,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const uploadedUrl = await uploadImageFile(fileInput.files[0], messageElement, uploadLabel);
 
-    if (imageUrlInput) {
-      imageUrlInput.value = uploadedUrl;
-    }
+    // Store the URL as a data attribute
+    formElement.dataset.imageUrl = uploadedUrl;
   }
 
   async function syncEventImageUrlFromFile(formElement, messageElement, uploadLabel) {
@@ -290,7 +282,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const fileInput = formElement.querySelector('[name="imageFile"]');
-    const imageUrlInput = formElement.querySelector('[name="imageUrl"]');
 
     if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
       return;
@@ -298,9 +289,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const uploadedUrl = await uploadImageFile(fileInput.files[0], messageElement, uploadLabel);
 
-    if (imageUrlInput) {
-      imageUrlInput.value = uploadedUrl;
-    }
+    // Store the URL as a data attribute
+    formElement.dataset.imageUrl = uploadedUrl;
   }
 
   async function syncLeaderImageUrlFromFile(formElement, messageElement, uploadLabel) {
@@ -309,7 +299,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const fileInput = formElement.querySelector('[name="imageFile"]');
-    const imageUrlInput = formElement.querySelector('[name="imageUrl"]');
 
     if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
       return;
@@ -317,9 +306,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const uploadedUrl = await uploadImageFile(fileInput.files[0], messageElement, uploadLabel);
 
-    if (imageUrlInput) {
-      imageUrlInput.value = uploadedUrl;
-    }
+    // Store the URL as a data attribute
+    formElement.dataset.imageUrl = uploadedUrl;
   }
 
   dashboardSections.forEach((section) => {
@@ -407,11 +395,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (eventEditImageFileInput) {
       eventEditImageFileInput.value = '';
     }
+    // Store existing image URL in data attribute so it can be used if no new file is uploaded
+    eventEditForm.dataset.imageUrl = eventData.imageUrl || '';
     eventEditForm.querySelector('[name="title"]').value = eventData.title || '';
     eventEditForm.querySelector('[name="eventDate"]').value = eventData.eventDate ? String(eventData.eventDate).slice(0, 10) : '';
     eventEditForm.querySelector('[name="location"]').value = eventData.location || '';
     eventEditForm.querySelector('[name="description"]').value = eventData.description || '';
-    eventEditForm.querySelector('[name="imageUrl"]').value = eventData.imageUrl || '';
     eventEditForm.querySelector('[name="status"]').value = eventData.status || 'published';
     eventEditForm.querySelector('[name="featured"]').checked = Boolean(eventData.featured);
     setMessage(eventEditMessage, `Editing event: ${eventData.title || 'Untitled Event'}`, 'info');
@@ -438,8 +427,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (galleryEditImageFileInput) {
       galleryEditImageFileInput.value = '';
     }
+    // Store existing image URL in data attribute so it can be used if no new file is uploaded
+    galleryEditForm.dataset.imageUrl = galleryData.imageUrl || '';
     galleryEditForm.querySelector('[name="title"]').value = galleryData.title || '';
-    galleryEditForm.querySelector('[name="imageUrl"]').value = galleryData.imageUrl || '';
     galleryEditForm.querySelector('[name="caption"]').value = galleryData.caption || '';
     galleryEditForm.querySelector('[name="album"]').value = galleryData.album || '';
     galleryEditForm.querySelector('[name="tags"]').value = Array.isArray(galleryData.tags) ? galleryData.tags.join(', ') : '';
@@ -455,12 +445,13 @@ document.addEventListener('DOMContentLoaded', function () {
     if (leaderEditImageFileInput) {
       leaderEditImageFileInput.value = '';
     }
+    // Store existing image URL in data attribute so it can be used if no new file is uploaded
+    leaderEditForm.dataset.imageUrl = leaderData.imageUrl || '';
     leaderEditForm.querySelector('[name="fullName"]').value = leaderData.fullName || '';
     leaderEditForm.querySelector('[name="position"]').value = leaderData.position || '';
     leaderEditForm.querySelector('[name="termLabel"]').value = leaderData.termLabel || '';
     leaderEditForm.querySelector('[name="sortOrder"]').value = leaderData.sortOrder ?? 0;
     leaderEditForm.querySelector('[name="bio"]').value = leaderData.bio || '';
-    leaderEditForm.querySelector('[name="imageUrl"]').value = leaderData.imageUrl || '';
     leaderEditForm.querySelector('[name="status"]').value = leaderData.status || 'published';
     leaderEditForm.querySelector('[name="isCurrent"]').checked = Boolean(leaderData.isCurrent);
     setMessage(leaderEditMessage, `Editing member: ${leaderData.fullName || 'Unnamed Leader'}`, 'info');
@@ -558,10 +549,10 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="admin-item-title">${escapeHtml(item.title || 'Untitled Gallery Item')}</div>
             ${item.status ? `<span class="admin-item-badge ${escapeHtml(item.status)}">${escapeHtml(String(item.status).toUpperCase())}</span>` : ''}
           </div>
+          ${item.imageUrl ? `<div class="admin-item-image"><img src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(item.title || 'Gallery item')}" style="max-width: 100%; height: auto; max-height: 150px; border-radius: 4px;" /></div>` : ''}
           <div class="admin-item-meta">
             <span><strong>Album:</strong> ${escapeHtml(item.album || 'N/A')}</span>
             <span><strong>Tags:</strong> ${tagsLabel}</span>
-            <span><strong>Image:</strong> ${escapeHtml(item.imageUrl || 'N/A')}</span>
           </div>
           <div class="admin-item-actions">
             <button type="button" class="btn btn-secondary btn-small admin-item-btn-edit" data-edit-type="gallery" data-edit-id="${escapeHtml(item.id)}">Edit</button>
@@ -695,21 +686,25 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    eventsList.innerHTML = events.map((event) => renderListItem(
-      event.title || 'Untitled Event',
-      [
-        `<strong>Date:</strong> ${formatDate(event.eventDate)}`,
-        `<strong>Location:</strong> ${escapeHtml(event.location || 'TBD')}`,
-        event.description ? `<strong>Description:</strong> ${escapeHtml(event.description)}` : '',
-        event.featured ? '<strong><i class="fas fa-star" aria-hidden="true"></i> Featured</strong>' : '',
-      ].filter(Boolean),
-      event.status || 'draft',
-      (event.status || 'draft').toUpperCase(),
-      `
-        <button type="button" class="btn btn-secondary btn-small admin-item-btn-edit" data-edit-type="event" data-edit-id="${escapeHtml(event.id)}">Edit</button>
-        <button type="button" class="admin-item-btn-delete" data-delete-type="event" data-delete-id="${escapeHtml(event.id)}">Delete</button>
-      `,
-    )).join('');
+    eventsList.innerHTML = events.map((event) => `
+      <article class="admin-item-card">
+        <div class="admin-item-header">
+          <div class="admin-item-title">${escapeHtml(event.title || 'Untitled Event')}</div>
+          <span class="admin-item-badge ${escapeHtml(event.status || 'draft')}">${escapeHtml(String(event.status || 'draft').toUpperCase())}</span>
+        </div>
+        ${event.imageUrl ? `<div class="admin-item-image"><img src="${escapeHtml(event.imageUrl)}" alt="${escapeHtml(event.title || 'Event cover')}" style="max-width: 100%; height: auto; max-height: 150px; border-radius: 4px;" /></div>` : ''}
+        <div class="admin-item-meta">
+          <span><strong>Date:</strong> ${formatDate(event.eventDate)}</span>
+          <span><strong>Location:</strong> ${escapeHtml(event.location || 'TBD')}</span>
+          ${event.description ? `<span><strong>Description:</strong> ${escapeHtml(event.description)}</span>` : ''}
+          ${event.featured ? '<span><strong><i class="fas fa-star" aria-hidden="true"></i> Featured</strong></span>' : ''}
+        </div>
+        <div class="admin-item-actions">
+          <button type="button" class="btn btn-secondary btn-small admin-item-btn-edit" data-edit-type="event" data-edit-id="${escapeHtml(event.id)}">Edit</button>
+          <button type="button" class="admin-item-btn-delete" data-delete-type="event" data-delete-id="${escapeHtml(event.id)}">Delete</button>
+        </div>
+      </article>
+    `).join('');
   }
 
   function renderLeaders(leaders) {
@@ -719,20 +714,24 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    leadersList.innerHTML = leaders.map((leader) => renderListItem(
-      leader.fullName || 'Unnamed Leader',
-      [
-        `<strong>Position:</strong> ${escapeHtml(leader.position || 'N/A')}`,
-        `<strong>Term:</strong> ${escapeHtml(leader.termLabel || 'N/A')}`,
-        leader.isCurrent ? '<strong><i class="fas fa-crown" aria-hidden="true"></i> Current</strong>' : '',
-      ].filter(Boolean),
-      leader.status || 'draft',
-      (leader.status || 'draft').toUpperCase(),
-      `
-        <button type="button" class="btn btn-secondary btn-small admin-item-btn-edit" data-edit-type="leader" data-edit-id="${escapeHtml(leader.id)}">Edit</button>
-        <button type="button" class="admin-item-btn-delete" data-delete-type="leader" data-delete-id="${escapeHtml(leader.id)}">Delete</button>
-      `,
-    )).join('');
+    leadersList.innerHTML = leaders.map((leader) => `
+      <article class="admin-item-card">
+        <div class="admin-item-header">
+          <div class="admin-item-title">${escapeHtml(leader.fullName || 'Unnamed Leader')}</div>
+          <span class="admin-item-badge ${escapeHtml(leader.status || 'draft')}">${escapeHtml(String(leader.status || 'draft').toUpperCase())}</span>
+        </div>
+        ${leader.imageUrl ? `<div class="admin-item-image"><img src="${escapeHtml(leader.imageUrl)}" alt="${escapeHtml(leader.fullName || 'Leader portrait')}" style="max-width: 100%; height: auto; max-height: 150px; border-radius: 4px;" /></div>` : ''}
+        <div class="admin-item-meta">
+          <span><strong>Position:</strong> ${escapeHtml(leader.position || 'N/A')}</span>
+          <span><strong>Term:</strong> ${escapeHtml(leader.termLabel || 'N/A')}</span>
+          ${leader.isCurrent ? '<span><strong><i class="fas fa-crown" aria-hidden="true"></i> Current</strong></span>' : ''}
+        </div>
+        <div class="admin-item-actions">
+          <button type="button" class="btn btn-secondary btn-small admin-item-btn-edit" data-edit-type="leader" data-edit-id="${escapeHtml(leader.id)}">Edit</button>
+          <button type="button" class="admin-item-btn-delete" data-delete-type="leader" data-delete-id="${escapeHtml(leader.id)}">Delete</button>
+        </div>
+      </article>
+    `).join('');
   }
 
   async function loadAdminData() {
@@ -831,14 +830,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  function buildEventPayload(formData) {
+  function buildEventPayload(formData, formElement) {
     return {
       title: String(formData.get('title') || '').trim(),
       slug: String(formData.get('slug') || '').trim(),
       description: String(formData.get('description') || '').trim(),
       eventDate: String(formData.get('eventDate') || '').trim(),
       location: String(formData.get('location') || '').trim(),
-      imageUrl: String(formData.get('imageUrl') || '').trim(),
+      imageUrl: String(formElement?.dataset?.imageUrl || '').trim(),
       registrationUrl: String(formData.get('registrationUrl') || '').trim(),
       status: String(formData.get('status') || 'published').trim(),
       featured: formData.get('featured') === 'on',
@@ -855,11 +854,11 @@ document.addEventListener('DOMContentLoaded', function () {
     };
   }
 
-  function buildGalleryPayload(formData) {
+  function buildGalleryPayload(formData, formElement) {
     const tagsRaw = String(formData.get('tags') || '').trim();
     return {
       title: String(formData.get('title') || '').trim(),
-      imageUrl: String(formData.get('imageUrl') || '').trim(),
+      imageUrl: String(formElement?.dataset?.imageUrl || '').trim(),
       caption: String(formData.get('caption') || '').trim(),
       album: String(formData.get('album') || '').trim(),
       tags: tagsRaw ? tagsRaw.split(',').map((tag) => tag.trim()).filter(Boolean) : [],
@@ -921,10 +920,10 @@ document.addEventListener('DOMContentLoaded', function () {
       await syncGalleryImageUrlFromFile(galleryForm, galleryMessage, 'Uploading');
 
       const formData = new FormData(galleryForm);
-      const payload = buildGalleryPayload(formData);
+      const payload = buildGalleryPayload(formData, galleryForm);
 
       if (!payload.imageUrl) {
-        throw new Error('Please upload an image or provide an image URL');
+        throw new Error('Please upload an image');
       }
 
       await apiRequest('/gallery', {
@@ -933,11 +932,9 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       galleryForm.reset();
+      delete galleryForm.dataset.imageUrl;
       if (galleryCreateImageFileInput) {
         galleryCreateImageFileInput.value = '';
-      }
-      if (galleryCreateImageUrlInput) {
-        galleryCreateImageUrlInput.value = '';
       }
       galleryForm.querySelector('[name="status"]').value = 'published';
       setMessage(galleryMessage, 'Gallery item created successfully.', 'success');
@@ -957,10 +954,10 @@ document.addEventListener('DOMContentLoaded', function () {
       await syncGalleryImageUrlFromFile(galleryEditForm, galleryEditMessage, 'Uploading');
 
       const formData = new FormData(galleryEditForm);
-      const payload = buildGalleryPayload(formData);
+      const payload = buildGalleryPayload(formData, galleryEditForm);
 
       if (!payload.imageUrl) {
-        throw new Error('Please upload an image or provide an image URL');
+        throw new Error('Please upload an image');
       }
 
       await apiRequest(`/gallery/${editingGalleryId}`, {
@@ -975,7 +972,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  function buildLeaderPayload(formData) {
+  function buildLeaderPayload(formData, formElement) {
     return {
       fullName: String(formData.get('fullName') || '').trim(),
       position: String(formData.get('position') || '').trim(),
@@ -983,7 +980,7 @@ document.addEventListener('DOMContentLoaded', function () {
       startDate: String(formData.get('startDate') || '').trim(),
       endDate: String(formData.get('endDate') || '').trim(),
       bio: String(formData.get('bio') || '').trim(),
-      imageUrl: String(formData.get('imageUrl') || '').trim(),
+      imageUrl: String(formElement?.dataset?.imageUrl || '').trim(),
       isCurrent: formData.get('isCurrent') === 'on',
       sortOrder: Number(formData.get('sortOrder') || 0),
       status: String(formData.get('status') || 'published').trim(),
@@ -998,7 +995,7 @@ document.addEventListener('DOMContentLoaded', function () {
       await syncEventImageUrlFromFile(eventForm, eventMessage, 'Uploading');
 
       const formData = new FormData(eventForm);
-      const payload = buildEventPayload(formData);
+      const payload = buildEventPayload(formData, eventForm);
 
       await apiRequest('/events', {
         method: 'POST',
@@ -1006,11 +1003,9 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       eventForm.reset();
+      delete eventForm.dataset.imageUrl;
       if (eventCreateImageFileInput) {
         eventCreateImageFileInput.value = '';
-      }
-      if (eventCreateImageUrlInput) {
-        eventCreateImageUrlInput.value = '';
       }
       eventForm.querySelector('[name="status"]').value = 'published';
       setMessage(eventMessage, 'Event created successfully.', 'success');
@@ -1028,7 +1023,11 @@ document.addEventListener('DOMContentLoaded', function () {
       await syncLeaderImageUrlFromFile(leaderForm, leaderMessage, 'Uploading');
 
       const formData = new FormData(leaderForm);
-      const payload = buildLeaderPayload(formData);
+      const payload = buildLeaderPayload(formData, leaderForm);
+
+      if (!payload.imageUrl) {
+        throw new Error('Please upload a portrait image');
+      }
 
       await apiRequest('/leaders', {
         method: 'POST',
@@ -1036,11 +1035,9 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       leaderForm.reset();
+      delete leaderForm.dataset.imageUrl;
       if (leaderCreateImageFileInput) {
         leaderCreateImageFileInput.value = '';
-      }
-      if (leaderCreateImageUrlInput) {
-        leaderCreateImageUrlInput.value = '';
       }
       leaderForm.querySelector('[name="status"]').value = 'published';
       leaderForm.querySelector('[name="isCurrent"]').checked = true;
@@ -1061,7 +1058,7 @@ document.addEventListener('DOMContentLoaded', function () {
       await syncEventImageUrlFromFile(eventEditForm, eventEditMessage, 'Uploading');
 
       const formData = new FormData(eventEditForm);
-      const payload = buildEventPayload(formData);
+      const payload = buildEventPayload(formData, eventEditForm);
 
       await apiRequest(`/events/${editingEventId}`, {
         method: 'PATCH',
@@ -1085,7 +1082,11 @@ document.addEventListener('DOMContentLoaded', function () {
       await syncLeaderImageUrlFromFile(leaderEditForm, leaderEditMessage, 'Uploading');
 
       const formData = new FormData(leaderEditForm);
-      const payload = buildLeaderPayload(formData);
+      const payload = buildLeaderPayload(formData, leaderEditForm);
+
+      if (!payload.imageUrl) {
+        throw new Error('Please upload a portrait image');
+      }
 
       await apiRequest(`/leaders/${editingLeaderId}`, {
         method: 'PATCH',
