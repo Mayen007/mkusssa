@@ -120,6 +120,26 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 220);
   }
 
+  function syncSidebarTooltipTargets() {
+    dashboardSidebarLinks.forEach((link) => {
+      const label = link.querySelector('span')?.textContent?.trim() || '';
+      if (label) {
+        link.setAttribute('data-tooltip', label);
+      }
+    });
+
+    refreshAllBtns.forEach((button) => {
+      const label = button.querySelector('span')?.textContent?.trim() || button.getAttribute('title') || '';
+      if (label) {
+        button.setAttribute('data-tooltip', label);
+      }
+    });
+
+    if (sidebarToggleBtn) {
+      sidebarToggleBtn.setAttribute('data-tooltip', 'Toggle sidebar');
+    }
+  }
+
   function setSidebarCollapsed(collapsed) {
     document.body.classList.toggle('admin-sidebar-collapsed', collapsed);
 
@@ -335,6 +355,8 @@ document.addEventListener('DOMContentLoaded', function () {
   sidebarToggleBtn?.addEventListener('click', function () {
     setSidebarCollapsed(!document.body.classList.contains('admin-sidebar-collapsed'));
   });
+
+  syncSidebarTooltipTargets();
 
   function returnFocusToTrigger(triggerElement) {
     if (triggerElement && typeof triggerElement.focus === 'function' && triggerElement.isConnected) {

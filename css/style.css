@@ -3749,7 +3749,7 @@ body.admin-page {
 
 body.admin-page {
   --admin-sidebar-width: 320px;
-  background: linear-gradient(180deg, #edf1f9 0%, #f7f9fc 100%);
+  background: #f7f9fc;
 }
 
 body.admin-page.admin-login-page {
@@ -3761,35 +3761,37 @@ body.admin-page.admin-sidebar-collapsed {
 }
 
 .admin-app {
-  display: grid;
-  grid-template-columns: var(--admin-sidebar-width) minmax(0, 1fr);
-  gap: 16px;
-  align-items: start;
+  display: block;
+  position: relative;
+  min-height: calc(100vh - var(--navbar-height));
   padding: 16px 18px 18px 12px;
 }
 
 .admin-content {
   max-width: 1120px;
-  justify-self: start;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
   width: 100%;
   min-width: 0;
 }
 
 .admin-sidebar {
-  position: sticky;
-  top: calc(var(--navbar-height) + 24px);
+  position: fixed;
+  top: calc(var(--navbar-height) + 16px);
+  left: 0;
+  width: min(var(--admin-sidebar-width), calc(100vw - 24px));
+  height: calc(100vh - var(--navbar-height) - 32px);
   display: grid;
   gap: 20px;
   padding: 28px;
   border-radius: 24px;
-  background:
-    radial-gradient(circle at top right, rgba(230, 28, 126, 0.18) 0, transparent 38%),
-    linear-gradient(180deg, rgba(46, 49, 146, 0.98), #1f226f 100%);
+  background: #1f226f;
   color: white;
   box-shadow: 0 20px 48px rgba(25, 32, 62, 0.2);
   overflow: hidden;
+  z-index: 20;
+  transform: translateX(0);
+  transition: transform var(--transition-duration) ease, width var(--transition-duration) ease, padding var(--transition-duration) ease;
 }
 
 .admin-sidebar::before,
@@ -3805,7 +3807,7 @@ body.admin-page.admin-sidebar-collapsed {
   right: -80px;
   width: 240px;
   height: 240px;
-  background: rgba(255, 255, 255, 0.08);
+  background: transparent;
 }
 
 .admin-sidebar::after {
@@ -3813,7 +3815,7 @@ body.admin-page.admin-sidebar-collapsed {
   left: -90px;
   width: 220px;
   height: 220px;
-  background: rgba(230, 28, 126, 0.12);
+  background: transparent;
 }
 
 .admin-sidebar>* {
@@ -3940,7 +3942,8 @@ body.admin-page.admin-sidebar-collapsed {
 }
 
 .admin-sidebar-link-muted {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.16);
 }
 
 .admin-sidebar-footer {
@@ -3950,20 +3953,38 @@ body.admin-page.admin-sidebar-collapsed {
 
 .admin-sidebar-action {
   width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
   justify-content: center;
-  border: none;
-  background: white;
-  color: var(--primary-color);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.14);
+  color: white;
+  box-shadow: 0 10px 20px rgba(18, 23, 44, 0.12);
 }
 
 .admin-sidebar-action:hover,
 .admin-sidebar-action:focus-visible {
-  background: #f5f7ff;
-  color: #1f226f;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.admin-sidebar-link-muted:hover,
+.admin-sidebar-link-muted:focus-visible {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.admin-sidebar-footer .admin-sidebar-link {
+  min-height: 52px;
 }
 
 body.admin-sidebar-collapsed .admin-sidebar {
+  left: 0;
   padding-inline: 12px;
+  transform: translateX(calc(-100% + var(--admin-sidebar-width)));
 }
 
 body.admin-sidebar-collapsed .admin-sidebar-toggle {
@@ -3982,6 +4003,7 @@ body.admin-sidebar-collapsed .admin-sidebar-link,
 body.admin-sidebar-collapsed .admin-sidebar-action {
   justify-content: center;
   gap: 0;
+  min-height: 48px;
 }
 
 body.admin-sidebar-collapsed .admin-sidebar-link {
@@ -3992,9 +4014,106 @@ body.admin-sidebar-collapsed .admin-sidebar-footer {
   justify-items: center;
 }
 
+body.admin-sidebar-collapsed .admin-sidebar-footer .admin-sidebar-link,
+body.admin-sidebar-collapsed .admin-sidebar-footer .admin-sidebar-action {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: 14px;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 10px 20px rgba(18, 23, 44, 0.12);
+}
+
+body.admin-sidebar-collapsed .admin-sidebar-footer .admin-sidebar-link-muted,
+body.admin-sidebar-collapsed .admin-sidebar-footer .admin-sidebar-action {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+body.admin-sidebar-collapsed .admin-sidebar-footer .admin-sidebar-link:hover,
+body.admin-sidebar-collapsed .admin-sidebar-footer .admin-sidebar-link:focus-visible,
+body.admin-sidebar-collapsed .admin-sidebar-footer .admin-sidebar-action:hover,
+body.admin-sidebar-collapsed .admin-sidebar-footer .admin-sidebar-action:focus-visible {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 14px 24px rgba(18, 23, 44, 0.16);
+}
+
 body.admin-sidebar-collapsed .admin-sidebar-link i,
 body.admin-sidebar-collapsed .admin-sidebar-action i {
   width: auto;
+}
+
+body.admin-sidebar-collapsed .admin-sidebar-toggle i {
+  width: auto;
+}
+
+body.admin-sidebar-collapsed .admin-sidebar-link,
+body.admin-sidebar-collapsed .admin-sidebar-action,
+body.admin-sidebar-collapsed .admin-sidebar-toggle {
+  position: relative;
+}
+
+body.admin-sidebar-collapsed .admin-sidebar-link::after,
+body.admin-sidebar-collapsed .admin-sidebar-action::after,
+body.admin-sidebar-collapsed .admin-sidebar-toggle::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(17, 24, 39, 0.96);
+  color: white;
+  font-size: 12px;
+  font-family: var(--button-font-family);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.22);
+  transition: opacity var(--transition-duration) ease, transform var(--transition-duration) ease;
+  z-index: 50;
+}
+
+body.admin-sidebar-collapsed .admin-sidebar-link::before,
+body.admin-sidebar-collapsed .admin-sidebar-action::before,
+body.admin-sidebar-collapsed .admin-sidebar-toggle::before {
+  content: '';
+  position: absolute;
+  left: calc(100% + 6px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+  opacity: 0;
+  pointer-events: none;
+  border-width: 6px 6px 6px 0;
+  border-style: solid;
+  border-color: transparent rgba(17, 24, 39, 0.96) transparent transparent;
+  transition: opacity var(--transition-duration) ease, transform var(--transition-duration) ease;
+  z-index: 49;
+}
+
+body.admin-sidebar-collapsed .admin-sidebar-link:hover::after,
+body.admin-sidebar-collapsed .admin-sidebar-link:hover::before,
+body.admin-sidebar-collapsed .admin-sidebar-link:focus-visible::after,
+body.admin-sidebar-collapsed .admin-sidebar-link:focus-visible::before,
+body.admin-sidebar-collapsed .admin-sidebar-action:hover::after,
+body.admin-sidebar-collapsed .admin-sidebar-action:hover::before,
+body.admin-sidebar-collapsed .admin-sidebar-action:focus-visible::after,
+body.admin-sidebar-collapsed .admin-sidebar-action:focus-visible::before,
+body.admin-sidebar-collapsed .admin-sidebar-toggle:hover::after,
+body.admin-sidebar-collapsed .admin-sidebar-toggle:hover::before,
+body.admin-sidebar-collapsed .admin-sidebar-toggle:focus-visible::after,
+body.admin-sidebar-collapsed .admin-sidebar-toggle:focus-visible::before {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+body.admin-sidebar-collapsed .admin-content {
+  padding-left: 0;
 }
 
 .admin-content-eyebrow {
@@ -4095,41 +4214,29 @@ body.admin-sidebar-collapsed .admin-sidebar-action i {
 }
 
 @media (max-width: 1200px) {
-  body.admin-page {
-    --admin-sidebar-width: 260px;
-  }
-
   .admin-app {
     padding: 14px 16px 16px 10px;
   }
 
   .admin-sidebar {
-    position: relative;
-    top: auto;
+    top: calc(var(--navbar-height) + 14px);
+    left: 10px;
   }
 }
 
 @media (max-width: 960px) {
-  body.admin-page {
-    --admin-sidebar-width: 220px;
-  }
-
   .admin-app {
-    grid-template-columns: 1fr;
-    gap: 14px;
+    padding: 12px;
   }
 
   .admin-sidebar {
-    order: 1;
-    position: relative;
-    top: auto;
-    z-index: 2;
+    top: calc(var(--navbar-height) + 12px);
+    left: 12px;
   }
 
   .admin-content {
-    order: 2;
     max-width: none;
-    z-index: 1;
+    padding-top: 0;
   }
 
   .admin-dashboard-main .admin-content-header {
@@ -4143,12 +4250,12 @@ body.admin-sidebar-collapsed .admin-sidebar-action i {
 }
 
 @media (max-width: 600px) {
-  body.admin-page {
-    --admin-sidebar-width: 200px;
-  }
-
   .admin-app {
     padding: 12px;
+  }
+
+  body.admin-page {
+    --admin-sidebar-width: 280px;
   }
 
   .admin-sidebar,
