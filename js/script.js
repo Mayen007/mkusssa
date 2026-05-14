@@ -40,6 +40,13 @@ document.addEventListener('DOMContentLoaded', function () {
   })();
 
   let membershipTriggerElement = null;
+  let cachedGalleryItems = [];
+  let activeGalleryIndex = 0;
+  let galleryLightboxElement = null;
+  let galleryLightboxImageElement = null;
+  let galleryLightboxTitleElement = null;
+  let galleryLightboxAlbumElement = null;
+  let galleryLightboxCaptionElement = null;
 
   if (!mobileMenuBtn || !navLinks) return;
 
@@ -149,9 +156,25 @@ document.addEventListener('DOMContentLoaded', function () {
   // Close on Escape
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' || e.key === 'Esc') {
+      if (galleryLightboxElement && galleryLightboxElement.classList.contains('active')) {
+        closeGalleryLightbox();
+        return;
+      }
       if (navLinks.classList.contains('nav-links-active')) {
         closeMenu();
       }
+    }
+
+    if (!galleryLightboxElement || !galleryLightboxElement.classList.contains('active')) return;
+
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      showPreviousGalleryItem();
+    }
+
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      showNextGalleryItem();
     }
   });
 
@@ -401,9 +424,136 @@ document.addEventListener('DOMContentLoaded', function () {
     return card;
   }
 
-  function buildGalleryCard(item) {
+  function getGalleryItemAtIndex(index) {
+    if (!cachedGalleryItems.length) return null;
+
+    const normalizedIndex = ((index % cachedGalleryItems.length) + cachedGalleryItems.length) % cachedGalleryItems.length;
+    return { item: cachedGalleryItems[normalizedIndex], index: normalizedIndex };
+  }
+
+  function closeGalleryLightbox() {
+    if (!galleryLightboxElement) return;
+    galleryLightboxElement.classList.remove('active');
+    galleryLightboxElement.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('no-scroll');
+  }
+
+  function showPreviousGalleryItem() {
+    const previous = getGalleryItemAtIndex(activeGalleryIndex - 1);
+    if (previous) {
+      updateGalleryLightbox(previous.item, previous.index);
+    }
+  }
+
+  function showNextGalleryItem() {
+    const next = getGalleryItemAtIndex(activeGalleryIndex + 1);
+    if (next) {
+      updateGalleryLightbox(next.item, next.index);
+    }
+  }
+
+  function updateGalleryLightbox(item, index) {
+    if (!item) return;
+
+    activeGalleryIndex = typeof index === 'number' ? index : activeGalleryIndex;
+
+    if (!galleryLightboxElement) {
+      galleryLightboxElement = document.createElement('div');
+      galleryLightboxElement.className = 'gallery-lightbox';
+      galleryLightboxElement.setAttribute('aria-hidden', 'true');
+
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'gallery-lightbox-close';
+      closeBtn.innerHTML = '<i class="fas fa-xmark" aria-hidden="true"></i>';
+      closeBtn.setAttribute('aria-label', 'Close gallery');
+      closeBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        closeGalleryLightbox();
+      });
+
+      const media = document.createElement('div');
+      media.className = 'gallery-lightbox-media';
+
+      const content = document.createElement('div');
+      content.className = 'gallery-lightbox-content';
+
+      const image = document.createElement('img');
+      image.className = 'gallery-lightbox-image';
+
+      const info = document.createElement('div');
+      info.className = 'gallery-lightbox-info';
+
+      const title = document.createElement('h2');
+      const album = document.createElement('p');
+      const caption = document.createElement('p');
+
+      galleryLightboxImageElement = image;
+      galleryLightboxTitleElement = title;
+      galleryLightboxAlbumElement = album;
+      galleryLightboxCaptionElement = caption;
+
+      info.append(title, album, caption);
+      media.append(image);
+
+      const nav = document.createElement('div');
+      nav.className = 'gallery-lightbox-nav';
+
+      const previousBtn = document.createElement('button');
+      previousBtn.type = 'button';
+      previousBtn.setAttribute('aria-label', 'Previous image');
+      previousBtn.innerHTML = '<i class="fas fa-chevron-left" aria-hidden="true"></i>';
+      previousBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        showPreviousGalleryItem();
+      });
+
+      const nextBtn = document.createElement('button');
+      nextBtn.type = 'button';
+      nextBtn.setAttribute('aria-label', 'Next image');
+      nextBtn.innerHTML = '<i class="fas fa-chevron-right" aria-hidden="true"></i>';
+      nextBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        showNextGalleryItem();
+      });
+
+      nav.append(previousBtn, nextBtn);
+
+      media.append(nav);
+      content.append(closeBtn, media, info);
+      galleryLightboxElement.append(content);
+
+      galleryLightboxElement.addEventListener('click', function (e) {
+        if (e.target === galleryLightboxElement) {
+          closeGalleryLightbox();
+        }
+      });
+
+      document.body.appendChild(galleryLightboxElement);
+    }
+
+    galleryLightboxImageElement.src = item.imageUrl || '';
+    galleryLightboxImageElement.alt = item.title || 'Gallery image';
+    galleryLightboxTitleElement.textContent = item.title || 'Gallery Item';
+    galleryLightboxAlbumElement.textContent = item.album ? 'Album: ' + item.album : '';
+    galleryLightboxAlbumElement.hidden = !item.album;
+    galleryLightboxCaptionElement.textContent = item.caption || '';
+    galleryLightboxCaptionElement.hidden = !item.caption;
+
+    galleryLightboxElement.classList.add('active');
+    galleryLightboxElement.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('no-scroll');
+  }
+
+  function getGalleryTileVariant(index) {
+    if (index % 7 === 0) return 'gallery-card--featured';
+    if (index % 5 === 0) return 'gallery-card--tall';
+    if (index % 3 === 0) return 'gallery-card--wide';
+    return 'gallery-card--standard';
+  }
+
+  function buildGalleryCard(item, index) {
     const card = document.createElement('article');
-    card.className = 'gallery-card';
+    card.className = `gallery-card ${getGalleryTileVariant(index)}`;
 
     const media = document.createElement('div');
     media.className = 'gallery-media';
@@ -414,40 +564,53 @@ document.addEventListener('DOMContentLoaded', function () {
     image.loading = 'lazy';
     media.appendChild(image);
 
-    const content = document.createElement('div');
-    content.className = 'gallery-content';
+    // Add overlay with title, album, and caption (description)
+    const overlay = document.createElement('div');
+    overlay.className = 'gallery-overlay';
 
-    const badge = document.createElement('span');
-    badge.className = 'gallery-badge';
-    badge.textContent = item.album || 'Gallery';
+    const overlayContent = document.createElement('div');
+    overlayContent.className = 'gallery-overlay-content';
 
     const title = document.createElement('h3');
-    title.textContent = String(item.title ?? 'Untitled Gallery Item');
+    title.className = 'gallery-overlay-title';
+    title.textContent = String(item.title ?? 'Gallery Item');
+    overlayContent.appendChild(title);
 
-    content.append(badge, title);
+    if (item.album) {
+      const album = document.createElement('p');
+      album.className = 'gallery-overlay-album';
+      album.textContent = 'Album: ' + item.album;
+      overlayContent.appendChild(album);
+    }
 
     if (item.caption) {
       const caption = document.createElement('p');
-      caption.className = 'gallery-caption';
-      caption.textContent = String(item.caption);
-      content.appendChild(caption);
+      caption.className = 'gallery-overlay-caption';
+      caption.textContent = item.caption;
+      overlayContent.appendChild(caption);
     }
 
-    if (Array.isArray(item.tags) && item.tags.length > 0) {
-      const tagsWrap = document.createElement('div');
-      tagsWrap.className = 'gallery-tags';
+    overlay.appendChild(overlayContent);
 
-      item.tags.forEach(function (tag) {
-        const tagEl = document.createElement('span');
-        tagEl.className = 'gallery-tag';
-        tagEl.textContent = String(tag);
-        tagsWrap.appendChild(tagEl);
-      });
+    // Add eye icon
+    const overlayIcon = document.createElement('div');
+    overlayIcon.className = 'gallery-overlay-icon';
+    overlayIcon.innerHTML = '<i class="fas fa-eye" aria-hidden="true"></i>';
+    overlay.appendChild(overlayIcon);
 
-      content.appendChild(tagsWrap);
-    }
+    media.appendChild(overlay);
+    card.appendChild(media);
 
-    card.append(media, content);
+    // Add empty content div for compatibility
+    const content = document.createElement('div');
+    content.className = 'gallery-content';
+    card.appendChild(content);
+
+    // Add click handler to open lightbox
+    card.addEventListener('click', function () {
+      updateGalleryLightbox(item, index);
+    });
+
     return card;
   }
 
@@ -604,6 +767,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const payload = await response.json();
       const items = Array.isArray(payload.data) ? payload.data : [];
+      cachedGalleryItems = items;
 
       galleryGrid.innerHTML = '';
 
@@ -615,8 +779,8 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      items.forEach(function (item) {
-        galleryGrid.appendChild(buildGalleryCard(item));
+      items.forEach(function (item, index) {
+        galleryGrid.appendChild(buildGalleryCard(item, index));
       });
     } catch (error) {
       console.warn('Gallery section could not be refreshed from the API.', error);
