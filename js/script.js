@@ -639,8 +639,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (membershipTriggerElement && typeof membershipTriggerElement.focus === 'function' && membershipTriggerElement.isConnected) {
+      const elementToFocus = membershipTriggerElement;
       window.setTimeout(function () {
-        membershipTriggerElement.focus({ preventScroll: true });
+        if (elementToFocus && elementToFocus.isConnected && typeof elementToFocus.focus === 'function') {
+          elementToFocus.focus({ preventScroll: true });
+        }
       }, 0);
     }
 
@@ -669,6 +672,8 @@ document.addEventListener('DOMContentLoaded', function () {
   async function loadEventsSection() {
     if (!eventsGrid || !apiBaseUrl) return;
 
+    eventsGrid.classList.add('skeleton-loading');
+
     try {
       const response = await fetch(apiBaseUrl + '/events');
 
@@ -680,6 +685,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const events = Array.isArray(payload.data) ? payload.data : [];
 
       if (events.length === 0) {
+        eventsGrid.classList.remove('skeleton-loading');
         return;
       }
 
@@ -687,13 +693,17 @@ document.addEventListener('DOMContentLoaded', function () {
       events.forEach(function (event) {
         eventsGrid.appendChild(buildEventCard(event));
       });
+      eventsGrid.classList.remove('skeleton-loading');
     } catch (error) {
+      eventsGrid.classList.remove('skeleton-loading');
       console.warn('Events section could not be refreshed from the API.', error);
     }
   }
 
   async function loadLeadershipSection() {
     if (!leadershipGrid || !apiBaseUrl) return;
+
+    leadershipGrid.classList.add('skeleton-loading');
 
     try {
       const response = await fetch(apiBaseUrl + '/leaders/current');
@@ -706,6 +716,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const leaders = Array.isArray(payload.data) ? payload.data : [];
 
       if (leaders.length === 0) {
+        leadershipGrid.classList.remove('skeleton-loading');
         return;
       }
 
@@ -713,13 +724,17 @@ document.addEventListener('DOMContentLoaded', function () {
       leaders.forEach(function (leader) {
         leadershipGrid.appendChild(buildLeaderCard(leader));
       });
+      leadershipGrid.classList.remove('skeleton-loading');
     } catch (error) {
+      leadershipGrid.classList.remove('skeleton-loading');
       console.warn('Leadership section could not be refreshed from the API.', error);
     }
   }
 
   async function loadAnnouncementsSection() {
     if (!announcementsGrid || !apiBaseUrl) return;
+
+    announcementsGrid.classList.add('skeleton-loading');
 
     try {
       const response = await fetch(apiBaseUrl + '/announcements');
@@ -738,13 +753,16 @@ document.addEventListener('DOMContentLoaded', function () {
         empty.className = 'announcements-empty';
         empty.textContent = 'Announcements will appear here when published.';
         announcementsGrid.appendChild(empty);
+        announcementsGrid.classList.remove('skeleton-loading');
         return;
       }
 
       announcements.forEach(function (announcement) {
         announcementsGrid.appendChild(buildAnnouncementCard(announcement));
       });
+      announcementsGrid.classList.remove('skeleton-loading');
     } catch (error) {
+      announcementsGrid.classList.remove('skeleton-loading');
       console.warn('Announcements section could not be refreshed from the API.', error);
       if (announcementsGrid && !announcementsGrid.children.length) {
         const fallback = document.createElement('p');
@@ -757,6 +775,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   async function loadGallerySection() {
     if (!galleryGrid || !apiBaseUrl) return;
+
+    galleryGrid.classList.add('skeleton-loading');
 
     try {
       const response = await fetch(apiBaseUrl + '/gallery');
@@ -776,13 +796,16 @@ document.addEventListener('DOMContentLoaded', function () {
         empty.className = 'gallery-empty';
         empty.textContent = 'Gallery moments will appear here soon.';
         galleryGrid.appendChild(empty);
+        galleryGrid.classList.remove('skeleton-loading');
         return;
       }
 
       items.forEach(function (item, index) {
         galleryGrid.appendChild(buildGalleryCard(item, index));
       });
+      galleryGrid.classList.remove('skeleton-loading');
     } catch (error) {
+      galleryGrid.classList.remove('skeleton-loading');
       console.warn('Gallery section could not be refreshed from the API.', error);
       if (galleryGrid && !galleryGrid.children.length) {
         const fallback = document.createElement('p');
