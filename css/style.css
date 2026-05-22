@@ -169,15 +169,10 @@ body {
 }
 
 .logo-text-line:first-child {
-
   margin-bottom: 2px;
 }
 
 .logo-text-short {
-  color: white;
-  font-family: var(--subheadings-font);
-  font-size: var(--font-lg);
-  font-weight: 500;
   display: none;
 }
 
@@ -297,6 +292,10 @@ body {
 /* Main Content */
 main {
   margin-top: var(--navbar-height);
+}
+
+.login-main {
+  margin-top: 0 !important;
 }
 
 /* Section Headers */
@@ -2817,8 +2816,11 @@ body.admin-page {
   }
 
   .logo-text-short {
-    display: inline;
+    display: inline-block;
     font-size: var(--font-md);
+    color: white;
+    font-family: var(--subheadings-font);
+    font-weight: 500;
   }
 
   .mobile-menu-btn {
@@ -3516,10 +3518,15 @@ body.admin-page {
 
 body.admin-page {
   --admin-sidebar-width: 320px;
-  background: #f7f9fc;
+  background: var(--background-color);
+}
+
+html {
+  height: 100%;
 }
 
 body.admin-page.admin-login-page {
+  height: 100%;
   overflow: hidden;
 }
 
@@ -3532,6 +3539,11 @@ body.admin-page.admin-sidebar-collapsed {
   position: relative;
   min-height: calc(100vh - var(--navbar-height));
   padding: 16px 18px 18px 12px;
+}
+
+body.admin-page.admin-login-page .admin-app {
+  min-height: 100vh;
+  padding: 0;
 }
 
 .admin-content {
@@ -4014,7 +4026,6 @@ body.admin-sidebar-collapsed .admin-content {
   }
 
   .logo-text-short {
-    display: inline;
     font-size: var(--font-sm);
   }
 
