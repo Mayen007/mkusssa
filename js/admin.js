@@ -592,21 +592,38 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    membershipsList.innerHTML = memberships.map((submission) => renderListItem(
-      submission.fullName || 'Unnamed Member',
-      [
-        `<strong>Email:</strong> ${escapeHtml(submission.email || 'N/A')}`,
-        `<strong>Phone:</strong> ${escapeHtml(submission.phone || 'N/A')}`,
-        `<strong>Reg. No.:</strong> ${escapeHtml(submission.registrationNumber || 'N/A')}`,
-        `<strong>Course:</strong> ${escapeHtml(submission.course || 'N/A')}`,
-        `<strong>Message:</strong> ${escapeHtml(submission.message || 'N/A')}`,
-        `<strong>Source:</strong> ${escapeHtml(submission.source || 'homepage')}`,
-        `<strong>Submitted:</strong> ${formatDate(submission.createdAt)}`,
-      ],
-      submission.status || 'new',
-      (submission.status || 'new').toUpperCase(),
-      '',
-    )).join('');
+    membershipsList.innerHTML = `
+      <div class="admin-table-wrapper">
+        <table class="admin-memberships-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Reg. No.</th>
+              <th>Course</th>
+              <th>Message</th>
+              <th>Submitted</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${memberships.map((submission) => `
+              <tr>
+                <td class="admin-table-name">${escapeHtml(submission.fullName || 'N/A')}</td>
+                <td class="admin-table-email"><a href="mailto:${escapeHtml(submission.email || '')}">${escapeHtml(submission.email || 'N/A')}</a></td>
+                <td>${escapeHtml(submission.phone || 'N/A')}</td>
+                <td>${escapeHtml(submission.registrationNumber || 'N/A')}</td>
+                <td>${escapeHtml(submission.course || 'N/A')}</td>
+                <td class="admin-table-message" title="${escapeHtml(submission.message || 'N/A')}">${escapeHtml(submission.message?.substring(0, 50) || 'N/A')}${submission.message?.length > 50 ? '…' : ''}</td>
+                <td>${formatDate(submission.createdAt)}</td>
+                <td><span class="admin-item-badge ${escapeHtml(submission.status || 'new')}">${escapeHtml(String(submission.status || 'new').toUpperCase())}</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
   }
 
   function setAuthToken(token) {
