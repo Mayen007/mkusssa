@@ -42,40 +42,54 @@
 
     <main class="admin-app">
       <aside
+        id="admin-sidebar"
         class="admin-sidebar"
         aria-label="Dashboard overview and navigation"
       >
-        <div class="admin-sidebar-topbar">
-          <button
-            type="button"
-            class="admin-sidebar-toggle"
-            data-sidebar-toggle
-            aria-expanded="true"
-            aria-label="Collapse sidebar"
-          >
-            <i class="fas fa-angles-left" aria-hidden="true"></i>
-            <!-- <span>Collapse</span> -->
-          </button>
-        </div>
-
         <nav class="admin-sidebar-nav" aria-label="Dashboard sections">
-          <a class="admin-sidebar-link" href="#announcements">
+          <a
+            class="admin-sidebar-link"
+            href="#announcements"
+            title="Announcements Management"
+            aria-current="page"
+            aria-label="Manage announcements section, current page"
+          >
             <i class="fas fa-bullhorn" aria-hidden="true"></i>
             <span>Announcements</span>
           </a>
-          <a class="admin-sidebar-link" href="#events">
+          <a
+            class="admin-sidebar-link"
+            href="#events"
+            title="Events Management"
+            aria-label="Manage events section"
+          >
             <i class="fas fa-calendar-days" aria-hidden="true"></i>
             <span>Events</span>
           </a>
-          <a class="admin-sidebar-link" href="#leadership">
+          <a
+            class="admin-sidebar-link"
+            href="#leadership"
+            title="Leadership Management"
+            aria-label="Manage leadership section"
+          >
             <i class="fas fa-users" aria-hidden="true"></i>
             <span>Leadership</span>
           </a>
-          <a class="admin-sidebar-link" href="#gallery">
+          <a
+            class="admin-sidebar-link"
+            href="#gallery"
+            title="Gallery Management"
+            aria-label="Manage gallery section"
+          >
             <i class="fas fa-images" aria-hidden="true"></i>
             <span>Gallery</span>
           </a>
-          <a class="admin-sidebar-link" href="#memberships">
+          <a
+            class="admin-sidebar-link"
+            href="#memberships"
+            title="Membership Management"
+            aria-label="Manage membership section"
+          >
             <i class="fas fa-address-card" aria-hidden="true"></i>
             <span>Memberships</span>
           </a>
@@ -119,6 +133,21 @@
               Manage announcements, events, leadership, gallery, and membership
               submissions in one place.
             </p>
+          </div>
+
+          <div class="admin-content-controls">
+            <button
+              type="button"
+              class="admin-sidebar-toggle"
+              data-sidebar-toggle
+              aria-expanded="true"
+              aria-controls="admin-sidebar"
+              aria-label="Collapse sidebar"
+              title="Collapse sidebar"
+            >
+              <i class="fas fa-angles-left" aria-hidden="true"></i>
+              <span>Collapse</span>
+            </button>
           </div>
         </div>
 

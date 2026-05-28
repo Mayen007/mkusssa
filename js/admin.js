@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const leadersList = document.getElementById('leaders-list');
   const refreshAllBtns = document.querySelectorAll('#refresh-all-btn, [data-refresh-all-btn]');
   const sidebarToggleBtn = document.querySelector('[data-sidebar-toggle]');
+  const sidebarViewportQuery = window.matchMedia('(max-width: 960px)');
   const dashboardSidebarLinks = document.querySelectorAll('.admin-sidebar-link[href^="#"]');
   const adminDashboardPanel = document.getElementById('admin-dashboard-panel');
   const adminDashboardSectionsGrid = document.querySelector('.admin-dashboard-main .admin-sections-grid');
@@ -85,6 +86,8 @@ document.addEventListener('DOMContentLoaded', function () {
   let cachedMemberships = [];
   let cachedEvents = [];
   let cachedLeaders = [];
+  let desktopSidebarCollapsed = false;
+  let mobileSidebarOpen = false;
 
   function setStatus(element, text) {
     if (element) element.textContent = text;
@@ -140,24 +143,45 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  function setSidebarCollapsed(collapsed) {
-    document.body.classList.toggle('admin-sidebar-collapsed', collapsed);
+  function isMobileSidebarMode() {
+    return sidebarViewportQuery.matches;
+  }
+
+  function applySidebarState() {
+    const mobileMode = isMobileSidebarMode();
+    const sidebarOpen = mobileMode ? mobileSidebarOpen : !desktopSidebarCollapsed;
+
+    document.body.classList.toggle('admin-sidebar-collapsed', !mobileMode && desktopSidebarCollapsed);
+    document.body.classList.toggle('admin-sidebar-open', mobileMode && mobileSidebarOpen);
+    document.body.classList.toggle('no-scroll', mobileMode && mobileSidebarOpen);
 
     if (sidebarToggleBtn) {
       const label = sidebarToggleBtn.querySelector('span');
       const icon = sidebarToggleBtn.querySelector('i');
-      sidebarToggleBtn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
-      sidebarToggleBtn.setAttribute('aria-label', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
+      sidebarToggleBtn.setAttribute('aria-expanded', sidebarOpen ? 'true' : 'false');
+      sidebarToggleBtn.setAttribute('aria-label', mobileMode ? (sidebarOpen ? 'Close sidebar' : 'Open sidebar') : (desktopSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'));
       if (label) {
-        label.textContent = collapsed ? 'Expand' : 'Collapse';
+        label.textContent = mobileMode ? (sidebarOpen ? 'Close' : 'Menu') : (desktopSidebarCollapsed ? 'Expand' : 'Collapse');
       }
       if (icon) {
-        icon.classList.toggle('fa-angles-left', !collapsed);
-        icon.classList.toggle('fa-angles-right', collapsed);
+        icon.classList.toggle('fa-angles-left', !mobileMode && !desktopSidebarCollapsed);
+        icon.classList.toggle('fa-angles-right', !mobileMode && desktopSidebarCollapsed);
+        icon.classList.toggle('fa-bars', mobileMode && !sidebarOpen);
+        icon.classList.toggle('fa-xmark', mobileMode && sidebarOpen);
       }
     }
 
-    localStorage.setItem('mkusssa-admin-sidebar-collapsed', collapsed ? 'true' : 'false');
+    localStorage.setItem('mkusssa-admin-sidebar-collapsed', desktopSidebarCollapsed ? 'true' : 'false');
+  }
+
+  function setSidebarCollapsed(collapsed) {
+    desktopSidebarCollapsed = collapsed;
+    applySidebarState();
+  }
+
+  function setMobileSidebarOpen(open) {
+    mobileSidebarOpen = open;
+    applySidebarState();
   }
 
   function setActiveSidebarLink(activeSectionId) {
@@ -335,7 +359,9 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   const storedSidebarState = localStorage.getItem('mkusssa-admin-sidebar-collapsed');
-  setSidebarCollapsed(storedSidebarState ? storedSidebarState === 'true' : window.innerWidth <= 960);
+  desktopSidebarCollapsed = storedSidebarState ? storedSidebarState === 'true' : false;
+  mobileSidebarOpen = false;
+  applySidebarState();
 
   dashboardSidebarLinks.forEach((link) => {
     link.addEventListener('click', (event) => {
@@ -347,13 +373,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
       event.preventDefault();
       showDashboardSection(href.slice(1));
+
+      if (isMobileSidebarMode()) {
+        setMobileSidebarOpen(false);
+      }
     });
   });
 
   showDashboardSection('');
 
   sidebarToggleBtn?.addEventListener('click', function () {
-    setSidebarCollapsed(!document.body.classList.contains('admin-sidebar-collapsed'));
+    if (isMobileSidebarMode()) {
+      setMobileSidebarOpen(!mobileSidebarOpen);
+      return;
+    }
+
+    setSidebarCollapsed(!desktopSidebarCollapsed);
+  });
+
+  sidebarViewportQuery.addEventListener('change', function () {
+    mobileSidebarOpen = false;
+    applySidebarState();
   });
 
   syncSidebarTooltipTargets();
@@ -567,11 +607,11 @@ document.addEventListener('DOMContentLoaded', function () {
       const tagsLabel = Array.isArray(item.tags) && item.tags.length ? item.tags.map((tag) => escapeHtml(tag)).join(', ') : 'None';
       return `
         <article class="admin-item-card">
+          ${item.imageUrl ? `<div class="admin-item-image"><img src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(item.title || 'Gallery item')}" /></div>` : ''}
           <div class="admin-item-header">
             <div class="admin-item-title">${escapeHtml(item.title || 'Untitled Gallery Item')}</div>
             ${item.status ? `<span class="admin-item-badge ${escapeHtml(item.status)}">${escapeHtml(String(item.status).toUpperCase())}</span>` : ''}
           </div>
-          ${item.imageUrl ? `<div class="admin-item-image"><img src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(item.title || 'Gallery item')}" style="max-width: 100%; height: auto; max-height: 150px; border-radius: 4px;" /></div>` : ''}
           <div class="admin-item-meta">
             <span><strong>Album:</strong> ${escapeHtml(item.album || 'N/A')}</span>
             <span><strong>Tags:</strong> ${tagsLabel}</span>
@@ -727,11 +767,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     eventsList.innerHTML = events.map((event) => `
       <article class="admin-item-card">
+        ${event.imageUrl ? `<div class="admin-item-image"><img src="${escapeHtml(event.imageUrl)}" alt="${escapeHtml(event.title || 'Event cover')}" /></div>` : ''}
         <div class="admin-item-header">
           <div class="admin-item-title">${escapeHtml(event.title || 'Untitled Event')}</div>
           <span class="admin-item-badge ${escapeHtml(event.status || 'draft')}">${escapeHtml(String(event.status || 'draft').toUpperCase())}</span>
         </div>
-        ${event.imageUrl ? `<div class="admin-item-image"><img src="${escapeHtml(event.imageUrl)}" alt="${escapeHtml(event.title || 'Event cover')}" style="max-width: 100%; height: auto; max-height: 150px; border-radius: 4px;" /></div>` : ''}
         <div class="admin-item-meta">
           <span><strong>Date:</strong> ${formatDate(event.eventDate)}</span>
           <span><strong>Location:</strong> ${escapeHtml(event.location || 'TBD')}</span>
@@ -755,11 +795,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     leadersList.innerHTML = leaders.map((leader) => `
       <article class="admin-item-card">
+        ${leader.imageUrl ? `<div class="admin-item-image"><img src="${escapeHtml(leader.imageUrl)}" alt="${escapeHtml(leader.fullName || 'Leader portrait')}" /></div>` : ''}
         <div class="admin-item-header">
           <div class="admin-item-title">${escapeHtml(leader.fullName || 'Unnamed Leader')}</div>
           <span class="admin-item-badge ${escapeHtml(leader.status || 'draft')}">${escapeHtml(String(leader.status || 'draft').toUpperCase())}</span>
         </div>
-        ${leader.imageUrl ? `<div class="admin-item-image"><img src="${escapeHtml(leader.imageUrl)}" alt="${escapeHtml(leader.fullName || 'Leader portrait')}" style="max-width: 100%; height: auto; max-height: 150px; border-radius: 4px;" /></div>` : ''}
         <div class="admin-item-meta">
           <span><strong>Position:</strong> ${escapeHtml(leader.position || 'N/A')}</span>
           <span><strong>Term:</strong> ${escapeHtml(leader.termLabel || 'N/A')}</span>
@@ -1273,12 +1313,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.addEventListener('keydown', function (event) {
     if (event.key !== 'Escape') return;
+    if (isMobileSidebarMode() && mobileSidebarOpen) {
+      setMobileSidebarOpen(false);
+      return;
+    }
     if (announcementEditModal && !announcementEditModal.hidden) closeAnnouncementEditModal();
     if (galleryEditModal && !galleryEditModal.hidden) closeGalleryEditModal();
     if (eventEditModal && !eventEditModal.hidden) closeEventEditModal();
     if (leaderEditModal && !leaderEditModal.hidden) closeLeaderEditModal();
     if (deleteConfirmModal && !deleteConfirmModal.hidden) closeDeleteConfirmModal();
   });
+
+  const adminApp = document.querySelector('.admin-app');
+  if (adminApp) {
+    adminApp.addEventListener('click', function (event) {
+      if (event.target === adminApp && isMobileSidebarMode() && mobileSidebarOpen) {
+        setMobileSidebarOpen(false);
+      }
+    });
+  }
 
   verifySession();
 });
