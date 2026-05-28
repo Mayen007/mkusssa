@@ -650,14 +650,14 @@ document.addEventListener('DOMContentLoaded', function () {
           <tbody>
             ${memberships.map((submission) => `
               <tr>
-                <td class="admin-table-name">${escapeHtml(submission.fullName || 'N/A')}</td>
-                <td class="admin-table-email"><a href="mailto:${escapeHtml(submission.email || '')}">${escapeHtml(submission.email || 'N/A')}</a></td>
-                <td>${escapeHtml(submission.phone || 'N/A')}</td>
-                <td>${escapeHtml(submission.registrationNumber || 'N/A')}</td>
-                <td>${escapeHtml(submission.course || 'N/A')}</td>
-                <td class="admin-table-message" title="${escapeHtml(submission.message || 'N/A')}">${escapeHtml(submission.message?.substring(0, 50) || 'N/A')}${submission.message?.length > 50 ? '…' : ''}</td>
-                <td>${formatDate(submission.createdAt)}</td>
-                <td><span class="admin-item-badge ${escapeHtml(submission.status || 'new')}">${escapeHtml(String(submission.status || 'new').toUpperCase())}</span></td>
+                <td class="admin-table-name" data-label="Name">${escapeHtml(submission.fullName || 'N/A')}</td>
+                <td class="admin-table-email" data-label="Email"><a href="mailto:${escapeHtml(submission.email || '')}">${escapeHtml(submission.email || 'N/A')}</a></td>
+                <td data-label="Phone">${escapeHtml(submission.phone || 'N/A')}</td>
+                <td data-label="Reg. No.">${escapeHtml(submission.registrationNumber || 'N/A')}</td>
+                <td data-label="Course">${escapeHtml(submission.course || 'N/A')}</td>
+                <td class="admin-table-message" data-label="Message" title="${escapeHtml(submission.message || 'N/A')}">${escapeHtml(submission.message?.substring(0, 50) || 'N/A')}${submission.message?.length > 50 ? '…' : ''}</td>
+                <td data-label="Submitted">${formatDate(submission.createdAt)}</td>
+                <td data-label="Status"><span class="admin-item-badge ${escapeHtml(submission.status || 'new')}">${escapeHtml(String(submission.status || 'new').toUpperCase())}</span></td>
               </tr>
             `).join('')}
           </tbody>

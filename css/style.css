@@ -2681,24 +2681,89 @@ body.admin-page {
 
 @media (max-width: 768px) {
   .admin-table-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border-radius: 8px;
+    overflow: visible;
+    border: none;
+    box-shadow: none;
   }
 
   .admin-memberships-table {
-    font-size: 12px;
-    min-width: 800px;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    font-size: 13px;
+  }
+
+  .admin-memberships-table thead {
+    display: none;
+  }
+
+  .admin-memberships-table tbody {
+    display: grid;
+    gap: 12px;
+  }
+
+  .admin-memberships-table tbody tr {
+    display: block;
+    padding: 14px;
+    border: 1px solid rgba(46, 49, 146, 0.08);
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 10px 24px rgba(25, 32, 62, 0.06);
+  }
+
+  .admin-memberships-table tbody tr:hover {
+    background-color: #ffffff;
+    transform: translateY(-1px);
   }
 
   .admin-memberships-table th,
   .admin-memberships-table td {
-    padding: 12px 10px;
-    white-space: nowrap;
+    display: grid;
+    gap: 4px;
+    width: 100%;
+    padding: 8px 0;
+    white-space: normal;
+  }
+
+  .admin-memberships-table tbody td {
+    border-bottom: 1px solid rgba(46, 49, 146, 0.06);
+    align-items: start;
+    text-align: left;
+  }
+
+  .admin-memberships-table tbody td:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .admin-memberships-table tbody td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--primary-color);
+  }
+
+  .admin-table-name,
+  .admin-table-email,
+  .admin-table-message {
+    text-align: left;
+    word-break: break-word;
+  }
+
+  .admin-table-email a {
+    display: inline-block;
+    text-align: left;
   }
 
   .admin-table-message {
-    max-width: 120px;
+    max-width: none;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    display: block;
   }
 }
 
