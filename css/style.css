@@ -760,6 +760,7 @@ main {
 .service-card p {
   color: var(--light-text-color);
   line-height: 1.6;
+  font-size: var(--font-sm);
 }
 
 /* Leadership Section */
